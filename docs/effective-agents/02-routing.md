@@ -21,6 +21,21 @@
 
 ```mermaid
 flowchart TD
+    Input([입력]) --> Router[LLM 호출\n라우터]
+    Router -. "선택" .-> LLM1[LLM 호출 1]
+    Router -. "선택" .-> LLM2[LLM 호출 2]
+    Router -. "선택" .-> LLM3[LLM 호출 3]
+    LLM1 --> Output([출력])
+    LLM2 --> Output
+    LLM3 --> Output
+```
+
+> 점선 화살표는 라우터가 입력에 따라 하나의 경로만 선택함을 나타냅니다.
+
+### 상세 라우팅 흐름
+
+```mermaid
+flowchart TD
     Input([사용자 입력]) --> Router
 
     subgraph Routing["라우팅 계층"]
@@ -43,29 +58,6 @@ flowchart TD
     HandlerB --> Output
     HandlerC --> Output
     HandlerD --> Output
-```
-
-### 라우팅 결정 흐름
-
-```mermaid
-flowchart LR
-    Input([입력]) --> Classify
-
-    subgraph Classification["분류 단계"]
-        Classify[LLM / 규칙 기반\n분류기]
-        Classify --> Intent{의도\n파악}
-        Intent --> TypeA["유형 A\n(확률: 85%)"]
-        Intent --> TypeB["유형 B\n(확률: 10%)"]
-        Intent --> TypeC["유형 C\n(확률: 5%)"]
-    end
-
-    TypeA --> AgentA[전문 에이전트 A\n최적화된 프롬프트 + 도구]
-    TypeB --> AgentB[전문 에이전트 B\n최적화된 프롬프트 + 도구]
-    TypeC --> AgentC[전문 에이전트 C\n최적화된 프롬프트 + 도구]
-
-    AgentA --> Result([결과])
-    AgentB --> Result
-    AgentC --> Result
 ```
 
 ---
@@ -122,7 +114,7 @@ flowchart LR
 
 ## 추가 학습 자료
 
-- [Anthropic: Building Effective Agents - Routing](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Building Effective Agents - Routing](https://www.anthropic.com/engineering/building-effective-agents)
 - [Google Cloud: Agentic AI Design Patterns](https://cloud.google.com/architecture/choose-design-pattern-agentic-ai-system)
 - [LangChain: Routing](https://python.langchain.com/docs/expression_language/how_to/routing)
 - [OpenAI: A practical guide to building agents](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)

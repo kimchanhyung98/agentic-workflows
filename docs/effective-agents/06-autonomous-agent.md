@@ -29,6 +29,18 @@
 
 ```mermaid
 flowchart TD
+    Human([인간]) <-. "시작/중단" .-> LLM[LLM 호출]
+    LLM -- "행동" --> Env[환경]
+    Env -- "피드백" --> LLM
+    LLM -. "중지" .-> Stop([종료])
+```
+
+> 인간은 에이전트와 간접적으로 상호작용합니다(점선). 에이전트는 환경과의 상호작용 루프를 자율적으로 반복하며, 스스로 종료를 결정합니다.
+
+### 상세 아키텍처
+
+```mermaid
+flowchart TD
     Goal([목표 / 작업 지시]) --> Think
 
     subgraph AgentLoop["에이전트 자율 실행 루프"]
@@ -93,6 +105,38 @@ sequenceDiagram
             Note over A: 오류 분석 및 대안 전략 수립
         end
     end
+```
+
+### 코딩 에이전트 흐름 (Anthropic 예시)
+
+```mermaid
+sequenceDiagram
+    participant H as 인간
+    participant I as 인터페이스
+    participant L as LLM
+    participant E as 환경
+
+    H->>I: 코딩 작업 요청
+
+    loop 작업이 명확해질 때까지
+        I->>H: 확인 질문
+        H->>I: 답변/명확화
+    end
+
+    I->>L: 작업 + 컨텍스트 전송
+
+    L->>E: 파일 검색
+    E-->>L: 파일 경로 반환
+
+    loop 테스트 통과까지 반복
+        L->>E: 코드 작성
+        E-->>L: 상태 반환
+        L->>E: 테스트 실행
+        E-->>L: 결과 반환
+    end
+
+    L-->>I: 작업 완료
+    I-->>H: 결과 표시
 ```
 
 ### 에이전트 상태 관리
@@ -202,7 +246,7 @@ quadrantChart
 
 ## 추가 학습 자료
 
-- [Anthropic: Building Effective Agents - Autonomous Agent](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Building Effective Agents - Autonomous Agent](https://www.anthropic.com/engineering/building-effective-agents)
 - [Google Cloud: Agentic AI Design Patterns](https://cloud.google.com/architecture/choose-design-pattern-agentic-ai-system)
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
 - [LangGraph: Building Stateful, Multi-Actor Applications](https://langchain-ai.github.io/langgraph/)

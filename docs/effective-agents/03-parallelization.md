@@ -25,6 +25,17 @@
 
 ## 작동 원리 및 흐름
 
+```mermaid
+flowchart TD
+    Input([입력]) --> LLM1[LLM 호출 1]
+    Input --> LLM2[LLM 호출 2]
+    Input --> LLM3[LLM 호출 3]
+    LLM1 --> Agg[집계기\nAggregator]
+    LLM2 --> Agg
+    LLM3 --> Agg
+    Agg --> Output([출력])
+```
+
 ### 섹션 처리 (Sectioning)
 
 ```mermaid
@@ -152,7 +163,7 @@ gantt
 
 ## 추가 학습 자료
 
-- [Anthropic: Building Effective Agents - Parallelization](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Building Effective Agents - Parallelization](https://www.anthropic.com/engineering/building-effective-agents)
 - [Google Cloud: Agentic AI Design Patterns](https://cloud.google.com/architecture/choose-design-pattern-agentic-ai-system)
 - [LangChain: Parallel Processing](https://python.langchain.com/docs/expression_language/primitives/parallel)
 - [MapReduce 패턴 개념 이해](https://en.wikipedia.org/wiki/MapReduce)

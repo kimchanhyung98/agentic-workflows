@@ -21,37 +21,14 @@
 
 ```mermaid
 flowchart LR
-    Input([사용자 입력]) --> LLM1
-
-    subgraph Step1["단계 1: 계획 수립"]
-        LLM1[LLM 호출 1\n작업 분석 및 계획]
-    end
-
-    subgraph Gate1["게이트 검증"]
-        Check1{출력\n유효성 확인}
-    end
-
-    subgraph Step2["단계 2: 실행"]
-        LLM2[LLM 호출 2\n계획 기반 실행]
-    end
-
-    subgraph Gate2["게이트 검증"]
-        Check2{출력\n유효성 확인}
-    end
-
-    subgraph Step3["단계 3: 정제"]
-        LLM3[LLM 호출 3\n결과 정제 및 포맷]
-    end
-
-    Output([최종 결과물]) 
-
-    LLM1 --> Check1
-    Check1 -- "유효" --> LLM2
-    Check1 -- "재시도" --> LLM1
-    LLM2 --> Check2
-    Check2 -- "유효" --> LLM3
-    Check2 -- "재시도" --> LLM2
-    LLM3 --> Output
+    Input([입력]) --> LLM1[LLM 호출 1]
+    LLM1 --> Out1([출력 1])
+    Out1 --> Gate{게이트}
+    Gate -- "통과" --> LLM2[LLM 호출 2]
+    Gate -- "실패" --> Exit([종료])
+    LLM2 --> Out2([출력 2])
+    Out2 --> LLM3[LLM 호출 3]
+    LLM3 --> Output([출력 3])
 ```
 
 ### 단계별 데이터 흐름
@@ -122,7 +99,7 @@ sequenceDiagram
 
 ## 추가 학습 자료
 
-- [Anthropic: Building Effective Agents - Prompt Chaining](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Building Effective Agents - Prompt Chaining](https://www.anthropic.com/engineering/building-effective-agents)
 - [Google Cloud: Agentic AI Design Patterns](https://cloud.google.com/architecture/choose-design-pattern-agentic-ai-system)
 - [LangChain: Sequential Chains](https://python.langchain.com/docs/modules/chains/)
 - [LlamaIndex: Query Pipelines](https://docs.llamaindex.ai/en/stable/module_guides/querying/pipeline/)

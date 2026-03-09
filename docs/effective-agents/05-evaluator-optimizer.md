@@ -25,26 +25,13 @@
 
 ```mermaid
 flowchart TD
-    Input([작업 요청 + 품질 기준]) --> Generator
-
-    subgraph Loop["반복 개선 루프"]
-        Generator[최적화자\n결과물 생성/개선]
-        Evaluator[평가자\n결과물 평가]
-        Feedback[피드백\n및 개선 지침]
-
-        Generator --> Evaluator
-        Evaluator --> Feedback
-        Feedback --> Generator
-    end
-
-    Evaluator --> QualityCheck{품질 기준\n충족?}
-    QualityCheck -- "예" --> Output([최종 승인된 결과물])
-    QualityCheck -- "아니오\n(최대 반복 미달)" --> Generator
-
-    style Loop fill:#f0f8ff,stroke:#4682b4
+    Input([입력]) --> Gen[LLM 호출\n생성기 Generator]
+    Gen -- "솔루션" --> Eval[LLM 호출\n평가기 Evaluator]
+    Eval -- "승인" --> Output([출력])
+    Eval -- "거부 + 피드백" --> Gen
 ```
 
-### 세부 평가 흐름
+### 상세 평가 흐름
 
 ```mermaid
 flowchart LR
@@ -159,7 +146,7 @@ sequenceDiagram
 
 ## 추가 학습 자료
 
-- [Anthropic: Building Effective Agents - Evaluator-Optimizer](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Building Effective Agents - Evaluator-Optimizer](https://www.anthropic.com/engineering/building-effective-agents)
 - [Google Cloud: Agentic AI Design Patterns](https://cloud.google.com/architecture/choose-design-pattern-agentic-ai-system)
 - [Constitutional AI: Harmlessness from AI Feedback (Anthropic)](https://arxiv.org/abs/2212.08073)
 - [Reflexion: Language Agents with Verbal Reinforcement Learning](https://arxiv.org/abs/2303.11366)

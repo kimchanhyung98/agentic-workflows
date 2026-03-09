@@ -25,6 +25,22 @@
 
 ```mermaid
 flowchart TD
+    Input([입력]) --> Orch[오케스트레이터]
+    Orch -. "작업 위임" .-> LLM1[LLM 호출 1]
+    Orch -. "작업 위임" .-> LLM2[LLM 호출 2]
+    Orch -. "작업 위임" .-> LLM3[LLM 호출 3]
+    LLM1 -. "결과" .-> Synth[종합기\nSynthesizer]
+    LLM2 -. "결과" .-> Synth
+    LLM3 -. "결과" .-> Synth
+    Synth --> Output([출력])
+```
+
+> 점선 화살표는 오케스트레이터가 런타임에 동적으로 워커를 선택하고 작업을 위임함을 나타냅니다. 워커 수와 작업 내용은 고정되지 않습니다.
+
+### 상세 아키텍처
+
+```mermaid
+flowchart TD
     Input([사용자 요청]) --> Orchestrator
 
     subgraph OrchestratorLayer["오케스트레이터 계층"]
@@ -142,7 +158,7 @@ DevOps 파이프라인 자동화:
 
 ## 추가 학습 자료
 
-- [Anthropic: Building Effective Agents - Orchestrator-Workers](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Building Effective Agents - Orchestrator-Workers](https://www.anthropic.com/engineering/building-effective-agents)
 - [Google Cloud: Agentic AI Design Patterns](https://cloud.google.com/architecture/choose-design-pattern-agentic-ai-system)
 - [LangGraph: Multi-Agent Workflows](https://langchain-ai.github.io/langgraph/tutorials/multi_agent/multi-agent-collaboration/)
 - [AutoGen: Multi-Agent Conversation Framework](https://microsoft.github.io/autogen/)
