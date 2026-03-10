@@ -3,7 +3,7 @@
 ## 개요
 
 Auto Improve Loop는 [karpathy/autoresearch](https://github.com/karpathy/autoresearch)에서 차용한 핵심 아이디어로,
-**사람이 목표만 정의하면 AI 에이전트가 자율적으로 실험-측정-판단을 반복**하는 자기 개선 루프이다.
+**사람이 목표와 운영 규칙을 정의하면 AI 에이전트가 자율적으로 실험-측정-판단을 반복**하는 자기 개선 루프이다.
 
 기존의 에이전트 루프(ReAct, Plan-Execute 등)가 단일 작업 완료에 집중한다면,
 Auto Improve Loop는 **동일 시스템의 반복적 개선**에 초점을 맞춘다.
@@ -36,12 +36,12 @@ graph TD
 
 ### 1. 역할 분리: 사람 vs AI
 
-|           | 사람 (Human)    | AI (Agent)    |
-|-----------|---------------|---------------|
-| **역할**    | 무엇을(What) 정의  | 어떻게(How) 실행   |
-| **산출물**   | `program.md`  | 코드 변경, 실험 로그  |
-| **판단**    | 목표 및 제약 조건 설정 | 실험 설계, 실행, 평가 |
-| **개입 시점** | 시작 전, 결과 확인 시 | 루프 전체 (자율)    |
+|           | 사람 (Human)                                    | AI (Agent)    |
+|-----------|-----------------------------------------------|---------------|
+| **역할**    | 무엇을(What), 어떤 규칙으로(Constraints) 정의            | 어떻게(How) 실행   |
+| **산출물**   | `program.md` (목표, 수정 범위, 평가 보호, 로그 포맷, 루프 규칙) | 코드 변경, 실험 로그  |
+| **판단**    | 목표, 제약 조건, 운영 규칙 설정                           | 실험 설계, 실행, 평가 |
+| **개입 시점** | 시작 전, 결과 확인 시                                 | 루프 전체 (자율)    |
 
 ### 2. 고정된 평가 기준
 
@@ -65,15 +65,13 @@ Git을 활용하여 실패한 실험을 안전하게 되돌린다.
 ```mermaid
 gitGraph
     commit id: "baseline"
-    branch experiment-B
-    commit id: "실험 B: LR 변경"
-    checkout main
-    merge experiment-B id: "✅ val_bpb 개선"
-    branch experiment-C
-    commit id: "실험 C: 활성화 함수 변경"
-    checkout main
-    commit type: HIGHLIGHT id: "❌ git reset (실험 C 폐기)"
+    commit id: "실험 B: LR 변경 → ✅ 개선, 유지"
+    commit id: "실험 C: 활성화 함수 → ❌ 미개선, git reset"
+    commit id: "실험 D: 배치 크기 조정 → ✅ 개선, 유지"
 ```
+
+> **참고**: 실제로는 실험 C의 commit이 `git reset`으로 제거되어 history에 남지 않는다.
+> 브랜치는 **개선된 실험만 남기며 전진**하는 것이 핵심이다.
 
 ### 4. 실험 로그 관리
 

@@ -27,14 +27,14 @@
 
 ## 핵심 용어
 
-| 용어                      | 설명                                            |
-|-------------------------|-----------------------------------------------|
-| **Agent Loop**          | 에이전트가 관찰-판단-행동-피드백을 반복하는 실행 루프                |
-| **Auto Improve Loop**   | AI가 자율적으로 실험-측정-판단을 반복하여 시스템을 개선하는 루프         |
-| **program.md**          | autoresearch에서 사람이 작성하는 목표 및 제약 조건 문서         |
-| **ReAct**               | Reasoning + Acting. 추론과 행동을 교차 실행하는 에이전트 패턴   |
-| **OODA Loop**           | Observe-Orient-Decide-Act. 군사 전략 기반 의사결정 루프   |
-| **Reflexion**           | 실패 경험을 자기 반성으로 변환하여 다음 시도에 반영하는 패턴            |
-| **Evaluator-Optimizer** | 생성과 평가를 분리하여 반복 개선하는 패턴                       |
-| **Rollback**            | 실패한 변경을 이전 상태로 되돌리는 메커니즘                      |
-| **val_bpb**             | Validation Bits Per Byte. autoresearch의 평가 지표 |
+| 용어                      | 설명                                                                  |
+|-------------------------|---------------------------------------------------------------------|
+| **Agent Loop**          | 에이전트가 관찰-판단-행동-피드백을 반복하는 실행 루프                                      |
+| **Auto Improve Loop**   | AI가 자율적으로 실험-측정-판단을 반복하여 시스템을 개선하는 루프                               |
+| **program.md**          | autoresearch에서 사람이 작성하는 목표, 수정 범위, 평가 보호, 로그 포맷, 루프 규칙 등을 포함한 운영 문서 |
+| **ReAct**               | Reasoning + Acting. 추론과 행동을 교차 실행하는 에이전트 패턴                         |
+| **OODA Loop**           | Observe-Orient-Decide-Act. 군사 전략 기반 의사결정 루프                         |
+| **Reflexion**           | 실패 경험을 자기 반성으로 변환하여 다음 시도에 반영하는 패턴                                  |
+| **Evaluator-Optimizer** | 생성과 평가를 분리하여 반복 개선하는 패턴                                             |
+| **Rollback**            | 실패한 변경을 이전 상태로 되돌리는 메커니즘                                            |
+| **val_bpb**             | Validation Bits Per Byte. autoresearch의 평가 지표                       |
