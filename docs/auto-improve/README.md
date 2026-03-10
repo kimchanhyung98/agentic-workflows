@@ -22,10 +22,10 @@ graph LR
 
 ## 문서 구조
 
-| 문서 | 설명 |
-|------|------|
-| [02-auto-improve-loop.md](./02-auto-improve-loop.md) | Auto Improve Loop 설계 |
-| [03-references.md](./03-references.md) | 관련 자료 및 레퍼런스 |
+| 문서                                                   | 설명                   |
+|------------------------------------------------------|----------------------|
+| [01-auto-improve-loop.md](./01-auto-improve-loop.md) | Auto Improve Loop 설계 |
+| [02-references.md](./02-references.md)               | 관련 자료 및 레퍼런스         |
 
 ## 핵심 원칙
 
