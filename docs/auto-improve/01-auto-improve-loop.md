@@ -23,7 +23,7 @@ graph TD
         E --> F[결과 측정]
         F --> G{개선되었는가?}
         G -->|✅ 개선| H[변경 유지]
-        G -->|❌ 미개선| I[변경 폐기<br/>git reset]
+        G -->|❌ 미개선| I[변경 폐기<br/>git reset --hard HEAD~1 && git clean -fd]
         H --> J[결과 기록]
         I --> J
         J --> B
