@@ -24,7 +24,6 @@ graph LR
 
 | 문서 | 설명 |
 |------|------|
-| [01-agent-loop.md](./01-agent-loop.md) | Agent Loop 개념 및 워크플로우 패턴 |
 | [02-auto-improve-loop.md](./02-auto-improve-loop.md) | Auto Improve Loop 설계 |
 | [03-references.md](./03-references.md) | 관련 자료 및 레퍼런스 |
 
