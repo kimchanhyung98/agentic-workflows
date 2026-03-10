@@ -38,7 +38,6 @@ stateDiagram-v2
     계획수정 --> 작업실행
     결과평가 --> 최종결과: 목표 달성
     최종결과 --> [*]
-
     note right of 작업실행
         도구 활용
         메모리 참조
@@ -78,7 +77,7 @@ config:
         yAxis:
             labelFontSize: 12
 ---
-xychart
+xychart-beta
     title "HumanEval 코딩 벤치마크 성능 비교"
     x-axis ["GPT-3.5 (zero-shot)", "GPT-4 (zero-shot)", "GPT-3.5 + Agentic"]
     y-axis "정확도 (%)" 0 --> 100
