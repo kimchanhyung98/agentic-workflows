@@ -51,7 +51,7 @@ graph TD
 - **단일 평가 지표**: 하나의 명확한 수치(예: `val_bpb`, Validation Bits Per Byte — 낮을수록 좋음)로 성과 비교
 - **불변 평가 코드**: 평가 로직은 에이전트가 수정할 수 없음 (별도 파일 분리, 수정 대상에서 제외)
 
-```
+```text
 실험 A: val_bpb = 0.997 (baseline)
 실험 B: val_bpb = 0.993 → ✅ 개선, 유지
 실험 C: val_bpb = 1.005 → ❌ 미개선, 폐기
@@ -77,7 +77,7 @@ gitGraph
 
 모든 실험 결과를 구조화된 형식으로 기록한다.
 
-```
+```text
 commit   val_bpb    memory_gb  status   description
 a1b2c3d  0.997900   44.0       keep     baseline
 b2c3d4e  0.993200   44.2       keep     increase LR to 0.04
