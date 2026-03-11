@@ -6,10 +6,10 @@
 
 ## 문서 구성
 
-| 문서                                                       | 내용                                              |
-|----------------------------------------------------------|-------------------------------------------------|
-| [Stripe Minions 개요](./01-stripe-minions.md)               | Minions의 핵심 아키텍처, One-Shot 접근 방식, 컨텍스트 수집 전략    |
-| [Stripe Minions 시스템 설계](./02-stripe-minions-part2.md) | 에이전트 실행 파이프라인, 코드 편집 전략, 테스트 및 검증, 확장 사례        |
+| 문서                                                    | 내용                                           |
+|-------------------------------------------------------|----------------------------------------------|
+| [Stripe Minions 개요](./01-stripe-minions.md)           | 핵심 공식, Stripe 환경의 세 기둥, 6개 레이어 아키텍처, Entry Point, Context Hydration |
+| [Stripe Minions 시스템 설계](./02-stripe-minions-part2.md) | Devbox 격리 환경, Agent Core(Goose Fork), Feedback Loop, PR Output, 설계 인사이트 |
 
 ---
 
@@ -29,10 +29,10 @@ flowchart LR
 
 ### 핵심 특징
 
-- **One-Shot 실행**: 작업 수신 후 인간 개입 없이 PR까지 자율 완료
-- **End-to-End 파이프라인**: 컨텍스트 수집 → 계획 → 구현 → 테스트 → PR 생성
-- **대규모 코드베이스 대응**: 수백만 줄의 모노레포에서 정확한 컨텍스트 수집
-- **안전성 확보**: 기존 테스트 인프라 활용 및 다층 검증
+- **One-Shot 실행**: 작업 수신 후 인간 개입 없이 PR까지 자율 완료 (주당 1,000+ PR)
+- **6개 레이어 아키텍처**: Entry Point → Context Hydration → Devbox → Agent Core → Feedback Loop → Output
+- **기존 인프라 활용**: 에이전트 전용 도구 없이, 인간 엔지니어와 동일한 개발 환경 사용
+- **구조적 안전장치**: 격리된 VM, 결정론적 게이트, 제한된 재시도로 안전성 확보
 
 ---
 
