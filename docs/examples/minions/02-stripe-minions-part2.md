@@ -188,7 +188,7 @@ sequenceDiagram
     Note over D: Pre-loaded Code/Services<br/>No Internet, No Prod
 
     D->>A: 컨텍스트 + 작업 전달
-    Note over A: Think(LLM) → Write Code(LLM)<br/>→ Linter(GATE) → Git Commit(GATE)
+    Note over A: Think(LLM) → Write Code(LLM)<br/>→ Linter(GATE) → Git Commit(GATE)<br/>→ Tests(GATE) → Review(LLM)
 
     A->>F: 변경 사항 검증 요청
     Note over F: Local Lint(<5s)<br/>→ CI Selective Tests<br/>→ Self-Fix(max 2)
