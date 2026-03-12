@@ -20,12 +20,10 @@ flowchart TD
         NP["No Prod Access\n프로덕션 접근 차단"]
     end
 
-    Pool["Pre-warmed VM Pool"] -->|"10초 스핀업"| Devbox
-
-    Devbox --> R1["Run 1"]
-    Devbox --> R2["Run 2"]
-    Devbox --> R3["Run 3"]
-    Devbox --> R4["Run ..."]
+    Pool["Pre-warmed VM Pool"]
+    Pool -->|"10초 스핀업"| D1["Devbox 1"] --> R1["Run 1"]
+    Pool -->|"10초 스핀업"| D2["Devbox 2"] --> R2["Run 2"]
+    Pool -->|"10초 스핀업"| D3["Devbox N"] --> R3["Run ..."]
 ```
 
 ### 환경 구성
@@ -146,7 +144,7 @@ flowchart LR
 flowchart TD
     Agent["Agent Core + Feedback Loop"] --> PR["Pull Request"]
 
-    PR --> C1["✅ CI passing — all tests green"]
+    PR --> C1["✅ CI passing — selective tests green"]
     PR --> C2["✅ Linter clean — Sorbet verified"]
     PR --> C3["✅ Stripe PR template filled"]
     PR --> C4["✅ Ready for engineer review"]
@@ -156,7 +154,7 @@ flowchart TD
 
 | 체크리스트 | 설명 |
 |----------|------|
-| CI passing | 모든 테스트 통과 (all tests green) |
+| CI passing | 선별된 관련 테스트 통과 (selective tests green) |
 | Linter clean | Sorbet 타입 검사 포함 린터 통과 |
 | PR template filled | Stripe 내부 PR 템플릿 작성 완료 |
 | Ready for review | 엔지니어가 바로 리뷰 가능한 상태 |
