@@ -50,7 +50,7 @@ flowchart TD
 | 제약 | 효과 |
 |-----|------|
 | No Internet | 외부 유출 불가 |
-| No production | 프로덕션 영향 불가 |
+| No Prod Access | 프로덕션 영향 불가 |
 | No human approval needed | 승인 대기 없이 즉시 실행 |
 
 ---
