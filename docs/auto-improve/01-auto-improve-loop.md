@@ -95,20 +95,17 @@ flowchart TD
     Modify --> Commit["git commit<br/>변경 사항 저장"]
     Commit --> Run["실험 실행<br/>uv run train.py"]
     Run --> Check{"정상 완료?"}
-
     Check -->|크래시| CrashLog[에러 로그 확인]
     CrashLog --> CanFix{"수정 가능?"}
     CanFix -->|예| Modify
     CanFix -->|아니오| LogCrash[crash 기록]
     LogCrash --> Reset1["git reset --hard HEAD~1"]
     Reset1 --> ReadState
-
     Check -->|정상| Measure["결과 측정<br/>val_bpb 확인"]
     Measure --> Compare{"이전보다 개선?"}
     Compare -->|✅ 개선| Keep[변경 유지]
     Keep --> LogKeep[keep 기록]
     LogKeep --> ReadState
-
     Compare -->|❌ 미개선| LogDiscard[discard 기록]
     LogDiscard --> Reset2["git reset --hard HEAD~1"]
     Reset2 --> ReadState
