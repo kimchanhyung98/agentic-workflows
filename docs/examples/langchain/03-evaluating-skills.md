@@ -128,12 +128,12 @@ sequenceDiagram
 
 ### 평가 결과 예시
 
-LangChain 블로그에서 보고한 실제 성능 데이터:
+[Evaluating Skills](https://blog.langchain.com/evaluating-skills/) 블로그에서 보고한 실제 성능 데이터:
 
 | 조건                      | 태스크 통과율 |
 |-------------------------|---------|
-| Claude Code (Skills 없음) | 25%     |
-| Claude Code (Skills 적용) | 95%     |
+| Claude Code (Skills 없음) | 9%      |
+| Claude Code (Skills 적용) | 82%     |
 
 ---
 
