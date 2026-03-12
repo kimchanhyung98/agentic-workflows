@@ -6,9 +6,9 @@
 
 ## 문서 구성
 
-| 문서                                                    | 내용                                           |
-|-------------------------------------------------------|----------------------------------------------|
-| [Stripe Minions 개요](./01-stripe-minions.md)           | 핵심 공식, Stripe 환경의 세 기둥, 6개 레이어 아키텍처, Entry Point, Context Hydration |
+| 문서                                                    | 내용                                                                      |
+|-------------------------------------------------------|-------------------------------------------------------------------------|
+| [Stripe Minions 개요](./01-stripe-minions.md)           | 핵심 공식, Stripe 환경의 세 기둥, 6개 레이어 아키텍처, Entry Point, Context Hydration     |
 | [Stripe Minions 시스템 설계](./02-stripe-minions-part2.md) | Devbox 격리 환경, Agent Core(Goose Fork), Feedback Loop, PR Output, 설계 인사이트 |
 
 ---

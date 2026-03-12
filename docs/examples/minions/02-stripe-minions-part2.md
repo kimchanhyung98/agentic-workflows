@@ -28,12 +28,12 @@ flowchart TD
 
 ### 환경 구성
 
-| 특성 | 설명 |
-|-----|------|
-| **Pre-loaded Code** | 전체 Stripe 코드베이스가 미리 로딩됨 |
+| 특성                      | 설명                           |
+|-------------------------|------------------------------|
+| **Pre-loaded Code**     | 전체 Stripe 코드베이스가 미리 로딩됨      |
 | **Pre-loaded Services** | 의존 서비스(dependencies)가 사전 구성됨 |
-| **No Internet** | 외부 네트워크 접근 차단 |
-| **No Prod Access** | 프로덕션 환경 접근 차단 |
+| **No Internet**         | 외부 네트워크 접근 차단                |
+| **No Prod Access**      | 프로덕션 환경 접근 차단                |
 
 ### 성능 최적화
 
@@ -45,10 +45,10 @@ flowchart TD
 인터넷과 프로덕션 접근이 구조적으로 차단되어 있기 때문에, **인간의 승인 없이도 안전하게 실행**할 수 있다.
 샌드박스의 격리 수준 자체가 권한 모델이 되는 것이다.
 
-| 제약 | 효과 |
-|-----|------|
-| No Internet | 외부 유출 불가 |
-| No Prod Access | 프로덕션 영향 불가 |
+| 제약                       | 효과             |
+|--------------------------|----------------|
+| No Internet              | 외부 유출 불가       |
+| No Prod Access           | 프로덕션 영향 불가     |
 | No human approval needed | 승인 대기 없이 즉시 실행 |
 
 ---
@@ -81,9 +81,9 @@ flowchart LR
 
 각 단계는 두 가지 유형으로 구분된다:
 
-| 유형 | 단계 | 특성 |
-|-----|------|------|
-| **LLM creative step** | Think, Write Code, Review | LLM이 창의적으로 판단하는 단계 |
+| 유형                     | 단계                        | 특성                       |
+|------------------------|---------------------------|--------------------------|
+| **LLM creative step**  | Think, Write Code, Review | LLM이 창의적으로 판단하는 단계       |
 | **Deterministic gate** | Linter, Git Commit, Tests | 항상 실행되며 결과가 예측 가능한 검증 단계 |
 
 > **"Creativity of an LLM + reliability of deterministic code"**
@@ -92,10 +92,10 @@ flowchart LR
 
 LLM의 창의성과 결정론적 코드의 신뢰성 사이에서 균형을 잡기 위해, 에이전트가 절대 우회할 수 없는 규칙이 존재한다:
 
-| 규칙 | 효과 |
-|-----|------|
-| Cannot skip the linter | 린터를 건너뛸 수 없음 |
-| Cannot forget tests | 테스트를 누락할 수 없음 |
+| 규칙                             | 효과             |
+|--------------------------------|----------------|
+| Cannot skip the linter         | 린터를 건너뛸 수 없음   |
+| Cannot forget tests            | 테스트를 누락할 수 없음  |
 | Cannot push without committing | 커밋 없이 푸시할 수 없음 |
 
 이러한 가드레일은 에이전트가 "지름길"을 택하는 것을 **구조적으로** 방지한다.
@@ -122,11 +122,11 @@ flowchart LR
 
 ### 단계별 상세
 
-| 단계 | 설명 | 특성 |
-|-----|------|------|
-| **1. Local Lint** | 휴리스틱 기반으로 선별된 린터 실행. 타입 에러, 포매팅 검사 | **5초 이내** |
+| 단계                        | 설명                                              | 특성         |
+|---------------------------|-------------------------------------------------|------------|
+| **1. Local Lint**         | 휴리스틱 기반으로 선별된 린터 실행. 타입 에러, 포매팅 검사              | **5초 이내**  |
 | **2. CI Selective Tests** | 1M+ 전체 테스트 중 변경과 관련된 테스트만 선별 실행. 다수 auto-fix 지원 | **선별적 실행** |
-| **3. Agent Self-Fix** | 실패 내용을 읽고 수정 시도 후 재푸시 | **최대 2회** |
+| **3. Agent Self-Fix**     | 실패 내용을 읽고 수정 시도 후 재푸시                           | **최대 2회**  |
 
 ### 실패 처리 원칙
 
@@ -152,12 +152,12 @@ flowchart TD
 
 ### PR 완성 기준
 
-| 체크리스트 | 설명 |
-|----------|------|
-| CI passing | 선별된 관련 테스트 통과 (selective tests green) |
-| Linter clean | Sorbet 타입 검사 포함 린터 통과 |
-| PR template filled | Stripe 내부 PR 템플릿 작성 완료 |
-| Ready for review | 엔지니어가 바로 리뷰 가능한 상태 |
+| 체크리스트              | 설명                                    |
+|--------------------|---------------------------------------|
+| CI passing         | 선별된 관련 테스트 통과 (selective tests green) |
+| Linter clean       | Sorbet 타입 검사 포함 린터 통과                 |
+| PR template filled | Stripe 내부 PR 템플릿 작성 완료                |
+| Ready for review   | 엔지니어가 바로 리뷰 가능한 상태                    |
 
 ---
 
@@ -207,23 +207,23 @@ sequenceDiagram
 
 Minions의 핵심 설계 원칙은 인간 엔지니어와 AI 에이전트가 **동일한 도구**를 사용한다는 것이다:
 
-| 도구 | 인간 엔지니어 | AI 에이전트 |
-|-----|-----------|-----------|
-| Dev Environments | ✅ | ✅ |
-| Linters | ✅ | ✅ |
-| CI/CD | ✅ | ✅ |
-| Docs | ✅ | ✅ |
-| Code Review | ✅ | ✅ |
+| 도구               | 인간 엔지니어 | AI 에이전트 |
+|------------------|---------|---------|
+| Dev Environments | ✅       | ✅       |
+| Linters          | ✅       | ✅       |
+| CI/CD            | ✅       | ✅       |
+| Docs             | ✅       | ✅       |
+| Code Review      | ✅       | ✅       |
 
 에이전트 전용 도구를 별도로 만드는 것이 아니라, 인간이 이미 사용하는 인프라를 그대로 활용한다.
 
 ### 코딩 에이전트 시스템 구축을 위한 3가지 지침
 
-| # | 지침 | 설명 |
-|---|------|------|
+| # | 지침                             | 설명                                                 |
+|---|--------------------------------|----------------------------------------------------|
 | 1 | **Master CI/CD & Dev Tooling** | databases, linters, test infra, MCP curation을 숙달하라 |
-| 2 | **Learn MCP** | 에이전트를 실제 시스템에 연결하는 프로토콜 레이어를 학습하라 |
-| 3 | **Invest in System Design** | 에이전트가 아니라 **하네스(harness)를 설계**하라 |
+| 2 | **Learn MCP**                  | 에이전트를 실제 시스템에 연결하는 프로토콜 레이어를 학습하라                  |
+| 3 | **Invest in System Design**    | 에이전트가 아니라 **하네스(harness)를 설계**하라                   |
 
 > **"Design the harness, not the agent"**
 > 에이전트 자체를 개선하는 것보다, 에이전트가 동작하는 시스템 환경을 설계하는 데 투자하라.

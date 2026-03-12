@@ -21,14 +21,14 @@ curl -sSL https://raw.githubusercontent.com/langchain-ai/langsmith-cli/main/scri
 
 LangSmith CLI는 `langsmith` 명령으로 실행하며, 주요 기능은 다음과 같다:
 
-| 명령어 예시                                                                | 설명            |
-|-----------------------------------------------------------------------|---------------|
-| `langsmith run list --project my-app --last-n-minutes 1440`           | 최근 24시간 실행 조회 |
-| `langsmith run get <run-id>`                                          | 특정 실행 상세 조회   |
-| `langsmith trace list --project X --limit 10`                         | 트레이스 목록 조회    |
-| `langsmith dataset list`                                              | 데이터셋 목록 조회    |
-| `langsmith experiment list --project production`                      | 실험 결과 조회      |
-| `langsmith evaluator list`                                            | 평가자 목록 조회     |
+| 명령어 예시                                                      | 설명            |
+|-------------------------------------------------------------|---------------|
+| `langsmith run list --project my-app --last-n-minutes 1440` | 최근 24시간 실행 조회 |
+| `langsmith run get <run-id>`                                | 특정 실행 상세 조회   |
+| `langsmith trace list --project X --limit 10`               | 트레이스 목록 조회    |
+| `langsmith dataset list`                                    | 데이터셋 목록 조회    |
+| `langsmith experiment list --project production`            | 실험 결과 조회      |
+| `langsmith evaluator list`                                  | 평가자 목록 조회     |
 
 ### 실행 흐름
 

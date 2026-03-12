@@ -11,5 +11,5 @@ MD033: false
 MD024:
   siblings_only: true
 
-# MD060: 테이블 컬럼 정렬 스타일 비활성화 (한국어 테이블의 가독성 패딩)
+# MD060: 테이블 컬럼 정렬 비활성화 (auto-fix 미지원, IDE에서 수동 정렬)
 MD060: false
