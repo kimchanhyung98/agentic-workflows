@@ -1,4 +1,4 @@
-# Agent Examples
+# LangChain Skills
 
 LangChain Skills를 활용한 코딩 에이전트 성능 향상 사례를 정리한 문서입니다.
 
