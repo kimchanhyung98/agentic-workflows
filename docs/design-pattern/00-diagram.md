@@ -60,7 +60,7 @@ graph TB
 
 ```mermaid
 quadrantChart
-    title 복잡도 vs 비용
+    title "복잡도 vs 비용"
     x-axis "낮은 비용" --> "높은 비용"
     y-axis "낮은 복잡도" --> "높은 복잡도"
     quadrant-1 "고복잡·고비용"
