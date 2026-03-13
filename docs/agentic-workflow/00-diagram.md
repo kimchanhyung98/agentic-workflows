@@ -39,11 +39,7 @@ graph TB
         I5["Evaluator-Optimizer<br/>생성 → 평가 → 피드백 루프"]
     end
 
-    CONCEPT --> BRAIN
-    CONCEPT --> PLAN
-    CONCEPT --> MEM
-    CONCEPT --> TOOL
-    CONCEPT --> ACT
+    CONCEPT --> BRAIN & PLAN & MEM & TOOL & ACT
     BRAIN --> P1 & P2 & P3 & P4
     P1 --> I5
     P2 --> I1 & I2
