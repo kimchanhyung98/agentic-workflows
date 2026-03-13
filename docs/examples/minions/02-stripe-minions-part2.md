@@ -109,7 +109,7 @@ LLM에게 "린터를 실행하세요"라고 프롬프트하는 것이 아니라,
 
 ```mermaid
 flowchart LR
-    LL["⚡ 1. Local Lint\n< 5초"]
+    LL["⚡ 1. Local Lint\n5초 미만"]
     CI["✅ 2. CI Selective Tests\n1M+ 중 선별"]
     SF["🔄 3. Agent Self-Fix\nmax 2회"]
     HM["👤 Human\n(인간에게 전달)"]

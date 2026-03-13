@@ -47,10 +47,10 @@ quadrantChart
     title "Agentic Workflow 패턴 - 복잡도 vs 자율성"
     x-axis "낮은 복잡도" --> "높은 복잡도"
     y-axis "낮은 자율성" --> "높은 자율성"
-    Reflection: [0.25, 0.3]
-    Tool Use: [0.35, 0.45]
-    Planning: [0.55, 0.6]
-    Multi-Agent: [0.8, 0.85]
+    "Reflection": [0.25, 0.3]
+    "Tool Use": [0.35, 0.45]
+    "Planning": [0.55, 0.6]
+    "Multi-Agent": [0.8, 0.85]
     "프롬프트 체이닝": [0.2, 0.15]
     "라우팅": [0.3, 0.2]
     "병렬화": [0.45, 0.25]
