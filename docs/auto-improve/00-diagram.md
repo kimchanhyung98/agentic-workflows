@@ -59,9 +59,6 @@ graph LR
     LOOP --> D4["📄 문서 개선<br/>문서 내용 → 가독성 점수"]
     LOOP --> D5["⚙️ 설정 최적화<br/>시스템 설정 → 응답 시간"]
     style LOOP fill: #fff3e0, stroke: #E65100
-    style D1 fill: #e8f5e9, stroke: #388E3C
-    style D2 fill: #e8f5e9, stroke: #388E3C
-    style D3 fill: #e8f5e9, stroke: #388E3C
-    style D4 fill: #e8f5e9, stroke: #388E3C
-    style D5 fill: #e8f5e9, stroke: #388E3C
+    classDef domainStyle fill: #e8f5e9, stroke: #388E3C
+    class D1,D2,D3,D4,D5 domainStyle
 ```
