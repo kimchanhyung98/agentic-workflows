@@ -67,16 +67,16 @@ quadrantChart
     quadrant-2 "고복잡·저비용"
     quadrant-3 "저복잡·저비용"
     quadrant-4 "저복잡·고비용"
-    Sequential: [0.15, 0.15]
-    Parallel: [0.30, 0.20]
-    Loop: [0.25, 0.30]
+    "Sequential": [0.15, 0.15]
+    "Parallel": [0.30, 0.20]
+    "Loop": [0.25, 0.30]
     "Single Agent": [0.35, 0.40]
     "Review-Critique": [0.40, 0.45]
     "Iterative Refine": [0.45, 0.50]
-    Coordinator: [0.55, 0.65]
-    ReAct: [0.60, 0.70]
+    "Coordinator": [0.55, 0.65]
+    "ReAct": [0.60, 0.70]
     "Human-in-Loop": [0.50, 0.55]
     "Custom Logic": [0.55, 0.50]
-    Hierarchical: [0.75, 0.80]
-    Swarm: [0.90, 0.95]
+    "Hierarchical": [0.75, 0.80]
+    "Swarm": [0.90, 0.95]
 ```

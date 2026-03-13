@@ -70,30 +70,36 @@ flowchart TD
 ```mermaid
 graph TB
     subgraph PC["Prompt Chaining"]
+        direction LR
         pc1["Step 1"] -->|"output"| pc_gate{"Gate"} -->|"pass"| pc2["Step 2"] -->|"output"| pc3["Step 3"]
     end
 
     subgraph RT["Routing"]
+        direction LR
         rt_in["Input"] --> rt_cls["Classifier"] --> rt_a["Handler A"] & rt_b["Handler B"] & rt_c["Handler C"]
     end
 
     subgraph PL["Parallelization"]
+        direction LR
         pl_in["Task"] --> pl_a["Agent A"] & pl_b["Agent B"] & pl_c["Agent C"]
         pl_a & pl_b & pl_c --> pl_agg["Aggregator"]
     end
 
     subgraph OW["Orchestrator-Workers"]
+        direction LR
         ow_orc["Orchestrator"] -->|"위임"| ow_w1["Worker 1"] & ow_w2["Worker 2"]
         ow_w1 & ow_w2 -->|"결과"| ow_orc
     end
 
     subgraph EO["Evaluator-Optimizer"]
+        direction LR
         eo_gen["Generator"] --> eo_out["Output"] --> eo_eval["Evaluator"]
         eo_eval -->|"❌ 피드백"| eo_gen
         eo_eval -->|"✅ 통과"| eo_final["Final"]
     end
 
     subgraph AA["Autonomous Agent"]
+        direction LR
         aa_reason["Reason"] --> aa_act["Act"] --> aa_obs["Observe"]
         aa_obs --> aa_reason
     end
