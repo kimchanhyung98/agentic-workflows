@@ -39,7 +39,7 @@ graph TB
     end
 
     subgraph L5["Layer 5: Feedback Loop (3-Tier)"]
-        T1["Tier 1: Local Lint<br/>< 5초"]
+        T1["Tier 1: Local Lint<br/>&lt; 5초"]
         T2["Tier 2: CI Selective Tests<br/>100만+ 중 선별"]
         T3["Tier 3: Agent Self-Fix<br/>최대 2회"]
     end
