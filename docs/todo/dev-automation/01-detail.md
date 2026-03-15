@@ -496,13 +496,13 @@ Auto Improve Loop의 Git 기반 롤백 메커니즘을 적용할 수 있다.
 
 ## 참고 자료
 
-- [Stripe Minions 개요](../../docs/examples/minions/01-stripe-minions.md)
-- [Stripe Minions 시스템 설계](../../docs/examples/minions/02-stripe-minions-part2.md)
-- [Auto Improve Loop](../../docs/auto-improve/01-auto-improve-loop.md)
-- [에이전틱 AI 설계 패턴 (Anthropic)](../../docs/effective-agents/README.md)
-- [Prompt Chaining 패턴](../../docs/effective-agents/01-prompt-chaining.md)
-- [Evaluator-Optimizer 패턴](../../docs/effective-agents/05-evaluator-optimizer.md)
-- [에이전트 디자인 패턴 (Google Cloud)](../../docs/design-pattern/README.md)
-- [Human-in-the-Loop 패턴](../../docs/design-pattern/11-human-in-the-loop.md)
-- [Iterative Refinement 패턴](../../docs/design-pattern/06-iterative-refinement.md)
-- [Review-Critique 패턴](../../docs/design-pattern/05-review-critique.md)
+- [Stripe Minions 개요](/docs/examples/minions/01-stripe-minions.md)
+- [Stripe Minions 시스템 설계](/docs/examples/minions/02-stripe-minions-part2.md)
+- [Auto Improve Loop](/docs/auto-improve/01-auto-improve-loop.md)
+- [에이전틱 AI 설계 패턴 (Anthropic)](/docs/effective-agents/README.md)
+- [Prompt Chaining 패턴](/docs/effective-agents/01-prompt-chaining.md)
+- [Evaluator-Optimizer 패턴](/docs/effective-agents/05-evaluator-optimizer.md)
+- [에이전트 디자인 패턴 (Google Cloud)](/docs/design-pattern/README.md)
+- [Human-in-the-Loop 패턴](/docs/design-pattern/11-human-in-the-loop.md)
+- [Iterative Refinement 패턴](/docs/design-pattern/06-iterative-refinement.md)
+- [Review-Critique 패턴](/docs/design-pattern/05-review-critique.md)
