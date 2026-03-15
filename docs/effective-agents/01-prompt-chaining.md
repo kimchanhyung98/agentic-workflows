@@ -26,8 +26,8 @@ flowchart LR
     Input([입력]) --> LLM1[LLM 호출 1]
     LLM1 --> Out1([출력 1])
     Out1 --> Gate{게이트}
-    Gate -- "통과" --> LLM2[LLM 호출 2]
-    Gate -- "실패" --> Exit([종료])
+    Gate -- " 통과 " --> LLM2[LLM 호출 2]
+    Gate -- " 실패 " --> Exit([종료])
     LLM2 --> Out2([출력 2])
     Out2 --> LLM3[LLM 호출 3]
     LLM3 --> Output([출력 3])
@@ -42,17 +42,16 @@ sequenceDiagram
     participant LLM1 as LLM (단계 1)
     participant LLM2 as LLM (단계 2)
     participant LLM3 as LLM (단계 3)
-
-    U->>A: 복잡한 작업 요청
-    A->>LLM1: 프롬프트 + 입력 데이터
-    LLM1-->>A: 중간 결과 1 (계획/분석)
+    U ->> A: 복잡한 작업 요청
+    A ->> LLM1: 프롬프트 + 입력 데이터
+    LLM1 -->> A: 중간 결과 1 (계획/분석)
     Note over A: 중간 결과 검증
-    A->>LLM2: 프롬프트 + 중간 결과 1
-    LLM2-->>A: 중간 결과 2 (실행 결과)
+    A ->> LLM2: 프롬프트 + 중간 결과 1
+    LLM2 -->> A: 중간 결과 2 (실행 결과)
     Note over A: 중간 결과 검증
-    A->>LLM3: 프롬프트 + 중간 결과 2
-    LLM3-->>A: 최종 결과
-    A-->>U: 최종 응답 반환
+    A ->> LLM3: 프롬프트 + 중간 결과 2
+    LLM3 -->> A: 최종 결과
+    A -->> U: 최종 응답 반환
 ```
 
 ---
