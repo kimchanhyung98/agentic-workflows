@@ -65,6 +65,7 @@ Minions는 4가지 Entry Point(Slack, CLI, Web UI, CI Auto-Ticket)에서 Orchest
 ```text
 요구사항 분석 + 프로젝트 탐색 (Augment Context MCP)
     → (필요 시) 추가 조사
+    → (존재 시) AI 컨텍스트 로딩
     → 기획 문서 작성 (기획안 + 테스트 케이스 개요)
     → 멀티 AI 리뷰
     → (부족) 요구사항 분석으로 되돌아감
@@ -97,6 +98,19 @@ AI가 요구사항 분석 결과를 바탕으로 추가 조사 필요 여부를 
 
 단순한 작업은 추가 조사 없이 바로 기획 문서 작성으로 진행할 수 있다.
 
+#### AI 컨텍스트 로딩 (선택 — 존재 시)
+
+프로젝트에 사전 구조화된 AI 컨텍스트 파일이 존재하는 경우 로딩한다.
+도메인 개요, 데이터 모델, API 스펙 등 아키텍처 레이어에 매핑된 정적 지식이다.
+
+- 도메인 정책과 유스케이스 파악
+- 엔티티 정의와 데이터 모델 확인
+- API 스펙, 이벤트 스펙 등 인터페이스 파악
+
+AI 컨텍스트가 없는 프로젝트에서는 이 단계를 건너뛴다.
+Augment Context MCP의 시맨틱 검색이 동적으로 컨텍스트를 수집하므로, AI 컨텍스트는 필수가 아닌 보완 수단이다.
+사전에 잘 정리된 컨텍스트가 있으면 탐색 정확도와 토큰 효율이 올라간다.
+
 #### 기획 문서 작성
 
 기획안과 테스트 케이스 개요를 하나의 기획 문서로 정리한다.
@@ -108,6 +122,7 @@ AI가 요구사항 분석 결과를 바탕으로 추가 조사 필요 여부를 
 **기획 문서에 포함되는 것:**
 
 - **컨텍스트**: 식별된 관련 파일 목록
+- **AI 컨텍스트**: 로딩한 도메인·데이터 모델·API 스펙 요약 (존재하는 경우)
 - **추가 조사 결과**: 주의사항, 엣지케이스 (조사한 경우)
 - **기획안**: 무엇을 왜 변경하는지에 대한 자세하고 논리적인 설명
 - **작업 계획**: 어떤 파일을 어떻게 수정할지
@@ -409,3 +424,4 @@ Minions: "Can't fix in 2 tries? Surface it to the human — no wasted tokens"
 - [Human-in-the-Loop 패턴](/docs/design-pattern/11-human-in-the-loop.md)
 - [Iterative Refinement 패턴](/docs/design-pattern/06-iterative-refinement.md)
 - [Review-Critique 패턴](/docs/design-pattern/05-review-critique.md)
+- [컬리 OMS팀의 Claude AI 활용 워크플로우](https://helloworld.kurly.com/blog/oms-claude-ai-workflow/)

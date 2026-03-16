@@ -15,6 +15,7 @@ graph TB
         subgraph PLAN_DRAFT["조사 + 기획 문서 작성"]
             CC1["요구사항 분석 + 프로젝트 탐색<br/>Augment Context MCP<br/>(시맨틱 검색 · 관계 파악 · Git)"]
             CC2["추가 조사<br/>웹 검색 · 엣지케이스 · 주의사항"]
+            CTX["AI 컨텍스트 로딩<br/>도메인 · 데이터 모델 · API 스펙"]
             PLAN["📋 기획 문서 작성<br/>기획안 + 테스트 케이스 개요"]
         end
         PLAN_REVIEW["🤖 멀티 AI 리뷰"]
@@ -42,6 +43,7 @@ graph TB
     EP1 & EP2 & EP3 --> AI
     AI --> CC1
     CC1 -->|" 필요 시 (AI 판단) "| CC2
+    CC1 -->|" 존재 시 "| CTX
     CC1 --> PLAN
     PLAN --> PLAN_REVIEW
     PLAN_REVIEW -->|" 부족 "| CC1
