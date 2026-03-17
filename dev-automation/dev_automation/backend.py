@@ -20,6 +20,14 @@ class ClaudeCodeBackend(ExecutionBackend):
         self.command = command or ["claude", "-p"]
 
     def execute(self, plan_text: str, attempt: int, previous_error: str) -> str:
+        if "\x00" in plan_text:
+            raise ValueError(
+                "Plan text contains null bytes which cannot be passed as command-line arguments."
+            )
+        if "\x00" in previous_error:
+            raise ValueError(
+                "Previous error log contains null bytes which cannot be passed as command-line arguments."
+            )
         prompt = (
             "Approved implementation plan:\n"
             f"{plan_text}\n\n"

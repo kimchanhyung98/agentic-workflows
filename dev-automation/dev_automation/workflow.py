@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shlex
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -161,13 +162,20 @@ class DevAutomationWorkflow:
 
     def _run_verification(self, commands: Iterable[str]) -> tuple[bool, str]:
         output_lines: list[str] = []
-        for command in commands:
+        for index, command in enumerate(commands, start=1):
+            parsed_command = shlex.split(command)
+            if not parsed_command:
+                return (
+                    False,
+                    f"Verification command at position {index} is empty after parsing. "
+                    "Ensure the command is not whitespace-only.",
+                )
             completed = subprocess.run(
-                command,
+                parsed_command,
                 cwd=self.repo_root,
-                shell=True,
                 text=True,
                 capture_output=True,
+                check=False,
             )
             output_lines.append(f"$ {command}")
             if completed.stdout:
