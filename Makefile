@@ -1,4 +1,4 @@
-.PHONY: help dev check claude init speckit
+.PHONY: help dev check claude init speckit dev-automation
 
 .DEFAULT_GOAL := help
 
@@ -75,6 +75,9 @@ speckit: ## speckit 설치 (기본값: claude)
 		agent="claude"; \
 	fi; \
 	yes | specify init --here --ai "$$agent" --script sh
+
+dev-automation: ## Human-in-the-loop 로컬 개발 자동화 파이프라인 실행
+	@python3 dev-automation/cli.py --requirement "$$REQUIREMENT"
 
 %:
 	@:
