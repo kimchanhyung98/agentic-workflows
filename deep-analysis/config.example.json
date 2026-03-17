@@ -1,0 +1,17 @@
+{
+  "project_path": "/absolute/path/to/project",
+  "output_path": "/absolute/path/to/project/.deep-analysis",
+  "project_name": "my-project",
+  "backend": "claude_code_cli",
+  "reviewers": ["security", "code_quality", "performance"],
+  "exclude_patterns": [
+    "vendor/**",
+    "**/*.min.js",
+    "**/fixtures/**"
+  ],
+  "target_languages": ["python", "javascript", "typescript"],
+  "domains": {
+    "auth": ["src/views/auth.py", "src/models/user.py", "src/serializers/user.py", "tests/test_auth.py"],
+    "order": ["src/views/order.py", "src/models/order.py", "tests/test_order.py"]
+  }
+}
