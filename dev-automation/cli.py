@@ -24,6 +24,11 @@ class PlanContext:
     test_outline: List[str]
 
 
+def sanitize_markdown_bullet(text: str) -> str:
+    clean = " ".join(text.replace("\r", " ").splitlines()).strip()
+    return clean.replace("`", "'")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Human-in-the-loop local dev automation pipeline"
@@ -91,7 +96,7 @@ def build_plan_markdown(context: PlanContext, revision_note: str | None = None) 
     now = dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     revision = ""
     if revision_note:
-        revision = f"\n## 수정 요청 반영\n- {revision_note.strip()}\n"
+        revision = f"\n## 수정 요청 반영\n- {sanitize_markdown_bullet(revision_note)}\n"
     referenced = "\n".join(f"- `{path}`" for path in context.referenced_files)
     tests = "\n".join(f"- {item}" for item in context.test_outline)
     ambiguities = "\n".join(f"- {item}" for item in context.ambiguous_points)
@@ -154,6 +159,10 @@ def run_execute_with_gates(
     gates: List[str],
     max_retries: int,
 ) -> int:
+    # Retry policy:
+    # - Ralph Loop 실행 실패면 해당 attempt를 실패로 간주하고 다음 attempt로 이동
+    # - Ralph Loop가 성공한 attempt에서만 deterministic gate를 실행
+    # - gate 실패도 attempt 소진으로 계산하며, 마지막 허용 attempt 실패 시 실패 리포트 생성
     failure_report = repo_root / "dev-automation" / "failure-report.md"
     env = os.environ.copy()
     env["DEV_AUTOMATION_PLAN_PATH"] = str(plan_path)
@@ -201,7 +210,7 @@ def run_execute_with_gates(
             print("[execute] success: ralph-loop + deterministic gates passed")
             return 0
 
-    return 1
+    return 1  # safety fallback
 
 
 def main() -> int:

@@ -39,16 +39,24 @@ class CliTests(unittest.TestCase):
         self.assertEqual(choice, "r")
         self.assertEqual(note, "게이트를 make check로 고정")
 
+    def test_revision_note_is_sanitized(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = Path(tmp)
+            context = self.cli.collect_context("요구사항 테스트", repo_root)
+            plan = self.cli.build_plan_markdown(context, revision_note="줄1\n`줄2`")
+            self.assertIn("- 줄1 '줄2'", plan)
+
     def test_execute_runs_gates_after_approval(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo_root = Path(tmp)
             plan_path = repo_root / "PLAN.md"
             plan_path.write_text("plan", encoding="utf-8")
+            python_cmd = f"{sys.executable} -c"
             result = self.cli.run_execute_with_gates(
                 repo_root=repo_root,
                 plan_path=plan_path,
-                ralph_loop_cmd="python -c \"print('ok')\"",
-                gates=["python -c \"print('gate')\""],
+                ralph_loop_cmd=f"{python_cmd} \"print('ok')\"",
+                gates=[f"{python_cmd} \"print('gate')\""],
                 max_retries=1,
             )
             self.assertEqual(result, 0)
