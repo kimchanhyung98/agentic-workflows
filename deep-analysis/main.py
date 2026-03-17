@@ -42,34 +42,45 @@ def run_pipeline(project_root: Path, output_dir: Path, config_path: Path | None)
     stage1_xml = bundler.bundle_file_stage(source_files, bundle_root / "stage1")
     stage2_xml = bundler.bundle_domain_stage(source_files, bundle_root / "stage2")
 
-    empty_stage1 = "# stage1 summary\n\n(생성 전)"
-    empty_stage2 = "# stage2 summary\n\n(생성 전)"
-    project_xml = bundler.bundle_project_stage(
-        source_files=source_files,
-        stage1_summary=empty_stage1,
-        stage2_summary=empty_stage2,
-        output_path=bundle_root / "stage3" / "project.xml",
-    )
-
     pipeline = ReviewPipeline(config)
-    results = pipeline.run(
-        stage1_xml_paths=stage1_xml,
-        stage2_xml_paths=stage2_xml,
-        project_xml_path=project_xml,
-        output_dir=output_dir / "reviews",
+
+    stage1_result = pipeline.run_single_stage(
+        stage_name="stage1-file-review",
+        xml_paths=stage1_xml,
+        context_text="",
+        output_dir=output_dir / "reviews" / "stage1",
     )
 
-    stage1_summary = results["stage1"].summary_path.read_text(encoding="utf-8")
-    stage2_summary = results["stage2"].summary_path.read_text(encoding="utf-8")
+    stage1_summary = stage1_result.summary_path.read_text(encoding="utf-8")
+    stage2_result = pipeline.run_single_stage(
+        stage_name="stage2-domain-review",
+        xml_paths=stage2_xml,
+        context_text=stage1_summary,
+        output_dir=output_dir / "reviews" / "stage2",
+    )
 
-    bundler.bundle_project_stage(
+    stage2_summary = stage2_result.summary_path.read_text(encoding="utf-8")
+
+    project_xml = bundler.bundle_project_stage(
         source_files=source_files,
         stage1_summary=stage1_summary,
         stage2_summary=stage2_summary,
-        output_path=project_xml,
+        output_path=bundle_root / "stage3" / "project.xml",
     )
 
-    return results["final"].summary_path
+    stage3_result = pipeline.run_single_stage(
+        stage_name="stage3-project-review",
+        xml_paths=[project_xml],
+        context_text=f"{stage1_summary}\n\n{stage2_summary}",
+        output_dir=output_dir / "reviews" / "stage3",
+    )
+
+    final_report = pipeline.build_final_report(
+        stage_results=[stage1_result, stage2_result, stage3_result],
+        output_path=output_dir / "reviews" / "final-report.md",
+    )
+
+    return final_report
 
 
 def main() -> int:

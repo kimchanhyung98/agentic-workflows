@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import fnmatch
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,6 +9,8 @@ from typing import Dict, Iterable, List, Set
 from xml.etree import ElementTree as ET
 
 from config import AnalysisConfig
+
+logger = logging.getLogger(__name__)
 
 
 BINARY_SUFFIXES = {
@@ -48,6 +51,7 @@ class XmlBundler:
         self.config = config
         self.gitignore_patterns = self._load_gitignore_patterns(config.project_root)
         self.exclude_patterns = self.gitignore_patterns + config.excludes
+        self._auto_exclude_output_dir()
 
     def collect_source_files(self) -> List[SourceFile]:
         files: List[SourceFile] = []
@@ -246,13 +250,27 @@ class XmlBundler:
             patterns.append(stripped)
         return patterns
 
+    def _auto_exclude_output_dir(self) -> None:
+        try:
+            rel = self.config.output_dir.relative_to(self.config.project_root)
+            pattern = rel.as_posix() + "/"
+            if pattern not in self.exclude_patterns:
+                self.exclude_patterns.append(pattern)
+        except ValueError:
+            pass
+
     def _is_excluded(self, rel_path: str) -> bool:
+        parts = Path(rel_path).parts
         for pattern in self.exclude_patterns:
             p = pattern.strip()
             if not p:
                 continue
-            if p.endswith("/") and (rel_path == p.rstrip("/") or rel_path.startswith(p)):
-                return True
+            if p.endswith("/"):
+                dir_name = p.rstrip("/")
+                if rel_path == dir_name or rel_path.startswith(p):
+                    return True
+                if any(part == dir_name for part in parts):
+                    return True
             if p.startswith("/") and fnmatch.fnmatch(f"/{rel_path}", p):
                 return True
             if fnmatch.fnmatch(rel_path, p):
@@ -300,10 +318,17 @@ class XmlBundler:
                     grouped.setdefault("misc", []).append(item)
             return {k: v for k, v in grouped.items() if v}
 
+        logger.warning(
+            "domain_map이 설정되지 않아 디렉토리 기반 자동 그룹핑을 사용합니다. "
+            "정확한 기능 도메인 리뷰를 위해 config에 domain_map을 설정하세요."
+        )
         grouped: Dict[str, List[SourceFile]] = {}
         for item in source_files:
-            stem = item.path.stem
-            domain = stem.replace("test_", "") if stem.startswith("test_") else stem
+            parts = item.path.parts
+            if len(parts) >= 2:
+                domain = parts[0] if parts[0] not in {"src", "lib", "app"} else parts[1]
+            else:
+                domain = item.path.stem
             domain = re.split(r"[-_.]", domain)[0] or "misc"
             grouped.setdefault(domain, []).append(item)
         return grouped

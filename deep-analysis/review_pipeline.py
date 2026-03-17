@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import errno
+import logging
 import re
 import shlex
 import subprocess
@@ -10,6 +11,10 @@ from pathlib import Path
 from typing import Callable, Dict, Iterable, List
 
 from config import AnalysisConfig, ReviewRole
+
+logger = logging.getLogger(__name__)
+
+SEVERITY_ORDER = ["심각", "높음", "중간", "낮음"]
 
 
 @dataclass
@@ -69,6 +74,17 @@ class ReviewPipeline:
             "final": StageResult("final", [final_report], final_report),
         }
 
+    def run_single_stage(self, stage_name: str, xml_paths: List[Path], context_text: str, output_dir: Path) -> StageResult:
+        return self._run_stage(stage_name, xml_paths, context_text, output_dir)
+
+    def build_final_report(self, stage_results: List[StageResult], output_path: Path) -> Path:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(
+            self._build_final_report([r.summary_path for r in stage_results]),
+            encoding="utf-8",
+        )
+        return output_path
+
     def _run_stage(self, stage_name: str, xml_paths: List[Path], context_text: str, output_dir: Path) -> StageResult:
         output_dir.mkdir(parents=True, exist_ok=True)
         report_paths: List[Path] = []
@@ -88,9 +104,20 @@ class ReviewPipeline:
     def _run_parallel_reviewers(self, prompt: str) -> str:
         outputs: List[str] = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=len(self.config.reviewers)) as pool:
-            futures = [pool.submit(self.reviewer_runner, self._reviewer_prompt(role, prompt)) for role in self.config.reviewers]
+            futures = {
+                pool.submit(self.reviewer_runner, self._reviewer_prompt(role, prompt)): role
+                for role in self.config.reviewers
+            }
             for future in concurrent.futures.as_completed(futures):
-                outputs.append(future.result())
+                role = futures[future]
+                try:
+                    outputs.append(future.result())
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("reviewer '%s' failed: %s", role.name, exc)
+                    outputs.append(
+                        f"[중간] {role.name} 리뷰어 실행 실패\n"
+                        f"- error: {exc}"
+                    )
 
         deduped = self._dedupe_issues(outputs)
         return "\n\n".join(deduped)
@@ -115,28 +142,46 @@ class ReviewPipeline:
         )
 
     def _run_claude(self, prompt: str) -> str:
+        timeout = self.config.claude_timeout_seconds
         base_command = shlex.split(self.config.claude_command)
         command_with_arg = [*base_command, "-p", prompt]
         try:
-            completed = subprocess.run(command_with_arg, capture_output=True, text=True, check=False)
+            completed = subprocess.run(
+                command_with_arg, capture_output=True, text=True, check=False, timeout=timeout,
+            )
+        except subprocess.TimeoutExpired:
+            return (
+                "[심각] Claude CLI 타임아웃\n"
+                f"- {timeout}초 내에 응답하지 않았습니다"
+            )
         except OSError as exc:
             if exc.errno != errno.E2BIG:
                 return (
                     "[중간] Claude CLI 호출 실패\n"
                     f"- error: {exc}"
                 )
-            command_with_stdin = [*base_command, "-p"]
-            completed = subprocess.run(command_with_stdin, input=prompt, capture_output=True, text=True, check=False)
+            try:
+                completed = subprocess.run(
+                    base_command, input=prompt, capture_output=True, text=True, check=False, timeout=timeout,
+                )
+            except subprocess.TimeoutExpired:
+                return (
+                    "[심각] Claude CLI 타임아웃 (stdin 폴백)\n"
+                    f"- {timeout}초 내에 응답하지 않았습니다"
+                )
         if completed.returncode != 0:
             return (
                 "[중간] Claude CLI 호출 실패\n"
                 f"- error: exit code={completed.returncode}, stderr={completed.stderr.strip()}"
             )
-        return completed.stdout.strip()
+        output = completed.stdout.strip()
+        if not output:
+            logger.warning("Claude CLI returned empty output")
+        return output
 
     def _summarize_reports(self, stage_name: str, report_paths: List[Path]) -> str:
-        severity_counter = {"심각": 0, "높음": 0, "중간": 0, "낮음": 0}
-        collected = []
+        severity_counter = {key: 0 for key in SEVERITY_ORDER}
+        collected: List[str] = []
 
         for path in report_paths:
             text = path.read_text(encoding="utf-8")
@@ -145,7 +190,43 @@ class ReviewPipeline:
                 severity_counter[key] += len(re.findall(rf"\[{key}\]", text))
 
         severity_lines = "\n".join(f"- {key}: {count}" for key, count in severity_counter.items())
-        return f"# {stage_name} summary\n\n{severity_lines}\n\n" + "\n\n".join(collected)
+        body = "\n\n".join(collected)
+
+        budget = self.config.max_summary_chars
+        header = f"# {stage_name} summary\n\n{severity_lines}\n\n"
+
+        if len(header) + len(body) <= budget:
+            return header + body
+
+        available = budget - len(header)
+        truncated = self._truncate_by_severity(collected, available)
+        omitted = len(collected) - len(truncated)
+        truncated_body = "\n\n".join(truncated)
+        if omitted > 0:
+            truncated_body += f"\n\n[... {omitted}개 리포트 생략 (budget 초과)]"
+        return header + truncated_body
+
+    def _truncate_by_severity(self, sections: List[str], budget: int) -> List[str]:
+        scored: List[tuple[int, int, str]] = []
+        for idx, section in enumerate(sections):
+            score = 0
+            for rank, key in enumerate(SEVERITY_ORDER):
+                count = len(re.findall(rf"\[{key}\]", section))
+                score += count * (100 - rank * 20)
+            scored.append((score, idx, section))
+
+        scored.sort(key=lambda t: t[0], reverse=True)
+
+        kept: List[tuple[int, str]] = []
+        total = 0
+        for score, idx, section in scored:
+            if total + len(section) > budget:
+                break
+            kept.append((idx, section))
+            total += len(section)
+
+        kept.sort(key=lambda t: t[0])
+        return [section for _, section in kept]
 
     def _dedupe_issues(self, reviewer_outputs: List[str]) -> List[str]:
         seen: set[str] = set()
@@ -163,20 +244,12 @@ class ReviewPipeline:
             sections.append(summary_path.read_text(encoding="utf-8"))
 
         merged = "\n\n---\n\n".join(sections)
-        total = {
-            "심각": len(re.findall(r"\[심각\]", merged)),
-            "높음": len(re.findall(r"\[높음\]", merged)),
-            "중간": len(re.findall(r"\[중간\]", merged)),
-            "낮음": len(re.findall(r"\[낮음\]", merged)),
-        }
+        total = {key: len(re.findall(rf"\[{key}\]", merged)) for key in SEVERITY_ORDER}
 
         header = (
             "# Deep Analysis Final Report\n\n"
             "## Severity Summary\n"
-            f"- 심각: {total['심각']}\n"
-            f"- 높음: {total['높음']}\n"
-            f"- 중간: {total['중간']}\n"
-            f"- 낮음: {total['낮음']}\n\n"
-            "## Stage Details\n\n"
+            + "\n".join(f"- {key}: {count}" for key, count in total.items())
+            + "\n\n## Stage Details\n\n"
         )
         return header + merged

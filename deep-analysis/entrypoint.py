@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 import argparse
-import time
+import signal
+import threading
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
 from main import run_pipeline
+
+_shutdown = threading.Event()
+
+
+def _handle_signal(signum: int, frame: object) -> None:
+    print(f"signal {signum} received, shutting down after current run...")
+    _shutdown.set()
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,14 +40,20 @@ def main() -> int:
         print(f"one-shot completed: {final_report}")
         return 0
 
-    while True:
+    signal.signal(signal.SIGTERM, _handle_signal)
+    signal.signal(signal.SIGINT, _handle_signal)
+
+    while not _shutdown.is_set():
         try:
             final_report = run_once(args.project_root, args.output_dir, args.config)
             print(f"loop completed: {final_report}")
         except Exception as exc:  # noqa: BLE001
             print(f"loop error: {exc}")
             traceback.print_exc()
-        time.sleep(args.interval_seconds)
+        _shutdown.wait(timeout=args.interval_seconds)
+
+    print("shutdown complete")
+    return 0
 
 
 if __name__ == "__main__":
