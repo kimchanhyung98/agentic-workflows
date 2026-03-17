@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import logging
 from html import escape
 from pathlib import Path
 from typing import Iterable
 
 from .collector import language_for_path
+
+logger = logging.getLogger(__name__)
 
 
 def _structure_block(project_path: Path, files: Iterable[Path]) -> str:
@@ -14,7 +17,11 @@ def _structure_block(project_path: Path, files: Iterable[Path]) -> str:
 
 def _file_entry(project_path: Path, file_path: Path, role: str) -> str:
     relative = file_path.relative_to(project_path).as_posix()
-    content = file_path.read_text(encoding="utf-8", errors="replace")
+    try:
+        content = file_path.read_text(encoding="utf-8", errors="replace")
+    except OSError as e:
+        logger.warning("파일 읽기 실패 (건너뜀): %s — %s", relative, e)
+        content = f"[파일 읽기 실패: {e}]"
     escaped_content = escape(content, quote=True)
     language = language_for_path(file_path)
     return (
@@ -42,9 +49,21 @@ def build_file_bundle(project_path: Path, target_file: Path, context_files: list
     )
 
 
-def build_domain_bundle(project_path: Path, domain: str, domain_files: list[Path]) -> str:
+def build_domain_bundle(
+    project_path: Path,
+    domain: str,
+    domain_files: list[Path],
+    stage1_summary: str = "",
+) -> str:
     structure = _structure_block(project_path, domain_files)
     entries = [_file_entry(project_path, file_path, "target") for file_path in domain_files]
+    previous_reviews = []
+    if stage1_summary:
+        previous_reviews = [
+            "  <previous-reviews>",
+            f"    <stage1-summary>{escape(stage1_summary, quote=True)}</stage1-summary>",
+            "  </previous-reviews>",
+        ]
     return "\n".join(
         [
             f'<review domain="{escape(domain, quote=True)}">',
@@ -52,6 +71,7 @@ def build_domain_bundle(project_path: Path, domain: str, domain_files: list[Path
             structure,
             "  </structure>",
             *entries,
+            *previous_reviews,
             "</review>",
         ]
     )
@@ -69,7 +89,12 @@ def build_project_bundle(
     config_entries = []
     for config_path in config_files:
         relative = config_path.relative_to(project_path).as_posix()
-        escaped = escape(config_path.read_text(encoding="utf-8", errors="replace"), quote=True)
+        try:
+            raw = config_path.read_text(encoding="utf-8", errors="replace")
+        except OSError as e:
+            logger.warning("설정 파일 읽기 실패: %s — %s", relative, e)
+            raw = f"[파일 읽기 실패: {e}]"
+        escaped = escape(raw, quote=True)
         config_entries.append(
             "\n".join(
                 [
