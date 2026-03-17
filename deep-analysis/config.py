@@ -28,6 +28,7 @@ class AnalysisConfig:
     project_name: str = "project"
     claude_command: str = "claude"
     max_context_files: int = 6
+    generated_file_patterns: List[str] = field(default_factory=lambda: ["*.generated.*", "package-lock.json"])
     reviewers: List[ReviewRole] = field(
         default_factory=lambda: [
             ReviewRole("security", "인증/인가, 입력 검증, 시크릿 노출, 취약점"),
@@ -50,6 +51,7 @@ def load_config(config_path: Path | None, project_root: Path, output_dir: Path) 
     config.project_name = str(data.get("project_name", config.project_name))
     config.claude_command = str(data.get("claude_command", config.claude_command))
     config.max_context_files = int(data.get("max_context_files", config.max_context_files))
+    config.generated_file_patterns = list(data.get("generated_file_patterns", config.generated_file_patterns))
 
     reviewers = data.get("reviewers")
     if reviewers:

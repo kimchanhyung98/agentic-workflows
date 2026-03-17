@@ -130,8 +130,7 @@ class ReviewPipeline:
         if completed.returncode != 0:
             return (
                 "[중간] Claude CLI 호출 실패\n"
-                f"- exit code: {completed.returncode}\n"
-                f"- stderr: {completed.stderr.strip()}"
+                f"- error: exit code={completed.returncode}, stderr={completed.stderr.strip()}"
             )
         return completed.stdout.strip()
 

@@ -61,9 +61,7 @@ class XmlBundler:
                 continue
             if path.suffix.lower() in BINARY_SUFFIXES:
                 continue
-            if path.name.endswith(".generated.js") or path.name.endswith(".generated.ts"):
-                continue
-            if path.name == "package-lock.json":
+            if any(fnmatch.fnmatch(path.name, pattern) for pattern in self.config.generated_file_patterns):
                 continue
 
             content = self._safe_read_text(path)

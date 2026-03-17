@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import time
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -37,6 +38,7 @@ def main() -> int:
             print(f"loop completed: {final_report}")
         except Exception as exc:  # noqa: BLE001
             print(f"loop error: {exc}")
+            traceback.print_exc()
         time.sleep(args.interval_seconds)
 
 
