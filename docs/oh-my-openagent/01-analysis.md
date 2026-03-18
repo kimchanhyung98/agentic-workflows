@@ -401,11 +401,7 @@ LLM 도구 호출 응답
 - [README (Korean)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/README.ko.md)
 - [Overview Guide](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/docs/guide/overview.md)
 - [Orchestration Guide](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/docs/guide/orchestration.md)
-- [Entry Point (
-  `src/index.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/index.ts)
-- [Chat Message Handler (
-  `src/plugin/chat-message.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/plugin/chat-message.ts)
-- [Event Handler (
-  `src/plugin/event.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/plugin/event.ts)
-- [Tool Registry (
-  `src/plugin/tool-registry.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/plugin/tool-registry.ts)
+- [Entry Point (`src/index.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/index.ts)
+- [Chat Message Handler (`src/plugin/chat-message.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/plugin/chat-message.ts)
+- [Event Handler (`src/plugin/event.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/plugin/event.ts)
+- [Tool Registry (`src/plugin/tool-registry.ts`)](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/d80833896cc61fcb59f8955ddc3533982a6bb830/src/plugin/tool-registry.ts)
