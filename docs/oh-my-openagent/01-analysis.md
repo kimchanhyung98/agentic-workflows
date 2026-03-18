@@ -62,7 +62,7 @@ OpenCode CLI가 시작되면 `OhMyOpenCodePlugin`이 초기화됩니다. 이 과
 
 ### 3.1 1단계: 사전 개입 (chat.message)
 
-`chat.message` 핸들러에서 아래 순서로 처리됩니다.
+`chat.message` 핸들러는 내부적으로 10단계 파이프라인으로 동작하지만, 여기서는 그 중 핵심 8단계만을 아래 순서로 정리합니다.
 
 1. **세션 에이전트 설정** — 현재 세션의 에이전트 컨텍스트 확정
 2. **First-Message Variant Gate** — 첫 메시지 여부에 따른 분기 처리
