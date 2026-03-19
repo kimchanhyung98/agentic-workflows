@@ -30,9 +30,9 @@ flowchart LR
     Cloudbot --> Sandbox["사내 호스팅 · 접근 제어"]
     Sandbox --> MCP["GitHub/Linear MCP<br/>+ 추가 도구 연동 가능성"]
     MCP --> Mode{"재구성된 상호작용 패턴"}
-    Mode -->|"PR 작성"| PR(["Pull Request"])
-    Mode -->|"계획 작성"| Plan(["계획 메모 / 티켓 업데이트"])
-    Mode -->|"이슈 설명"| Debug(["분석 결과 회신"])
+    Mode -->|" PR 작성 "| PR(["Pull Request"])
+    Mode -->|" 계획 작성 "| Plan(["계획 메모 / 티켓 업데이트"])
+    Mode -->|" 이슈 설명 "| Debug(["분석 결과 회신"])
 ```
 
 ### 공식적으로 확인된 기반

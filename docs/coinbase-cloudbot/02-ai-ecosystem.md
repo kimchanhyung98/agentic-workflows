@@ -2,17 +2,7 @@
 
 Cloudbot과 직접 연결되거나, Coinbase가 공개적으로 설명한 인접 AI 에이전트 사례를 정리한다.
 
-## 출처 분류 기준
-
-| 라벨        | 의미                               |
-|-----------|----------------------------------|
-| **공식**    | Coinbase 공식 블로그 또는 공식 고객 사례      |
-| **공개 발언** | 인터뷰, LinkedIn/X 공개 포스트, 팟캐스트 쇼노트 |
-| **2차 정리** | 외부 분석, 미디어 요약                    |
-
----
-
-## 1. 피드백-to-PR 파이프라인 `[공개 발언]`
+## 1. 피드백-to-PR 파이프라인
 
 사용자 피드백을 수집하고 자동으로 PR까지 생성하는 end-to-end 파이프라인이다.
 ChatPRD 인터뷰(Chintan Turakhia)에서 공개되었다.
@@ -42,11 +32,10 @@ flowchart LR
 
 ---
 
-## 2. QA AI Agent (qa-ai-agent) `[공식 + 2차 정리]`
+## 2. QA AI Agent (qa-ai-agent)
 
 제품 품질 테스트를 위한 AI 에이전트. Coinbase 공식 블로그에서 상세히 공개했다.
-
-> 목표(2차 정리 인용): "10x their testing effort at 1/10 the cost" (ZenML)
+이 섹션의 아키텍처와 성과 수치는 Coinbase 공식 블로그 기준으로 정리했다.
 
 ### 아키텍처
 
@@ -56,7 +45,7 @@ flowchart TD
     AGENT --> BU["browser-use<br/>(LLM 브라우저 에이전트)"]
     BU --> BS["BrowserStack<br/>(크로스 브라우저)"]
     BS --> RESULT["테스트 결과<br/>(스크린샷, 로그)"]
-    RESULT --> JUDGE["LLM as Judge<br/>(2차 LLM 평가)"]
+    RESULT --> JUDGE["LLM as Judge<br/>(별도 LLM 평가)"]
     JUDGE --> REPORT["이슈 리포트<br/>(Slack/JIRA)"]
 ```
 
@@ -103,7 +92,7 @@ A/B 테스트 방법론으로 4가지 핵심 지표 측정:
 
 ---
 
-## 3. NodeSmith `[공식]`
+## 3. NodeSmith
 
 블록체인 노드 업그레이드를 자동화하는 AI 시스템.
 
@@ -170,6 +159,5 @@ LangChain이 공개한 **Open SWE** 프레임워크는 Coinbase, Stripe, Ramp가
 - [Coinbase: NodeSmith — AI-Driven Automation for Blockchain Node Upgrades](https://www.coinbase.com/blog/NodeSmith-AI-Driven-Automation-for-Blockchain-Node-Upgrades)
 - [Claude Customer Story: Coinbase](https://claude.com/customers/coinbase)
 - [Bank Automation News: Coinbase Automates 64% of Customer Interactions](https://bankautomationnews.com/allposts/crypto/coinbase-automates-64-of-all-customer-interactions-with-gen-ai/)
-- [ZenML: Coinbase AI Agents for Automated Product Quality Testing](https://www.zenml.io/llmops-database/ai-agents-for-automated-product-quality-testing-and-bug-detection)
 - [ChatPRD: Build an Automated User Feedback to Pull Request Pipeline](https://www.chatprd.ai/how-i-ai/workflows/build-an-automated-user-feedback-to-pull-request-pipeline)
 - [LangChain: Open SWE — Open-Source Framework for Internal Coding Agents](https://blog.langchain.com/open-swe-an-open-source-framework-for-internal-coding-agents/)
