@@ -225,12 +225,12 @@ flowchart TD
     A["POST /webhooks/github"] --> B["서명 검증<br/>(HMAC-SHA256)"]
     B --> C{"이벤트 유형?"}
     C -->|"지원 외"| IGN["무시"]
-    C -->|"issues"| ISS
+    C -->|"issues"| ISS["Issue 처리"]
     C -->|"issue_comment"| CMT{"PR의 코멘트?"}
-    C -->|"pull_request_review<br/>pull_request_review_comment"| PR
+    C -->|"pull_request_review<br/>pull_request_review_comment"| PR["PR 코멘트 처리"]
 
-    CMT -->|"Issue"| ISS["Issue 처리"]
-    CMT -->|"PR"| PR["PR 코멘트 처리"]
+    CMT -->|"아니오"| ISS
+    CMT -->|"예"| PR
 
     subgraph IssueFlow["GitHub Issue 흐름"]
         ISS --> ISS_TAG{"@open-swe 태그?"}
