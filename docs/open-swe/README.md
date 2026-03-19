@@ -2,14 +2,15 @@
 
 `langchain-ai/open-swe` — LangGraph 기반의 자율 소프트웨어 엔지니어링 에이전트 프레임워크를 분석한 문서입니다.
 
-Slack/Linear/GitHub에서 `@openswe`로 호출하면, 격리된 샌드박스에서 코드를 분석·수정하고 자동으로 Draft PR을 생성합니다. Deep Agents의 범용 코딩 루프를 재사용하면서, 조직별 외부 시스템 연동과 결정적 안전장치를 추가한 구조입니다.
+Slack/Linear/GitHub에서 `@openswe`로 호출하면, 격리된 샌드박스에서 코드를 분석·수정하고 자동으로 Draft PR을 생성합니다. Deep Agents의 범용 코딩 루프를 재사용하면서, 조직별
+외부 시스템 연동과 결정적 안전장치를 추가한 구조입니다.
 
 ## 문서 구성
 
-| 문서 | 내용 |
-|---|---|
-| [아키텍처 다이어그램](./00-diagram.md) | 프로젝트 구조, 실행 흐름, 데이터 흐름, 트리거별 분기, 샌드박스 생명주기, 미들웨어 파이프라인, 인증 흐름 |
-| [아키텍처/워크플로우 분석](./01-analysis.md) | 5계층 아키텍처, source별 워크플로우, Deep Agents 결합 방식, 보안 설계, 환경변수 |
+| 문서                                | 내용                                                            |
+|-----------------------------------|---------------------------------------------------------------|
+| [아키텍처 다이어그램](./00-diagram.md)     | 프로젝트 구조, 실행 흐름, 데이터 흐름, 트리거별 분기, 샌드박스 생명주기, 미들웨어 파이프라인, 인증 흐름 |
+| [아키텍처/워크플로우 분석](./01-analysis.md) | 5계층 아키텍처, source별 워크플로우, Deep Agents 결합 방식, 보안 설계, 환경변수       |
 
 ## 아키텍처 개요
 
@@ -36,14 +37,14 @@ External Systems — GitHub API, Slack API, Linear API, LangSmith, sandbox provi
 
 ### 기술 스택
 
-| 구분 | 기술 |
-|------|------|
-| 에이전트 프레임워크 | LangGraph, Deep Agents (`create_deep_agent`) |
-| LLM | Anthropic Claude Opus 4.6 (기본) |
-| 웹 서버 | FastAPI |
-| 샌드박스 | LangSmith (기본), Daytona, Modal, Runloop, Local |
-| 인증 | GitHub App (JWT), GitHub OAuth (LangSmith 경유), Fernet 암호화 |
-| 외부 연동 | GitHub REST/GraphQL API, Linear GraphQL API, Slack API |
+| 구분         | 기술                                                        |
+|------------|-----------------------------------------------------------|
+| 에이전트 프레임워크 | LangGraph, Deep Agents (`create_deep_agent`)              |
+| LLM        | Anthropic Claude Opus 4.6 (기본)                            |
+| 웹 서버       | FastAPI                                                   |
+| 샌드박스       | LangSmith (기본), Daytona, Modal, Runloop, Local            |
+| 인증         | GitHub App (JWT), GitHub OAuth (LangSmith 경유), Fernet 암호화 |
+| 외부 연동      | GitHub REST/GraphQL API, Linear GraphQL API, Slack API    |
 
 ## 참고 자료
 
@@ -53,3 +54,4 @@ External Systems — GitHub API, Slack API, Linear API, LangSmith, sandbox provi
 - [Open SWE Installation Guide](https://raw.githubusercontent.com/langchain-ai/open-swe/main/INSTALLATION.md)
 - [Deep Agents 저장소](https://github.com/langchain-ai/deepagents)
 - [Deep Agents 문서](https://docs.langchain.com/oss/python/deepagents/overview)
+- [open-swe 소개](https://news.hada.io/topic?id=27604)

@@ -24,7 +24,7 @@ flowchart LR
     subgraph Runtime["Agent Runtime 계층"]
         Server["agent/server.py<br/>sandbox·인증·프롬프트 준비<br/>create_deep_agent 조립"]
         Prompt["agent/prompt.py"]
-        MW["agent/middleware/*<br/>큐 주입, 오류 처리<br/>빈 응답 방지, PR 안전망"]
+        MW["agent/middleware/*<br/>큐 주입, 오류 처리<br/>빈 응답 방지, PR 후처리"]
         Tools["agent/tools/*<br/>PR 생성, 댓글, HTTP"]
     end
 
@@ -125,7 +125,7 @@ sequenceDiagram
         Agent->>Reply: 요약/답변 회신
     end
 
-    Note over Platform: open_pr_if_needed<br/>(안전망: 미생성 시 자동 PR)
+    Note over Platform: open_pr_if_needed<br/>(관련 payload가 있을 때만<br/>PR 후처리 시도)
 ```
 
 ## 3. 데이터 흐름 및 상태 변화
@@ -315,7 +315,7 @@ flowchart TB
 
     subgraph AfterAgent["@after_agent"]
         AA["open_pr_if_needed"]
-        AA_DESC["commit_and_open_pr 결과 없고<br/>변경사항 있으면 자동 커밋/푸시/PR"]
+        AA_DESC["commit_and_open_pr 관련 payload를 찾은 경우에만<br/>PR 후처리 시도<br/>`success` 필드 있거나 도구 호출 기록 없으면 skip"]
     end
 
     BM --> LLM
@@ -330,32 +330,32 @@ flowchart TB
 ```mermaid
 flowchart TD
     START["resolve_github_token(config, thread_id)"]
-    START --> META{"thread metadata에<br/>github_token_encrypted 존재?"}
+    START --> BOT{"bot_token_only_mode?"}
 
+    BOT -->|예| APP["GitHub App 설치 토큰<br/>(JWT → Installation Token)"]
+    APP --> PERSIST["persist_encrypted_github_token()<br/>(thread metadata 저장)"]
+    PERSIST --> DONE["GitHub 토큰 반환"]
+
+    BOT -->|아니오| SRC{"트리거 소스?"}
+
+    SRC -->|GitHub| META{"thread metadata에<br/>github_token_encrypted 존재?"}
     META -->|예| DECRYPT["decrypt_token()<br/>(Fernet 복호화)"]
-    DECRYPT --> DONE["GitHub 토큰 반환"]
+    DECRYPT --> DONE
+    META -->|아니오| MAP["GITHUB_USER_EMAIL_MAP<br/>(로그인 → 이메일 매핑)"]
+    MAP -->|매핑 있음| EMAIL_G["매핑된 이메일"]
+    MAP -->|매핑 없음| FAIL_G["로그만 기록<br/>(GitHub 댓글 없음)"]
 
-    META -->|아니오| SRC{"트리거 소스?"}
+    SRC -->|Slack/Linear| EMAIL_U["configurable.user_email<br/>(항상 이메일 기반 auth)"]
 
-    SRC -->|Linear| EMAIL_L["코멘트 작성자 이메일"]
-    SRC -->|Slack| EMAIL_S["Slack 프로필 이메일"]
-    SRC -->|GitHub| GH_CHECK{"bot_token_only_mode?"}
-
-    EMAIL_L --> LS["LangSmith 사용자 ID 조회"]
-    EMAIL_S --> LS
-
+    EMAIL_G --> LS["LangSmith 사용자 ID 조회"]
+    EMAIL_U --> LS
     LS --> OAUTH["GitHub OAuth 토큰 획득"]
     OAUTH --> ENC["encrypt_token()"]
+    ENC --> PERSIST
 
-    GH_CHECK -->|예| APP["GitHub App 설치 토큰<br/>(JWT → Installation Token)"]
-    GH_CHECK -->|아니오| MAP["GITHUB_USER_EMAIL_MAP<br/>(로그인 → 이메일 매핑)"]
-    MAP --> LS
-
-    APP --> ENC
-    ENC --> PERSIST["persist_encrypted_github_token()<br/>(thread metadata 저장)"]
-    PERSIST --> DONE
-
-    OAUTH -->|실패| FAIL["leave_failure_comment()<br/>(Slack/Linear/GitHub)"]
+    OAUTH -->|실패/auth_url| FAIL_SRC{"source?"}
+    FAIL_SRC -->|Slack/Linear| FAIL_SL["leave_failure_comment()<br/>(채널/이슈에 실패 알림)"]
+    FAIL_SRC -->|GitHub| FAIL_G
 ```
 
 ## 8. 계층 구조 요약
