@@ -205,7 +205,8 @@ async function git(args: string[], cwd: string): Promise<Result<string, string>>
 }
 ```
 
-git 명령은 실패가 빈번하므로(브랜치 미존재, 권한 부족 등) 예외보다 Result가 적합합니다. 호출부에서 `if (!result.ok)` 패턴으로 분기하여 명시적 에러 핸들링을 강제합니다. Rust의 [`Result<T, E>`](https://doc.rust-lang.org/std/result/)에서 영감을 받은 패턴입니다.
+git 명령은 실패가 빈번하므로(브랜치 미존재, 권한 부족 등) 예외보다 Result가 적합합니다. 호출부에서 `if (!result.ok)` 패턴으로 분기하여 명시적 에러 핸들링을 강제합니다.
+Rust의 [`Result<T, E>`](https://doc.rust-lang.org/std/result/)에서 영감을 받은 패턴입니다.
 
 ---
 
