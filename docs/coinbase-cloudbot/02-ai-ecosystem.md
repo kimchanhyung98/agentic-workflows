@@ -42,11 +42,11 @@ flowchart LR
 
 ---
 
-## 2. QA AI Agent (qa-ai-agent) `[공식]`
+## 2. QA AI Agent (qa-ai-agent) `[공식 + 2차 정리]`
 
 제품 품질 테스트를 위한 AI 에이전트. Coinbase 공식 블로그에서 상세히 공개했다.
 
-> 목표: "10x their testing effort at 1/10 the cost" (ZenML 정리에서 인용)
+> 목표(2차 정리 인용): "10x their testing effort at 1/10 the cost" (ZenML)
 
 ### 아키텍처
 
