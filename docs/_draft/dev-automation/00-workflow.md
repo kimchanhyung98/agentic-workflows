@@ -1,21 +1,29 @@
-# 로컬 개발 자동화 에이전트 아키텍처 다이어그램
+# 로컬 개발 자동화 에이전트 워크플로우
 
-이 문서는 초안 `00-diagram.md`와 보강본 `00-diagram-claude.md`, `00-diagram-codex.md`를 종합해 정리한 최종 구조입니다.
-핵심 참조축은 `Stripe Minions`의 하네스 우선 설계, `Open SWE`의 run/state/sandbox 구조, `OpenCode Worktree`의 실행 경계, `Oh My OpenAgent`의 역할
-분리와 복구 체계, `Agentic Workflow`와 `Design Pattern`의 패턴 분류입니다.
+Stripe Minions의 하네스 우선 설계, Open SWE의 run/state/sandbox 구조, OpenCode Worktree의 실행 경계, Oh My OpenAgent의 역할 분리와 복구 체계,
+Agentic Workflow와 Design Pattern의 패턴 분류를 종합한 로컬 개발 자동화 아키텍처입니다.
 
-핵심 원칙은 단순합니다.
-**AI CLI를 역할별 런타임으로 분해하고, 그 주변에 상태, 권한, 게이트, 재시도, 승인, 발행을 구조로 강제해야 운영 가능한 개발 자동화 시스템이 됩니다.**
+AI CLI를 역할별 런타임으로 분해하고, 그 주변에 상태, 권한, 게이트, 재시도, 승인, 발행을 구조로 강제해야 운영 가능한 개발 자동화 시스템이 됩니다.
+
+다만 모든 작업에 동일한 무게의 워크플로우를 강제하면 로컬 자동화의 장점이 사라집니다.
+이 문서의 권장 기본값은 `위험도 기반 라우팅 + Plan Doc으로 범위 고정 + single-writer execution + review depth 차등화`입니다.
+
+```text
+AI CLI (기존 도구 활용) + 멀티 AI 리뷰 + 하네스 (hook · 게이트 · 기획 문서) + 사람 리뷰 = 로컬 개발 자동화
+```
+
+> Minions: "Not exotic — just great engineering"
+> 로컬 에이전트: 에이전트를 만드는 것이 아니라, **에이전트가 동작하는 환경을 설계**한다.
 
 ---
 
 ## 1. 전체 시스템 구조
 
 이 시스템은 단일 AI가 처음부터 끝까지 직접 처리하는 구조가 아닙니다.
-`입력 수집 → 실행 문맥 생성 → 컨텍스트/기획 → 승인 → 격리 실행 → 검증/복구 → 산출물 발행`의 7개 레이어를 따라, 여러 AI CLI 세션이 서로 다른 권한으로 협력합니다.
+`입력 수집 → 실행 문맥 생성/위험도 분류 → 컨텍스트/기획 → 승인/정책 → 격리 실행 → 검증/복구 → 산출물 발행`의 7개 레이어를 따라, 여러 AI CLI 세션이 서로 다른 권한으로 협력합니다.
 
 - `🧠` = LLM 판단 단계
-- `🔒` = 결정론적 게이트
+- `🔒` = 결정론적 게이트 (우회 불가)
 - `👤` = 사람 승인 또는 개입
 
 ```mermaid
@@ -28,10 +36,11 @@ flowchart TB
         CH_CLI & CH_WEB & CH_BOT --> INTAKE
     end
 
-    subgraph L2["<b>L2: Run Control</b><br/>책임: run 생성 · 상태 저장 · 큐잉 · 세션 조율<br/>권한: 상태 저장소 쓰기 · 실행 plane 직접 쓰기 금지"]
+    subgraph L2["<b>L2: Run Control</b><br/>책임: run 생성 · 상태 저장 · 큐잉 · 위험도 분류 · 세션 조율<br/>권한: 상태 저장소 쓰기 · 실행 plane 직접 쓰기 금지"]
         RUN["Run Manager<br/>run_id · session_id · 상태 추적"]
         QUEUE["Queue / Pending Messages<br/>(busy 시 적재)"]
         STORE["State Store<br/>status · retries · workspace_ref"]
+        ROUTER["🔀 Risk Router<br/>change class · review depth<br/>auto eligibility"]
     end
 
     subgraph L3["<b>L3: Context & Planning</b><br/>책임: 탐색 · 조사 · 기획 문서 생성 · 기획 검증<br/>권한: repo 읽기 · 문서 생성 · <b>코드 변경 금지</b>"]
@@ -49,10 +58,9 @@ flowchart TB
         TOKEN["✅ Execution Grant<br/>scope: workspace 내부만"]
     end
 
-    subgraph L5["<b>L5: Execution Plane</b><br/>책임: 격리 workspace · 코드 수정 · 도구 실행<br/>권한: 승인된 workspace 내부만 쓰기"]
+    subgraph L5["<b>L5: Execution Plane</b><br/>책임: 격리 workspace · single-writer 실행 · 도구 실행<br/>권한: 승인된 workspace 내부만 쓰기"]
         WS["🖥️ Workspace Manager<br/>Worktree / VM / Docker"]
-        EXEC_A["🧠 Executor AI CLI A"]
-        EXEC_B["🧠 Executor AI CLI B"]
+        EXEC["🧠 Executor AI CLI<br/>기본: single writer"]
         SECRETS["🔐 Scoped Secrets / Env"]
     end
 
@@ -76,24 +84,27 @@ flowchart TB
     INTAKE --> RUN
     RUN --> QUEUE
     RUN --> STORE
-    RUN --> DISCOVER
+    RUN --> ROUTER
+    ROUTER --> DISCOVER
     DISCOVER --> RESEARCH
     DISCOVER --> AI_CTX
     DISCOVER & RESEARCH & AI_CTX --> PLAN_CLI --> PLAN_DOC --> PLAN_REVIEW
     PLAN_REVIEW -->|" ❌ 부족 "| DISCOVER
-    PLAN_REVIEW -->|" ✅ 충분 "| HUMAN
+    PLAN_REVIEW -->|" ✅ 충분 "| POLICY
+    POLICY -->|" 👤 승인 필요 "| HUMAN
     HUMAN -->|" ❌ 수정 요청 "| PLAN_DOC
-    HUMAN -->|" ✅ 승인 "| POLICY --> TOKEN
+    HUMAN -->|" ✅ 승인 "| TOKEN
+    POLICY -->|" 🤖 auto 허용 "| TOKEN
     TOKEN --> WS
     SECRETS --> WS
-    WS --> EXEC_A & EXEC_B
-    EXEC_A & EXEC_B --> GATE_DET --> GATE_INT
+    WS --> EXEC
+    EXEC --> GATE_DET --> GATE_INT
     GATE_DET -->|" ❌ fail "| FIX
     GATE_INT -->|" ❌ fail "| FIX
     GATE_INT -->|" ✅ pass "| REV_A & REV_B & REV_C
     REV_A & REV_B & REV_C --> JUDGE
     JUDGE -->|" ✅ pass "| OUT_PR
-    JUDGE -->|" ❌ fix "| FIX -->|" retry ≤ N "| EXEC_A
+    JUDGE -->|" ❌ fix "| FIX -->|" retry ≤ N "| EXEC
     JUDGE -->|" ❌ escalate "| OUT_FAIL
     FIX -->|" ❌ 한도 초과 "| OUT_FAIL
     OUT_PR & OUT_FAIL --> TRACE
@@ -116,18 +127,31 @@ flowchart TB
 
 ## 2. 레이어별 운영 계약
 
-아래 표가 이 아키텍처의 운영 계약입니다.
 각 레이어는 무엇을 받아서 무엇을 내보내는지, 어디까지 권한을 가지는지, 실패하면 어디로 되돌아가는지가 명시되어야 합니다.
 
-| 레이어                            | 책임                                | 주요 입력                                       | 주요 출력                                              | 허용 권한                                       | 실패 시 전이                                                         |
-|--------------------------------|-----------------------------------|---------------------------------------------|----------------------------------------------------|---------------------------------------------|-----------------------------------------------------------------|
-| **L1 Intake**                  | 요청 정규화, source별 필터링, 실행 진입점 통합    | CLI/Web/메신저 이벤트                             | `task request`                                     | 읽기 전용, 저장소 쓰기 금지                            | 잘못된 입력은 즉시 거부 또는 보완 요청                                          |
-| **L2 Run Control**             | run 생성, 상태 저장, 큐잉, 동시 실행 조율       | `task request`, 현재 run 상태                   | `run context`, `session state`, queue item         | 상태 저장소 쓰기, 실행 plane 직접 쓰기 금지                | busy면 queue 적재, 상태 손상 시 infra recovery                          |
-| **L3 Context & Planning**      | 코드/문서/Git 탐색, 계획 생성, 계획 리뷰 조립     | `run context`, repo 읽기, docs, 구조화 컨텍스트      | `context packet`, `plan doc`, `plan review pack`   | repo 읽기, 문서 생성 가능, 코드 변경 금지                 | 컨텍스트 부족 시 재탐색, 기획 리뷰 실패 시 준비 단계 반복                              |
-| **L4 Approval & Policy**       | 사람 승인, 실행 모드 결정, 권한 토큰 발급         | `plan doc`, review 결과, 정책 규칙                | `execution grant`, 승인/반려 결정                        | 승인 전 publish/write 금지                       | 반려 시 L3로 회귀, 정책 위반 시 block                                      |
-| **L5 Execution Plane**         | 격리 workspace 준비, AI CLI 실행, 코드 수정 | `execution grant`, `plan doc`, workspace 설정 | `diff`, `workspace logs`, intermediate patch       | 승인된 workspace 내부 쓰기만 허용                     | workspace 생성 실패 시 reprovision, CLI crash 시 runtime retry        |
-| **L6 Verification & Recovery** | 결정론적 검증, 병렬 리뷰, 자동 수정 루프 제어       | `diff`, 테스트 로그, review artifacts            | `gate report`, `review docs`, pass/fix/escalate 판정 | 검증 도구 실행, review artifact 생성, publish 직접 금지 | gate fail은 self-fix, review fail은 fix loop, retry 초과 시 escalate |
-| **L7 Output & Trace**          | commit/PR 생성, 실패 리포트 작성, 알림/추적 보존 | 최종 판정, gate 통과 결과, review 결과                | `commit`, `PR`, `failure report`, trace artifacts  | publish 권한은 이 레이어만 보유                       | publish 실패 시 재시도 또는 사람에게 전달                                     |
+| 레이어                            | 책임                                          | 주요 입력                                       | 주요 출력                                                                       | 허용 권한                                       | 실패 시 전이                                                         | 참조 시스템                                                          |
+|--------------------------------|---------------------------------------------|---------------------------------------------|-----------------------------------------------------------------------------|---------------------------------------------|-----------------------------------------------------------------|-----------------------------------------------------------------|
+| **L1 Intake**                  | 요청 정규화, source별 필터링, 실행 진입점 통합              | CLI/Web/메신저 이벤트                             | `task request`                                                              | 읽기 전용, 저장소 쓰기 금지                            | 잘못된 입력은 즉시 거부 또는 보완 요청                                          | Open SWE (webhook 서명), Minions (4 Entry)                        |
+| **L2 Run Control**             | run 생성, 상태 저장, 큐잉, 위험도 분류, 동시 실행 조율         | `task request`, 현재 run 상태                   | `run context`, `change class`, `review policy`, `session state`, queue item | 상태 저장소 쓰기, 실행 plane 직접 쓰기 금지                | busy면 queue 적재, 상태 손상 시 infra recovery                          | Open SWE (Thread 상태 축적), OMO (Atlas 7-gate)                     |
+| **L3 Context & Planning**      | 코드/문서/Git 탐색, 계획 생성, 계획 리뷰 조립               | `run context`, repo 읽기, docs, 구조화 컨텍스트      | `context packet`, `plan doc`, `plan review pack`                            | repo 읽기, 문서 생성 가능, 코드 변경 금지                 | 컨텍스트 부족 시 재탐색, 기획 리뷰 실패 시 준비 단계 반복                              | Minions (Context Hydration), LangChain (Progressive Disclosure) |
+| **L4 Approval & Policy**       | 사람 승인, 실행 모드 결정, 권한 토큰 발급                   | `plan doc`, review 결과, 정책 규칙                | `execution grant`, 승인/반려 결정                                                 | 승인 전 publish/write 금지                       | 반려 시 L3로 회귀, 정책 위반 시 block                                      | Cloudbot (Agent Council), design-pattern (Human-in-the-Loop)    |
+| **L5 Execution Plane**         | 격리 workspace 준비, 기본 single-writer 실행, 코드 수정 | `execution grant`, `plan doc`, workspace 설정 | `diff`, `workspace logs`, intermediate patch                                | 승인된 workspace 내부 쓰기만 허용                     | workspace 생성 실패 시 reprovision, CLI crash 시 runtime retry        | Minions (Devbox), OpenCode (Worktree 격리)                        |
+| **L6 Verification & Recovery** | 결정론적 검증, 등급별 리뷰, 자동 수정 루프 제어                | `diff`, 테스트 로그, review artifacts            | `gate report`, `review docs`, pass/fix/escalate 판정                          | 검증 도구 실행, review artifact 생성, publish 직접 금지 | gate fail은 self-fix, review fail은 fix loop, retry 초과 시 escalate | Minions (3-Tier), OMO (모델 폴백 + Circuit Breaker)                 |
+| **L7 Output & Trace**          | commit/PR 생성, 실패 리포트 작성, 알림/추적 보존           | 최종 판정, gate 통과 결과, review 결과                | `commit`, `PR`, `failure report`, trace artifacts                           | publish 권한은 이 레이어만 보유                       | publish 실패 시 재시도 또는 사람에게 전달                                     | Open SWE (commit_and_open_pr), Minions (PR 템플릿)                 |
+
+### 작업 등급별 기본 라우팅
+
+7개 레이어는 공통 골격이고, 실제 운영에서는 `change class`에 따라 깊이를 줄이거나 늘려야 합니다.
+모든 run에 고정된 3중 리뷰와 full isolation을 강제하면 로컬 자동화의 처리량이 급격히 떨어집니다.
+
+| 등급            | 전형적인 예시                                            | Plan Doc 깊이 | review depth               | 권장 실행 경계             | auto 허용 |
+|---------------|----------------------------------------------------|-------------|----------------------------|----------------------|---------|
+| **small**     | 문서 수정, 국소 테스트 보강, 범위가 명확한 단일 모듈 수정                 | concise     | gate + Reviewer A 또는 체크리스트 | local worktree 우선    | 조건부 가능  |
+| **standard**  | 일반 버그 수정, 기능 추가, 다중 파일 변경                          | standard    | gate + Reviewer A/B        | worktree 또는 isolated | 조건부 가능  |
+| **high-risk** | auth, payment, migration, secret, infra, delete 계열 | extended    | gate + Reviewer A/B/C + 사람 | isolated only        | 금지      |
+
+- 등급 판단 기준은 수정 파일 수보다 `민감한 경로`, `외부 side effect`, `롤백 난이도`, `미해결 판단의 수`를 우선합니다.
+- 등급 자체는 Plan Doc의 필드를 늘리기보다 `run context`와 `execution grant` 메타데이터로 관리하는 편이 낫습니다.
 
 ---
 
@@ -135,13 +159,14 @@ flowchart TB
 
 AI CLI는 단일 주체가 아니라 역할별 런타임입니다.
 같은 종류의 CLI를 써도 세션과 권한을 분리해야 하며, `메인 오케스트레이터`, `실행자`, `리뷰어`, `판정자`가 같은 디렉토리와 같은 권한을 공유하면 구조가 무너집니다.
+특히 실행자는 기본 single-writer로 두고, 병렬화는 파일 소유권이 겹치지 않고 별도 workspace를 발급할 수 있을 때만 허용해야 합니다.
 
 ```mermaid
 graph LR
     TASK["작업 요청"]
     MAIN["🧠 Main AI CLI<br/>Claude Code / Codex / Gemini CLI<br/>역할: 오케스트레이션 · 계획 · 상태 판단"]
     RESEARCH["🔍 Research AI CLI<br/>역할: 외부 문서 조사 · 읽기 전용"]
-    EXEC["⚡ Executor AI CLI Pool<br/>역할: 코드 수정 · 테스트 · 수정 루프"]
+    EXEC["⚡ Executor AI CLI<br/>기본 1개 · single writer"]
     REVIEW["🤖 Reviewer AI CLI Pool<br/>역할: plan/diff/log 검토 · 병렬 리뷰"]
     JUDGE["⚖️ Judge Controller<br/>역할: 결과 종합 · fix/escalate 판정"]
     STATE["🧾 Run State / Artifact Store"]
@@ -164,13 +189,13 @@ graph LR
 
 ### 역할별 권한 계약
 
-| 역할                   | 권한                                     | 금지 사항                          |
-|----------------------|----------------------------------------|--------------------------------|
-| **Main AI CLI**      | 요청 해석, 기획 문서 작성, 워크플로우 분기 결정           | 승인 전 코드 수정, 직접 publish         |
-| **Research AI CLI**  | 문서/레퍼런스 탐색, 읽기 전용 분석                   | 코드 수정, commit, PR              |
-| **Executor AI CLI**  | 승인된 workspace 안에서 코드 수정, 테스트 실행        | main repo 직접 쓰기, 승인 없는 publish |
-| **Reviewer AI CLI**  | plan doc, diff, gate logs 검토, 리뷰 문서 생성 | 코드 수정, commit, PR              |
-| **Judge Controller** | pass/fix/escalate 판정, 재시도 카운트 관리       | 코드 직접 수정                       |
+| 역할                   | 권한                                                 | 금지 사항                          |
+|----------------------|----------------------------------------------------|--------------------------------|
+| **Main AI CLI**      | 요청 해석, 기획 문서 작성, change class에 따른 워크플로우 분기 결정      | 승인 전 코드 수정, 직접 publish         |
+| **Research AI CLI**  | 문서/레퍼런스 탐색, 읽기 전용 분석                               | 코드 수정, commit, PR              |
+| **Executor AI CLI**  | 승인된 workspace 안에서 코드 수정, 테스트 실행. 기본은 single-writer | main repo 직접 쓰기, 승인 없는 publish |
+| **Reviewer AI CLI**  | plan doc, diff, gate logs 검토, 리뷰 문서 생성             | 코드 수정, commit, PR              |
+| **Judge Controller** | pass/fix/escalate 판정, 재시도 카운트 관리                   | 코드 직접 수정                       |
 
 ---
 
@@ -178,7 +203,7 @@ graph LR
 
 정적 구조와 별개로, 실제 런타임에서는 아래 순서로 상호작용이 진행됩니다.
 핵심은 `Main AI CLI`가 전체 흐름을 조율하되, `plan review`, `human approval`, `workspace execution`, `deterministic gate`, `publish`가
-명확히 분리된다는 점입니다.
+명확히 분리된다는 점입니다. 또한 `L2`가 먼저 작업 등급과 review depth를 계산하고, `--auto` 조건을 만족하지 못하면 사람 승인 경로로 자동 강등됩니다.
 
 ```mermaid
 sequenceDiagram
@@ -188,6 +213,7 @@ sequenceDiagram
     participant Main as L3 Main AI CLI
     participant Review as Multi-AI Review
     participant Human as L4 Human Approval
+    participant Policy as L4 Policy Gate
     participant WS as L5 Workspace Manager
     participant Exec as L5 Executor CLI
     participant Gate as L6 Deterministic Gates
@@ -195,7 +221,12 @@ sequenceDiagram
     participant Out as L7 Output
     User ->> Entry: 작업 요청
     Entry ->> Run: 정규화된 task request
-    Run ->> Main: run context 전달
+    Run ->> Run: run_id · session_id 생성
+    Run ->> Run: change class · review depth · auto eligibility 계산
+    alt 기존 run busy
+        Run ->> Run: queue 적재 → dequeue 대기
+    end
+    Run ->> Main: run context + review policy 전달
 
     rect rgb(255, 248, 225)
         Note over Main, Review: Context & Planning
@@ -204,44 +235,57 @@ sequenceDiagram
             Main ->> Main: 외부 문서 조사
         end
         Main ->> Main: plan doc 생성
-        loop 기획 리뷰 통과할 때까지
+        loop 등급이 요구하는 review depth 통과할 때까지
             Main ->> Review: plan review 요청
             Review -->> Main: pass / feedback
         end
     end
 
-    Main ->> Human: plan doc 승인 요청
-    alt 승인 거부
-        Human -->> Main: 수정 요청
-        Main ->> Main: plan 수정 후 재제출
-    else 승인
-        Human -->> Main: execution grant
+    Main ->> Policy: plan doc + mode 검증
+    alt auto eligible + policy pass
+        Policy -->> Main: execution grant
         Main ->> WS: workspace provision
-        WS -->> Exec: isolated workspace 제공
+        WS -->> Exec: 승인된 workspace 제공
+    else human-reviewed 경로
+        Policy -->> Main: 사람 승인 필요
+        Main ->> Human: plan doc 승인 요청
+        alt 승인 거부
+            Human -->> Main: 수정 요청
+            Main ->> Main: plan 수정 후 재제출
+        else 승인
+            Main ->> Policy: 승인 결과 반영
+            Policy -->> Main: execution grant
+            Main ->> WS: workspace provision
+            WS -->> Exec: 승인된 workspace 제공
+        end
     end
 
     rect rgb(243, 229, 245)
         Note over Exec, Judge: Execution + Verification
         loop retry <= N
             Exec ->> Exec: 코드 수정
-            Exec ->> Gate: lint / typecheck / test
-            Gate -->> Exec: pass / fail
-            alt gate 통과
-                Exec ->> Review: diff / logs review 요청
-                Review -->> Judge: review docs
-                Judge -->> Exec: pass / fix / escalate
-            else gate 실패
-                Exec ->> Exec: self-fix
+            loop 내부 루프: Gate 통과까지
+                Exec ->> Gate: format · lint · typecheck · test
+                Gate -->> Exec: pass / fail
+            end
+            Exec ->> Review: diff / logs review 요청
+            Review -->> Judge: review docs
+            Judge ->> Judge: 종합 판정
+            alt fix
+                Judge -->> Exec: 구조화된 피드백
             end
         end
     end
 
-    alt publish 가능
-        Exec ->> Out: final diff + gate report
-        Out -->> User: Commit / PR / 완료 알림
-    else 실패 에스컬레이션
-        Exec ->> Out: failure report
-        Out -->> User: 실패 보고 / 사람 개입 요청
+    rect rgb(200, 230, 201)
+        Note over Out: Output & Trace
+        alt pass
+            Judge ->> Out: Commit / PR 생성
+            Out -->> User: 완료 알림
+        else escalate
+            Judge ->> Out: 실패 리포트
+            Out -->> User: 실패 알림
+        end
     end
 ```
 
@@ -249,8 +293,8 @@ sequenceDiagram
 
 ## 5. 컨텍스트 수집과 Plan Doc 계약
 
-준비 단계는 `Prompt Chaining`에 가까운 결정론적 파이프라인으로 설계합니다.
-핵심은 **코드 쓰기 전에 Plan Doc을 산출물로 고정**하고, plan review와 human approval을 통과해야만 write 권한이 열리도록 하는 것입니다.
+준비 단계는 `Prompt Chaining`에 가까운 결정론적 파이프라인입니다.
+핵심은 **코드 쓰기 전에 Plan Doc으로 범위를 고정**하고, L2가 계산한 change class에 따라 review depth와 approval 경로가 정해진 뒤에만 write 권한이 열리는 것입니다.
 
 ```mermaid
 flowchart TD
@@ -266,27 +310,61 @@ flowchart TD
     P1 --> P2["🔒 병렬 plan review"]
     P2 --> P3{"리뷰 판정"}
     P3 -->|" ❌ 부족 "| D1
-    P3 -->|" ✅ 충분 "| H{"👤 사람 승인?"}
+    P3 -->|" ✅ 충분 "| A{"🔒 승인 경로"}
+    A -->|" auto 허용 "| OUT["execution grant 발급"]
+    A -->|" 사람 승인 필요 "| H{"👤 사람 승인?"}
     H -->|" ❌ 수정 요청 "| D1
-    H -->|" ✅ 승인 "| OUT["execution grant 발급"]
+    H -->|" ✅ 승인 "| OUT
     style START fill: #e3f2fd, stroke: #1565C0
     style D5 fill: #fff8e1, stroke: #F9A825
     style P1 fill: #e8f5e9, stroke: #2E7D32
     style P2 fill: #ede7f6, stroke: #4527A0
+    style A fill: #fff3e0, stroke: #E65100
     style H fill: #fff3e0, stroke: #E65100
     style OUT fill: #c8e6c9, stroke: #2E7D32
 ```
 
+### 각 단계 설명
+
+#### 요구사항 분석 + 프로젝트 탐색
+
+Augment Context MCP를 활용하여 요청을 분석하고 프로젝트 내부 정보를 파악합니다.
+
+- 요청의 의도와 범위 파악, 암묵적 요구사항 식별
+- 시맨틱 검색으로 관련 파일과 코드 관계 파악
+- 프로젝트 구조와 기존 패턴 파악
+- Git 이력에서 관련 변경 확인
+
+#### 추가 조사 (선택 — AI 판단)
+
+프로젝트 외부의 정보가 필요한 경우에만 수행합니다.
+AI가 요구사항 분석 결과를 바탕으로 추가 조사 필요 여부를 판단합니다.
+
+- 유사한 작업의 주의사항, 엣지케이스 조사
+- 관련 라이브러리/API의 최신 사용법 확인
+- 알려진 문제점이나 함정 파악
+
+#### AI 컨텍스트 로딩 (선택 — 존재 시)
+
+프로젝트에 사전 구조화된 AI 컨텍스트 파일이 존재하는 경우 로딩합니다.
+도메인 개요, 데이터 모델, API 스펙 등 아키텍처 레이어에 매핑된 정적 지식입니다.
+AI 컨텍스트가 없는 프로젝트에서는 이 단계를 건너뜁니다.
+
 ### Plan Doc 필수 필드
 
-| 필드                    | 목적                          |
-|-----------------------|-----------------------------|
-| **컨텍스트 요약**           | 어떤 코드, 문서, 이력을 근거로 판단했는지 기록 |
-| **변경 목표**             | 무엇을 왜 바꾸는지 고정               |
-| **수정 파일 후보**          | 실행 범위를 제한하고 리뷰 근거 제공        |
-| **테스트 시나리오**          | 실행 단계의 gate 기준 제공           |
-| **주의사항 / edge cases** | 외부 조사와 도메인 지식의 반영 여부를 추적    |
-| **미해결 판단**            | 사람이 결정해야 할 항목 분리            |
+Plan Doc은 시스템의 핵심 산출물이자 계층 간 계약(contract)입니다.
+
+| 필드                    | 목적                                 |
+|-----------------------|------------------------------------|
+| **컨텍스트 요약**           | 어떤 코드, 문서, 이력을 근거로 판단했는지 기록        |
+| **변경 목표**             | 무엇을 왜 바꾸는지, 무엇을 바꾸지 않는지 고정         |
+| **수정 파일 후보**          | 실행 범위를 제한하고 `allowed_files`의 근거 제공 |
+| **테스트 시나리오**          | 실행 단계의 gate 기준과 done definition 제공 |
+| **주의사항 / edge cases** | 외부 조사와 도메인 지식의 반영 여부를 추적           |
+| **미해결 판단**            | 사람 또는 정책이 결정해야 할 항목 분리             |
+
+Plan Doc은 길게 쓰는 문서가 아니라 `scope freeze` 문서입니다.
+이 6개 필드는 execution grant, gate 범위, review 기준의 원본이 되어야 합니다.
 
 ### Plan Doc 소비자
 
@@ -304,14 +382,17 @@ graph TB
 
     subgraph Consumers["소비자"]
         C1["🔒 멀티 AI 리뷰 (기획 검증)"]
-        C2["👤 Human Approval"]
-        C3["🧠 Executor AI CLI"]
-        C4["🔒 멀티 AI 리뷰 (코드 검증)"]
+        C2["🔒 Policy Gate"]
+        C3["👤 Human Approval"]
+        C4["🧠 Executor AI CLI"]
+        C5["🔒 멀티 AI 리뷰 (코드 검증)"]
     end
 
     S1 & S2 & S3 --> PlanDoc
-    PlanDoc --> C1 -->|" 통과 "| C2 -->|" 승인 "| C3
-    PlanDoc -.->|" 기획 대조 기준 "| C4
+    PlanDoc --> C1 -->|" 통과 "| C2
+    C2 -->|" auto 허용 "| C4
+    C2 -->|" 사람 승인 필요 "| C3 -->|" 승인 "| C4
+    PlanDoc -.->|" 기획 대조 기준 "| C5
     style Sources fill: #fff8e1, stroke: #F9A825
     style PlanDoc fill: #e8f5e9, stroke: #2E7D32
     style Consumers fill: #e3f2fd, stroke: #1565C0
@@ -322,14 +403,16 @@ graph TB
 ## 6. 실행 워크스페이스 · 권한 모델 · 실행 모드
 
 실행 plane의 핵심 원칙은 `workspace boundary = permission boundary`입니다.
-초안의 `로컬 / VM / Docker` 선택은 단순한 환경 옵션이 아니라, **실행 권한과 실패 영향 범위를 결정하는 아키텍처 요소**로 취급해야 합니다.
+`로컬 / VM / Docker` 선택은 단순한 환경 옵션이 아니라, **실행 권한과 실패 영향 범위를 결정하는 아키텍처 요소**로 취급해야 합니다.
+권장 기본값은 `single-writer + short-lived workspace`입니다. 병렬 executor는 파일 집합이 겹치지 않고 shard별 workspace와 merge 계약이 있을 때만 여는 것이
+안전합니다.
 
 ```mermaid
 flowchart TD
     GRANT["execution grant"] --> MODE{"실행 경계 선택"}
     MODE -->|" local-safe "| WT["🌿 Git Worktree Mode<br/>브랜치 검증 · 파일 동기화 · 세션 포크"]
     MODE -->|" isolated "| BOX["🐳 VM / Docker Sandbox Mode<br/>repo clone · env 주입 · 네트워크 정책"]
-    WT --> EXEC["Executor AI CLI"]
+    WT --> EXEC["Executor AI CLI<br/>기본 1개 · 필요 시 shard 분리"]
     BOX --> EXEC
     REPO["원본 repo"] -.-> WT
     SECRET["Scoped secrets"] --> BOX
@@ -381,37 +464,36 @@ flowchart LR
     style A2 fill: #ffcdd2, stroke: #C62828
 ```
 
-### 운영 관점의 모드 비교
-
-| 모드                 | 승인     | 권장 경계                        | 적합한 상황           | 비고                     |
-|--------------------|--------|------------------------------|------------------|------------------------|
-| **human-reviewed** | 필수     | local worktree / VM / Docker | 기본 개발 자동화, 팀 환경  | 현재 아키텍처의 기본값           |
-| **--auto**         | 조건부 생략 | VM / Docker 우선               | 반복적이고 범위가 명확한 작업 | policy gate에서 별도 허용 필요 |
-| **local + auto**   | 생략     | 로컬                           | 특별한 경우 외 비권장     | 격리 부재로 권한 경계가 약함       |
+| 모드                 | 승인     | 권장 경계                        | 적합한 상황           | 비고                                      |
+|--------------------|--------|------------------------------|------------------|-----------------------------------------|
+| **human-reviewed** | 필수     | local worktree / VM / Docker | 기본 개발 자동화, 팀 환경  | 현재 아키텍처의 기본값                            |
+| **--auto**         | 조건부 생략 | VM / Docker 우선               | 반복적이고 범위가 명확한 작업 | policy gate에서 별도 허용 필요, high-risk 변경 금지 |
+| **local + auto**   | 생략     | 로컬                           | 특별한 경우 외 비권장     | 격리 부재로 권한 경계가 약함                        |
 
 ---
 
 ## 7. 검증 · 리뷰 · 자동 수정 파이프라인
 
 검증 plane은 `Stripe Minions`의 결정론적 게이트와 `Evaluator-Optimizer` 패턴을 조합한 구조입니다.
-핵심은 **빠른 내부 루프**와 **비싼 외부 루프**를 분리하는 것입니다.
+핵심은 **빠른 내부 루프**(결정론적 Gate)와 **비싼 외부 루프**(멀티 AI 리뷰)를 분리하는 것입니다.
+외부 루프의 깊이는 고정 3중 리뷰가 아니라 작업 등급에 따라 `1 → 2 → 3`으로 늘리는 편이 현실적입니다.
 
 ```mermaid
 flowchart TB
     START["Executor AI CLI 결과<br/>diff + logs"]
 
-    subgraph Inner["내부 루프: 결정론적 Gate"]
+    subgraph Inner["내부 루프: 결정론적 Gate (빠름 · 저비용)"]
         G1["format / lint"]
         G2["typecheck"]
         G3["unit / local test"]
     end
 
-    subgraph Outer["외부 루프: 심화 검증"]
+    subgraph Outer["외부 루프: 심화 검증 (느림 · 고비용)"]
         G4["selective / integration check"]
-        RV["🤖 병렬 reviewer AI CLI"]
+        RV["🤖 Reviewer Depth<br/>small: A<br/>standard: A+B<br/>high-risk: A+B+C"]
         JD{"⚖️ Judge 판정"}
         FIX["🧠 구조화된 피드백 기반 수정"]
-        COUNT{"retry <= N?"}
+        COUNT{"retry ≤ N?"}
     end
 
     START --> G1 --> G2 --> G3
@@ -421,9 +503,9 @@ flowchart TB
     G3 -->|" ✅ pass "| G4
     G4 -->|" ❌ fail "| FIX
     G4 -->|" ✅ pass "| RV --> JD
-    JD -->|" ✅ pass "| DONE["✅ publish 후보"]
+    JD -->|" ✅ pass "| DONE["✅ publish 후보 → L7"]
     JD -->|" ❌ fix "| FIX
-    JD -->|" ❌ escalate "| FAIL["📋 failure report"]
+    JD -->|" ❌ escalate "| FAIL["📋 failure report → L7"]
     FIX --> COUNT
     COUNT -->|" yes "| START
     COUNT -->|" no "| FAIL
@@ -433,7 +515,9 @@ flowchart TB
     style FAIL fill: #ffcdd2, stroke: #C62828
 ```
 
-### Reviewer AI CLI의 분업 예시
+### Reviewer AI CLI의 분업
+
+아래 분업은 `high-risk` 기준입니다. `small`은 A만, `standard`는 A+B까지로 축소하는 것을 기본값으로 둡니다.
 
 | 리뷰어            | 입력               | 주 임무                   |
 |----------------|------------------|------------------------|
@@ -457,6 +541,7 @@ flowchart TB
 
 `plan review`와 `code review`는 서로 다른 시스템이 아니라, 같은 review harness를 다른 입력으로 재사용하는 구조입니다.
 이 모듈은 병렬 리뷰어, 결과 집계기, 판정 규칙으로 구성되며 준비 단계와 실행 단계 모두에서 호출됩니다.
+리뷰어 수는 아키텍처의 상수가 아니라 `change class`의 함수여야 합니다.
 
 ```mermaid
 flowchart LR
@@ -465,10 +550,10 @@ flowchart LR
         I2["criteria<br/>요구사항 · 테스트 개요 · gate logs"]
     end
 
-    subgraph Reviewers["병렬 reviewer AI CLI"]
-        R1["Reviewer A<br/>요구사항 대조"]
-        R2["Reviewer B<br/>엣지케이스 / 회귀"]
-        R3["Reviewer C<br/>구현 정합성 / 버그"]
+    subgraph Reviewers["병렬 reviewer AI CLI pool"]
+        R1["Reviewer A<br/>항상"]
+        R2["Reviewer B<br/>standard 이상"]
+        R3["Reviewer C<br/>high-risk"]
     end
 
     subgraph Aggregation["집계 및 판정"]
@@ -492,6 +577,15 @@ flowchart LR
     style Aggregation fill: #fff3e0, stroke: #E65100
     style Output fill: #c8e6c9, stroke: #2E7D32
 ```
+
+### 리뷰어 모델 구성 예시
+
+| 역할         | 모델 예시         | 검증 관점              | 기본 적용 구간    |
+|------------|---------------|--------------------|-------------|
+| 리뷰어 A      | Claude Opus   | 기획 대조, 논리 검증       | small 이상    |
+| 리뷰어 B      | GPT 5.4       | 품질, 엣지케이스          | standard 이상 |
+| 리뷰어 C      | GPT 5.3 Codex | 코드 정합성, 버그 탐지      | high-risk   |
+| 오케스트레이션 AI | —             | 리뷰 문서 종합, 통과/실패 판정 | 모든 구간       |
 
 ### 단계별 재사용 방식
 
@@ -555,7 +649,7 @@ stateDiagram-v2
 ## 10. 핵심 산출물 데이터 흐름
 
 이 시스템은 코드만 만드는 것이 아니라, 단계별 산출물을 생산하고 다음 레이어가 그 산출물을 입력으로 소비하는 구조입니다.
-그래서 `입력/출력`이 불분명하면 아키텍처가 아니라 프롬프트 모음이 됩니다.
+`입력/출력`이 불분명하면 아키텍처가 아니라 프롬프트 모음이 됩니다.
 
 ```mermaid
 graph LR
@@ -670,12 +764,30 @@ graph TB
     style Local_FB fill: #e3f2fd, stroke: #1565C0
 ```
 
----
+### 에이전트 시스템 포지셔닝
+
+```mermaid
+quadrantChart
+    title "자율성 vs 복잡도"
+    x-axis "낮은 복잡도" --> "높은 복잡도"
+    y-axis "낮은 자율성" --> "높은 자율성"
+    quadrant-1 "고자율 · 고복잡"
+    quadrant-2 "고자율 · 저복잡"
+    quadrant-3 "저자율 · 저복잡"
+    quadrant-4 "저자율 · 고복잡"
+    "Auto Improve Loop": [0.25, 0.80]
+    "Open SWE": [0.55, 0.75]
+    "Stripe Minions": [0.85, 0.90]
+    "Coinbase Cloudbot": [0.70, 0.70]
+    "로컬 에이전트": [0.55, 0.50]
+    "로컬 에이전트 (--auto)": [0.60, 0.75]
+    "Deep Analysis": [0.40, 0.30]
+    "Oh My OpenAgent": [0.75, 0.65]
+```
 
 ### 참조 시스템 매핑
 
 현재 아키텍처는 단일 원본을 베낀 것이 아니라, 각 시스템에서 유효했던 구조 요소를 선택적으로 결합한 것입니다.
-아래 표는 어떤 요소를 어디서 가져왔는지, 그리고 현재 구조에서 무엇으로 치환했는지를 보여줍니다.
 
 ```mermaid
 graph LR
@@ -730,12 +842,12 @@ graph TB
     end
 
     subgraph Patterns["적용 패턴"]
-        P1["Prompt Chaining"]
-        P2["Orchestrator-Workers"]
-        P3["Human-in-the-Loop"]
-        P4["Evaluator-Optimizer<br/>+ Iterative Refinement"]
-        P5["Parallelization<br/>+ Review-Critique"]
-        P6["Custom Logic / Policy Gate"]
+        P1["Prompt Chaining<br/><i>Anthropic</i>"]
+        P2["Orchestrator-Workers<br/><i>Anthropic</i>"]
+        P3["Human-in-the-Loop<br/><i>Google Cloud</i>"]
+        P4["Evaluator-Optimizer<br/>+ Iterative Refinement<br/><i>Anthropic + Google Cloud</i>"]
+        P5["Parallelization + Review-Critique<br/><i>Anthropic + Google Cloud</i>"]
+        P6["Custom Logic<br/><i>Google Cloud</i>"]
     end
 
     P1 --> L1
@@ -747,8 +859,6 @@ graph TB
     style Layers fill: #e3f2fd, stroke: #1565C0
     style Patterns fill: #e8f5e9, stroke: #2E7D32
 ```
-
-### 레이어별 패턴 해석
 
 | 레이어                        | 주요 패턴                                      | 이유                                |
 |----------------------------|--------------------------------------------|-----------------------------------|
@@ -763,8 +873,7 @@ graph TB
 
 ## 13. 설계 원칙
 
-이 문서에서 제안하는 최종 구조를 한 줄로 줄이면, `AI CLI를 엔진으로 쓰고 하네스를 시스템으로 설계한다`입니다.
-초안의 문제의식은 유지하되, 최종본에서는 실제 운영 구조로 바꾸기 위해 원칙을 아래처럼 고정합니다.
+이 문서의 최종 구조를 한 줄로 줄이면, `AI CLI를 엔진으로 쓰고 하네스를 시스템으로 설계한다`입니다.
 
 ```mermaid
 graph LR
@@ -787,3 +896,25 @@ graph LR
     style P7 fill: #f3e5f5, stroke: #6A1B9A
     style P8 fill: #c8e6c9, stroke: #2E7D32
 ```
+
+| 원칙                     | 설명                                                               |
+|------------------------|------------------------------------------------------------------|
+| **기존 도구 활용**           | 에이전트 전용 도구를 만들지 않음. 개발자가 이미 사용하는 AI CLI, lint, test, Git을 그대로 활용 |
+| **하네스를 설계하라**          | 에이전트 자체가 아니라, 에이전트가 동작하는 시스템 환경(hook, 게이트, 기획 문서, 격리)에 투자        |
+| **LLM 창의성 + 결정론적 신뢰성** | 코드 생성은 LLM에게, 검증은 하드코딩된 게이트에 맡김. 게이트는 프롬프트가 아닌 구조로 강제            |
+| **기본은 single-writer**  | 하나의 workspace에는 기본적으로 하나의 executor만 붙임. 병렬화는 shard 계약이 있을 때만 허용  |
+| **멀티 AI 리뷰**           | 단일 AI 판단에 의존하지 않음. 복수 모델의 교차 검증으로 기획과 코드 품질 확보                   |
+| **결정론적 컨텍스트 수집**       | LLM 판단에 의존하지 않는 도구 기반 탐색 + 시맨틱 검색으로 일관된 품질 확보                    |
+| **제한된 재시도**            | 자동 수정 횟수를 제한. 해결 불가 시 실패 리포트 작성. 무한 재시도로 토큰 낭비하지 않음              |
+
+> Minions: "Can't fix in 2 tries? Surface it to the human — no wasted tokens"
+
+---
+
+## 참고 자료
+
+- [Stripe Minions 개요](/docs/stripe-minions/01-stripe-minions.md)
+- [Stripe Minions 시스템 설계](/docs/stripe-minions/02-stripe-minions-part2.md)
+- [Auto Improve Loop](/docs/auto-improve/01-auto-improve-loop.md)
+- [에이전틱 AI 설계 패턴 (Anthropic)](/docs/effective-agents/README.md)
+- [에이전트 디자인 패턴 (Google Cloud)](/docs/design-pattern/README.md)
