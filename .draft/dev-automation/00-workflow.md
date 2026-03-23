@@ -913,8 +913,8 @@ graph LR
 
 ## 참고 자료
 
-- [Stripe Minions 개요](/docs/stripe-minions/01-stripe-minions.md)
-- [Stripe Minions 시스템 설계](/docs/stripe-minions/02-stripe-minions-part2.md)
-- [Auto Improve Loop](/docs/auto-improve/01-auto-improve-loop.md)
-- [에이전틱 AI 설계 패턴 (Anthropic)](/docs/effective-agents/README.md)
-- [에이전트 디자인 패턴 (Google Cloud)](/docs/design-pattern/README.md)
+- [Stripe Minions 개요](/stripe-minions/01-stripe-minions.md)
+- [Stripe Minions 시스템 설계](/stripe-minions/02-stripe-minions-part2.md)
+- [Auto Improve Loop](/auto-improve/01-auto-improve-loop.md)
+- [에이전틱 AI 설계 패턴 (Anthropic)](/effective-agents/README.md)
+- [에이전트 디자인 패턴 (Google Cloud)](/design-pattern/README.md)

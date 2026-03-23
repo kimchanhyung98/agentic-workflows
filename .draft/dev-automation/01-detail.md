@@ -1,6 +1,6 @@
 # 로컬 개발 자동화 에이전트 — 상세 구현 문서
 
-[워크플로우 다이어그램](00-workflow.md)의 7계층 아키텍처를 구현 수준으로 풀어낸 문서이다.
+[워크플로우 다이어그램](/.draft/dev-automation/00-workflow.md)의 7계층 아키텍처를 구현 수준으로 풀어낸 문서이다.
 각 레이어별로 **무엇을 구현해야 하는지**, **어떤 기술 선택지가 있는지**, **구현 시 주의할 점**을 다룬다.
 
 ---
@@ -870,9 +870,9 @@ AI CLI를 수동으로 실행하되, Plan Doc 작성 → 승인 → 실행 → G
 
 ## 참고 자료
 
-- [워크플로우 다이어그램](00-workflow.md)
-- [Stripe Minions 개요](/docs/stripe-minions/01-stripe-minions.md)
-- [Stripe Minions 시스템 설계](/docs/stripe-minions/02-stripe-minions-part2.md)
-- [Auto Improve Loop](/docs/auto-improve/01-auto-improve-loop.md)
-- [에이전틱 AI 설계 패턴 (Anthropic)](/docs/effective-agents/README.md)
-- [에이전트 디자인 패턴 (Google Cloud)](/docs/design-pattern/README.md)
+- [워크플로우 다이어그램](/.draft/dev-automation/00-workflow.md)
+- [Stripe Minions 개요](/stripe-minions/01-stripe-minions.md)
+- [Stripe Minions 시스템 설계](/stripe-minions/02-stripe-minions-part2.md)
+- [Auto Improve Loop](/auto-improve/01-auto-improve-loop.md)
+- [에이전틱 AI 설계 패턴 (Anthropic)](/effective-agents/README.md)
+- [에이전트 디자인 패턴 (Google Cloud)](/design-pattern/README.md)

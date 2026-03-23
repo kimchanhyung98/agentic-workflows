@@ -1,7 +1,7 @@
 # 구현 패턴
 
 Agentic Workflow를 실제 시스템으로 구현할 때 활용할 수 있는 구체적인 아키텍처 패턴을 정리합니다.
-이 패턴들은 [핵심 디자인 패턴](./03-core-patterns.md)을 실무에 적용하기 위한 구체적인 구현 방법입니다.
+이 패턴들은 [핵심 디자인 패턴](/agentic-workflow/03-core-patterns.md)을 실무에 적용하기 위한 구체적인 구현 방법입니다.
 
 ---
 
@@ -255,7 +255,7 @@ sequenceDiagram
 
 **생성자(Generator)가 결과물을 만들고, 평가자(Evaluator)가 그 결과를 검토하여 피드백을 제공하며, 이를 반복하여 결과를 점진적으로 개선**하는 패턴입니다.
 
-[Reflection 패턴](./03-core-patterns.md#1-reflection-반성)의 구현 형태로, 생성과 평가를 별도의 역할로 명확히 분리한 것이 특징입니다.
+[Reflection 패턴](/agentic-workflow/03-core-patterns.md#1-reflection-반성)의 구현 형태로, 생성과 평가를 별도의 역할로 명확히 분리한 것이 특징입니다.
 
 ### 근거 (Rationale)
 

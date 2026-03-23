@@ -24,8 +24,8 @@ graph LR
 
 | 문서                                                   | 설명                   |
 |------------------------------------------------------|----------------------|
-| [01-auto-improve-loop.md](./01-auto-improve-loop.md) | Auto Improve Loop 설계 |
-| [02-references.md](./02-references.md)               | 관련 자료 및 레퍼런스         |
+| [01-auto-improve-loop.md](/auto-improve/01-auto-improve-loop.md) | Auto Improve Loop 설계 |
+| [02-references.md](/auto-improve/02-references.md)               | 관련 자료 및 레퍼런스         |
 
 ## 핵심 원칙
 

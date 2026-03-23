@@ -15,7 +15,7 @@ XML Bundling (소스코드 구조화) + 3단계 점진적 리뷰 (파일 → 기
 
 ## 아키텍처
 
-[다이어그램 참조](00-diagram.md)
+[다이어그램 참조](/.draft/deep-analysis/00-diagram.md)
 
 4계층으로 구성된다.
 
@@ -374,7 +374,7 @@ XML은 태그로 경계를 명확히 하고, 속성으로 메타데이터를 자
 ## 멀티 AI 리뷰
 
 각 단계에서 복수의 AI 모델이 서로 다른 관점으로 병렬 검증한다.
-[개발 워크플로우의 멀티 AI 리뷰](../dev-automation/01-detail.md#멀티-ai-리뷰-구조)와 동일한 구조를 적용한다.
+[개발 워크플로우의 멀티 AI 리뷰](/.draft/dev-automation/01-detail.md#멀티-ai-리뷰-구조)와 동일한 구조를 적용한다.
 
 ### 리뷰어 구성
 
@@ -439,8 +439,8 @@ XML은 태그로 경계를 명확히 하고, 속성으로 메타데이터를 자
 ## 참고 자료
 
 - [LLM이 Django에서 보안 취약점을 찾은 방법](https://new-blog.ch4n3.kr/llm-found-security-issues-from-django-ko/)
-- [로컬 개발 에이전트 워크플로우](../dev-automation/01-detail.md)
-- [멀티 AI 리뷰 구조](../dev-automation/01-detail.md#멀티-ai-리뷰-구조)
-- [병렬 패턴](/docs/effective-agents/03-parallelization.md)
-- [병렬 패턴 (Google Cloud)](/docs/design-pattern/03-parallel.md)
-- [Review-Critique 패턴](/docs/design-pattern/05-review-critique.md)
+- [로컬 개발 에이전트 워크플로우](/.draft/dev-automation/01-detail.md)
+- [멀티 AI 리뷰 구조](/.draft/dev-automation/01-detail.md#멀티-ai-리뷰-구조)
+- [병렬 패턴](/effective-agents/03-parallelization.md)
+- [병렬 패턴 (Google Cloud)](/design-pattern/03-parallel.md)
+- [Review-Critique 패턴](/design-pattern/05-review-critique.md)
