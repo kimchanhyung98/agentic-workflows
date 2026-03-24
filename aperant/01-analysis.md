@@ -40,7 +40,7 @@ worker 기반 에이전트 세션을 실행**하는 파이프라인이다.
 
 ## 3. 핵심 실행 플로우
 
-## 3.1 TASK_START → 스펙 생성/실행 분기
+### 3.1 TASK_START → 스펙 생성/실행 분기
 
 `TASK_START` 이벤트 처리 시 실행 경로는 아래처럼 갈린다.
 
@@ -54,7 +54,7 @@ worker 기반 에이전트 세션을 실행**하는 파이프라인이다.
 이때 `taskStateManager`와 실제 plan 파일(`implementation_plan.json`)을 함께 확인해
 UI 상태와 실제 실행 상태 불일치를 줄이려는 설계가 보인다.
 
-## 3.2 task execution 시 worktree 기본 사용
+### 3.2 task execution 시 worktree 기본 사용
 
 `startTaskExecution()`은 기본적으로 worktree를 생성/재사용한다.
 
@@ -65,7 +65,7 @@ UI 상태와 실제 실행 상태 불일치를 줄이려는 설계가 보인다.
 그리고 worker session의 `toolContext.cwd`와 `projectDir`를 worktree로 전환해
 실제 코드 변경이 격리된 작업공간에서 일어나도록 구성한다.
 
-## 3.3 QA/Review 플로우
+### 3.3 QA/Review 플로우
 
 `TASK_REVIEW`는 human decision을 강제하는 분기점이다.
 
@@ -78,7 +78,7 @@ UI 상태와 실제 실행 상태 불일치를 줄이려는 설계가 보인다.
 
 ## 4. 신뢰성/복원성 설계
 
-## 4.1 auto-swap restart
+### 4.1 auto-swap restart
 
 `AgentProcessManager`는 실행 로그를 기반으로 rate limit/auth failure를 감지하고,
 `auto-swap-restart-task` 이벤트를 통해 `AgentManager.restartTask()`를 트리거한다.
@@ -92,12 +92,12 @@ UI 상태와 실제 실행 상태 불일치를 줄이려는 설계가 보인다.
 
 을 순서대로 수행한다.
 
-## 4.2 stale exit 방지
+### 4.2 stale exit 방지
 
 `taskExecutionContext.generation`을 사용해 이전 실행의 지연된 exit callback이
 새로운 실행 컨텍스트를 청소하지 않도록 방어한다.
 
-## 4.3 startup recovery
+### 4.3 startup recovery
 
 앱 시작 시 `runStartupRecoveryScan()`으로 프로젝트의 plan 파일을 스캔해
 stuck subtask를 초기화한다. 비정상 종료 이후 복구를 의도한 설계다.
