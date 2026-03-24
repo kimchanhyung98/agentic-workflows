@@ -107,8 +107,8 @@ flowchart LR
 - **60개 이상 블록체인** 대상, 최근 3개월간 **500건 이상** 업그레이드 처리
 - 엔지니어링 업그레이드 노력 **30% 감소**, 필수 업그레이드 누락 제거
 - **2단계 AI 구조**:
-  - **Triage Agent**: 비정형 데이터(GitHub release notes, Discord, 온체인 거버넌스, Telegram)에서 정보 수집·분석
-  - **Upgrade Orchestrator**: AI 추론과 결정론적 코드를 결합하여 실행·문제 해결
+    - **Triage Agent**: 비정형 데이터(GitHub release notes, Discord, 온체인 거버넌스, Telegram)에서 정보 수집·분석
+    - **Upgrade Orchestrator**: AI 추론과 결정론적 코드를 결합하여 실행·문제 해결
 - 배포는 sandbox → testnet → canary 순으로, 검증 후 프로덕션 적용
 
 ---

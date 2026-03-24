@@ -8,8 +8,8 @@ LangChain Skills를 활용한 코딩 에이전트 성능 향상 사례를 정리
 
 ## 문서 구성
 
-| 문서                                                   | 내용                                      |
-|------------------------------------------------------|-----------------------------------------|
+| 문서                                                            | 내용                                      |
+|---------------------------------------------------------------|-----------------------------------------|
 | [LangChain Skills](/langchain/01-langchain-skills.md)         | Skill의 개념, 구조, 설치 방법, 동작 원리             |
 | [LangSmith CLI Skills](/langchain/02-langsmith-cli-skills.md) | LangSmith CLI와 Skills를 활용한 에이전트 개발 워크플로 |
 | [Skills 평가](/langchain/03-evaluating-skills.md)               | Skills 평가 방법론, 벤치마크, 개선 사이클             |

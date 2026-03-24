@@ -14,7 +14,7 @@ check: ## 테스트 및 린트 검사 실행
 	@echo "[check] running tests..."
 	# 테스트 명령어 추가 (예: npm test, pytest, go test 등)
 	@echo "[check] running lint..."
-	@npx markdownlint-cli2 --fix "docs/**/*.md"
+	@npx markdownlint-cli2 --fix "**/*.md"
 	@echo "[check] all checks passed"
 
 claude: ## Claude Code 환경 설정
