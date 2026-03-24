@@ -27,6 +27,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [langchain](/langchain/) | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론 | LangChain Skills |
 | [oh-my-openagent](/oh-my-openagent/) | 카테고리 기반 멀티 모델 오케스트레이션 플러그인 | Oh My OpenAgent |
 | [opencode-worktree](/opencode-worktree/) | AI 개발 세션용 격리된 git worktree 자동 관리 | OpenCode Worktree |
+| [aperant](/aperant/) | Electron 기반 자율 멀티에이전트 코딩 앱, IPC·worktree·auto-swap 실행 구조 | Aperant |
 
 ### 자율 개선 루프
 
