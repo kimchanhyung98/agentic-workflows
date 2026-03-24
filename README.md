@@ -19,6 +19,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [stripe-minions](/stripe-minions/) | One-Shot E2E 코딩 에이전트, 6레이어 아키텍처, Devbox 격리 | Stripe Minions |
 | [coinbase-cloudbot](/coinbase-cloudbot/) | Slack 네이티브 백그라운드 에이전트, MCP 통합, AI 에코시스템 | Coinbase Cloudbot |
 | [open-swe](/open-swe/) | LangGraph 기반 자율 SWE 에이전트, 5계층 아키텍처, 샌드박스 | LangChain Open SWE |
+| [pinterest-mcp](/pinterest-mcp/) | Pinterest MCP 생태계 구축 전략, 작동 방식, 운영 워크플로우 분석 | Pinterest Engineering |
 
 ### 도구 및 프레임워크 분석
 
