@@ -136,7 +136,7 @@ compliance: { ... }          # 가장 복잡한 섹션
 
 Commander.js 기반으로 11개 커맨드를 등록합니다:
 
-```
+```text
 init, validate, info, export, import,
 install, audit, skills, run, lyzr, registry
 ```
