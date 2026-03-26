@@ -48,7 +48,7 @@ flowchart TD
 ## 2. CLI 명령 실행 흐름
 
 ```mermaid
-flowchart LR
+flowchart TD
     USER["User / CI"] --> CLI["gitagent CLI"]
 
     subgraph COMMANDS["Commands"]
