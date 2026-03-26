@@ -82,6 +82,8 @@ flowchart TD
     INS --> DEP["Git-based dependency install"]
     AUD --> REPORT["Compliance audit report"]
     SKILL --> SKREG["Skill registry operations"]
+    LYZR --> LYZR_OP["Lyzr Studio 연동"]
+    REG --> REG_OP["레지스트리 관리"]
 ```
 
 ## 3. validate 검증 파이프라인
