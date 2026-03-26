@@ -28,6 +28,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                 | LangChain Skills  |
 | [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                     | Oh My OpenAgent   |
 | [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                               | OpenCode Worktree |
+| [gitagent](/gitagent/README.md)                   | Git-native 에이전트 표준/CLI, 스키마 검증, 어댑터 export/import, 컴플라이언스(SOD) 모델      | Open GitAgent     |
 | [aperant](/aperant/README.md)                     | Electron 기반 자율 멀티에이전트 코딩 앱, 다단계 오케스트레이션, 멀티 프로바이더, worktree 격리 | Aperant           |
 
 ### 자율 개선 루프
