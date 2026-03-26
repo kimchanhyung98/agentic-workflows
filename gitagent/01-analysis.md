@@ -328,7 +328,7 @@ metadata:
 
 **디렉토리 구조**:
 
-```
+```text
 skills/<name>/
 ├── SKILL.md          # Required: frontmatter + instructions
 ├── scripts/          # 실행 가능 헬퍼
