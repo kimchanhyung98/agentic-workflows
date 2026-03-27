@@ -5,8 +5,7 @@
 - 논문: "Towards end-to-end automation of AI research" (Nature, 2026.03.26)
 - 저자: Chris Lu, Cong Lu, Robert Tjarko Lange, Yutaro Yamada, Shengran Hu, Jakob Foerster, Jeff Clune, David Ha
 - 기관: Sakana AI, University of British Columbia, Vector Institute, University of Oxford
-- 저장소: [AI-Scientist](https://github.com/SakanaAI/AI-Scientist) (
-  v1), [AI-Scientist-v2](https://github.com/SakanaAI/AI-Scientist-v2) (v2)
+- 저장소: [AI-Scientist](https://github.com/SakanaAI/AI-Scientist) (v1), [AI-Scientist-v2](https://github.com/SakanaAI/AI-Scientist-v2) (v2)
 
 The AI Scientist는 Foundation Model 기반 에이전트가 ML 연구의 전체 라이프사이클을 자율적으로 수행하는 시스템이다. 넓은 연구 주제가 주어지면 아이디어 생성, 문헌 조사, 실험 설계/실행,
 논문 작성, 자동 피어 리뷰까지 end-to-end로 수행한다.
