@@ -8,13 +8,13 @@
 
 ### 1.1 기본 구성요소
 
-| 구성요소                | 역할                             |
-|---------------------|--------------------------------|
-| **Agent Card**      | 에이전트 메타데이터 공개 (discovery)      |
-| **Agent Executor**  | 핵심 비즈니스 로직 및 작업 처리             |
-| **Task Store**      | Task 상태 관리 (인메모리 또는 영구 저장소)    |
+| 구성요소                | 역할                                                             |
+|---------------------|----------------------------------------------------------------|
+| **Agent Card**      | 에이전트 메타데이터 공개 (discovery)                                      |
+| **Agent Executor**  | 핵심 비즈니스 로직 및 작업 처리                                             |
+| **Task Store**      | Task 상태 관리 (인메모리 또는 영구 저장소)                                    |
 | **Request Handler** | JSON-RPC 요청 수신 및 라우팅 (`SendMessage`, `SendStreamingMessage` 등) |
-| **A2A Application** | HTTP 서버 (Starlette, FastAPI 등) |
+| **A2A Application** | HTTP 서버 (Starlette, FastAPI 등)                                 |
 
 ### 1.2 지원 프레임워크
 
@@ -464,7 +464,7 @@ remote_app = agent_engines.create(
     display_name="purchasing-concierge",
     requirements=[
         "google-cloud-aiplatform[adk,agent_engines]",
-        "a2a-sdk==0.2.16",
+        "a2a-sdk>=1.0.0",
     ],
     extra_packages=["./purchasing_concierge"],
     env_vars={

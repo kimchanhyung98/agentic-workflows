@@ -5,7 +5,8 @@
 - 대상: Agent2Agent(A2A) 프로토콜 (v1.0, Linux Foundation 관리)
 - 목적: 서로 다른 에이전트 프레임워크/벤더 간 상호운용 가능한 협업 인터페이스 제공
 - 접근: Agent Card 기반 discovery + JSON-RPC/gRPC 기반 오퍼레이션 + Task 상태 모델
-- 생태계: 150개 이상의 조직 참여, TSC 8개사(AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, ServiceNow), Python/Go/JS/Java/.NET SDK 공식 지원
+- 생태계: 150개 이상의 조직 참여, TSC 8개사(AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, ServiceNow), Python/Go/JS/Java/.NET
+  SDK 공식 지원
 
 A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 상태와 결과를 표준 방식으로 받는 것"에 집중합니다. 또한 장기 실행을 전제로 streaming(SSE)과 push notification을 함께
 다룹니다.
@@ -26,7 +27,7 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 - A2A 상호작용의 중심 단위입니다.
 - 단순 request/response보다 긴 수명의 작업 객체로 관리됩니다.
 - 상태 전이를 갖고 `GetTask`, `ListTasks` 등으로 조회 가능합니다.
-- 8가지 상태: `SUBMITTED`, `WORKING`, `COMPLETED`, `FAILED`, `CANCELED`, `INPUT_REQUIRED`, `AUTH_REQUIRED`, `REJECTED`
+- 8가지 상태: `SUBMITTED`, `WORKING`, `COMPLETED`, `FAILED`, `CANCELED`, `INPUT_REQUIRED`, `REJECTED`, `AUTH_REQUIRED`
 
 ### 2.3 Message
 
@@ -49,7 +50,7 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 1. **Discovery 계층**: Agent Card 조회/해석 (`/.well-known/agent-card.json`)
 2. **Transport/API 계층**: JSON-RPC 2.0 / gRPC / HTTP+JSON (3가지 동등 지원, `supportedInterfaces`로 선언)
-3. **Interaction 계층**: Message/Part(멤버 기반 판별: text, url, data 등) 입력·출력
+3. **Interaction 계층**: Message/Part(멤버 기반 판별: text, url, raw, data) 입력·출력
 4. **Task 상태 계층**: 작업 생성, 진행, 조회, 취소, 구독 + In-Task 인증
 5. **Async 전달 계층**: SSE 스트리밍 + Push notification(웹훅)
 6. **Security 계층**: OAuth2(PKCE, Device Code), mTLS, API Key, OpenID Connect + Agent Card 서명
@@ -166,17 +167,17 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ## 10. 버전별 주요 변경사항
 
-| 영역 | v0.2.x | v0.3.0 | v1.0 |
-|---|---|---|---|
-| 전송 프로토콜 | JSON-RPC만 | +gRPC, HTTP+JSON | 동등 지원, `supportedInterfaces` 선언 |
-| Agent Card | 기본 | +JWS 서명, Extensions | +JSON Canonicalization(RFC 8785), `supportedInterfaces` |
-| Task 상태 | 5가지 | +`auth-required`, `rejected` | 8가지, SCREAMING_SNAKE_CASE 열거형 |
-| Part 타입 | 비구조적 | TextPart/FilePart/DataPart + `kind` | 통합 Part, 멤버 기반 판별 (`kind` 제거) |
-| 에러 처리 | 기본 | A2A 에러 코드 | `google.rpc.Status` + `ErrorInfo` 채택 |
-| 멀티테넌시 | 없음 | 없음 | `tenant` 필드 네이티브 지원 |
-| OAuth | 기본 | 기본 | +PKCE, Device Code / -Implicit, -Password |
-| 메서드명 | `message/send` | 동일 | `SendMessage` (PascalCase) |
-| SDK | Python 중심 | 확대 | Python, Go, JS, Java, .NET 공식 |
-| 관리 | Google | Google | Linux Foundation (TSC 8개사) |
+| 영역         | v0.2.x         | v0.3.0                              | v1.0                                                    |
+|------------|----------------|-------------------------------------|---------------------------------------------------------|
+| 전송 프로토콜    | JSON-RPC만      | +gRPC, HTTP+JSON                    | 동등 지원, `supportedInterfaces` 선언                         |
+| Agent Card | 기본             | +JWS 서명, Extensions                 | +JSON Canonicalization(RFC 8785), `supportedInterfaces` |
+| Task 상태    | 5가지            | +`auth-required`, `rejected`        | 8가지, SCREAMING_SNAKE_CASE 열거형                           |
+| Part 타입    | 비구조적           | TextPart/FilePart/DataPart + `kind` | 통합 Part, 멤버 기반 판별 (`kind` 제거)                           |
+| 에러 처리      | 기본             | A2A 에러 코드                           | `google.rpc.Status` + `ErrorInfo` 채택                    |
+| 멀티테넌시      | 없음             | 없음                                  | `tenant` 필드 네이티브 지원                                     |
+| OAuth      | 기본             | 기본                                  | +PKCE, Device Code / -Implicit, -Password               |
+| 메서드명       | `message/send` | 동일                                  | `SendMessage` (PascalCase)                              |
+| SDK        | Python 중심      | 확대                                  | Python, Go, JS, Java, .NET 공식                           |
+| 관리         | Google         | Google                              | Linux Foundation (TSC 8개사)                              |
 
 > 스펙 상세는 [프로토콜 스펙 상세](/a2a/02-specification.md)를 참고하세요.

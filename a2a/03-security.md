@@ -59,8 +59,8 @@ v1.0에서 Agent Card는 단일 `url` 필드 대신 `supportedInterfaces[]` 배�
 ```json
 {
   "supportedInterfaces": [
-    { "type": "http", "url": "https://agent.example.com/a2a" },
-    { "type": "grpc", "url": "grpc://agent.example.com:443" }
+    { "url": "https://agent.example.com/a2a", "protocolBinding": "JSONRPC", "protocolVersion": "1.0" },
+    { "url": "https://agent.example.com/a2a/grpc", "protocolBinding": "GRPC", "protocolVersion": "1.0" }
   ]
 }
 ```
@@ -95,30 +95,32 @@ v1.0에서 Agent Card는 단일 `url` 필드 대신 `supportedInterfaces[]` 배�
 
 ### 3.2 OAuth 2.0 보안 고려사항
 
-v1.0에서 보안 강화를 위해 **Implicit Grant**와 **Resource Owner Password Credentials** 플로우가 **제거**되었습니다. 대신 Device Code 플로우(RFC 8628)와 PKCE(Proof Key for Code Exchange) 지원이 추가되었습니다.
+v1.0에서 보안 강화를 위해 **Implicit Grant**와 **Resource Owner Password Credentials** 플로우가 **제거**되었습니다. 대신 Device Code 플로우(RFC
+8628)와 PKCE(Proof Key for Code Exchange) 지원이 추가되었습니다.
 
-| 항목         | 위험                   | 완화 방안                          |
-|------------|----------------------|--------------------------------|
-| 토큰 수명      | 장기 유효 토큰 유출 시 지속적 위험 | 단기 수명 토큰 (15-30분)              |
-| 스코프 범위     | 과도한 권한 부여            | 스킬별 세분화된 스코프                   |
-| 동의 메커니즘    | 프로토콜 수준 사용자 승인 미흡    | 명시적 승인 플로우 구축                   |
-| 토큰 저장      | 에이전트 메모리 내 토큰 노출     | 보안 토큰 저장소 사용                    |
-| 인가 코드 가로채기 | 코드 탈취 후 토큰 교환       | PKCE 필수 적용                      |
-| 입력 제한 디바이스 | 브라우저 없는 환경의 인증 어려움   | Device Code 플로우(RFC 8628) 활용    |
+| 항목         | 위험                   | 완화 방안                        |
+|------------|----------------------|------------------------------|
+| 토큰 수명      | 장기 유효 토큰 유출 시 지속적 위험 | 단기 수명 토큰 (15-30분)            |
+| 스코프 범위     | 과도한 권한 부여            | 스킬별 세분화된 스코프                 |
+| 동의 메커니즘    | 프로토콜 수준 사용자 승인 미흡    | 명시적 승인 플로우 구축                |
+| 토큰 저장      | 에이전트 메모리 내 토큰 노출     | 보안 토큰 저장소 사용                 |
+| 인가 코드 가로채기 | 코드 탈취 후 토큰 교환        | PKCE 필수 적용                   |
+| 입력 제한 디바이스 | 브라우저 없는 환경의 인증 어려움   | Device Code 플로우(RFC 8628) 활용 |
 
 ### 3.3 In-Task Authentication
 
 Task 실행 중 추가 인증이 필요한 시나리오:
 
 ```text
-Client → Agent: message/send (작업 요청)
+Client → Agent: SendMessage (작업 요청)
 Agent → Client: TaskStatus { state: "TASK_STATE_AUTH_REQUIRED", message: "OAuth token needed" }
 Client: Out-of-band 인증 수행
-Client → Agent: message/send (인증 정보 포함)
+Client → Agent: SendMessage (인증 정보 포함)
 Agent → Client: TaskStatus { state: "TASK_STATE_WORKING" } → { state: "TASK_STATE_COMPLETED" }
 ```
 
-> v1.0에서 TaskStatus의 state 값은 `TASK_STATE_` 접두사를 사용하는 표준화된 enum으로 변경되었습니다 (예: `TASK_STATE_AUTH_REQUIRED`, `TASK_STATE_WORKING`, `TASK_STATE_COMPLETED`).
+> v1.0에서 TaskStatus의 state 값은 `TASK_STATE_` 접두사를 사용하는 표준화된 enum으로 변경되었습니다 (예: `TASK_STATE_AUTH_REQUIRED`,
+`TASK_STATE_WORKING`, `TASK_STATE_COMPLETED`).
 
 ---
 
@@ -169,7 +171,7 @@ v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 �
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "message/send",
+  "method": "SendMessage",
   "params": {
     "tenant": "org-acme-corp",
     "message": { ... }
@@ -179,11 +181,11 @@ v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 �
 
 ### 5.1 멀티테넌시 보안 고려사항
 
-| 위협             | 설명                      | 완화 방안                    |
-|----------------|-------------------------|--------------------------|
-| 테넌트 간 데이터 누출   | 잘못된 격리로 타 테넌트 데이터 접근    | 요청/응답 파이프라인에서 테넌트 격리 강제  |
-| 테넌트 사칭         | `tenant` 필드 위조로 타 테넌트 행세 | 인증 토큰과 테넌트 ID 매핑 검증      |
-| 리소스 경합         | 특정 테넌트의 과도한 리소스 사용      | 테넌트별 레이트 제한 및 쿼터 설정      |
+| 위협           | 설명                       | 완화 방안                   |
+|--------------|--------------------------|-------------------------|
+| 테넌트 간 데이터 누출 | 잘못된 격리로 타 테넌트 데이터 접근     | 요청/응답 파이프라인에서 테넌트 격리 강제 |
+| 테넌트 사칭       | `tenant` 필드 위조로 타 테넌트 행세 | 인증 토큰과 테넌트 ID 매핑 검증     |
+| 리소스 경합       | 특정 테넌트의 과도한 리소스 사용       | 테넌트별 레이트 제한 및 쿼터 설정     |
 
 ---
 
@@ -216,9 +218,9 @@ v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 �
     "contextId": "session-001",
     "clientAgent": "purchasing-concierge",
     "remoteAgent": "currency-exchange",
-    "operation": "message/send",
+    "operation": "SendMessage",
     "timestamp": "2025-07-15T10:30:00Z",
-    "status": "completed",
+    "status": "TASK_STATE_COMPLETED",
     "dataClassification": "internal"
   }
 }

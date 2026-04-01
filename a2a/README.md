@@ -3,19 +3,20 @@
 Google의 Agent2Agent(A2A) 프로토콜 문서를 기준으로, 에이전트 간 상호운용(interop) 구조와 실행 패턴을 정리한 문서입니다.
 
 A2A는 **Agent Card 기반 발견(discovery)**, **Task 중심 상호작용**, **동기/스트리밍/비동기 완료 패턴**을 표준화해 서로 다른 에이전트 시스템 간 협업을 목표로 합니다.
-v1.0 정식 릴리즈이며, Linux Foundation에서 관리하고, 150개 이상의 조직이 참여하고 있습니다. TSC에는 AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, ServiceNow가 포함됩니다.
+v1.0 정식 릴리즈이며, Linux Foundation에서 관리하고, 150개 이상의 조직이 참여하고 있습니다. TSC에는 AWS, Cisco, Google, IBM, Microsoft, Salesforce,
+SAP, ServiceNow가 포함됩니다.
 
 ---
 
 ## 문서 구성
 
-| 문서                                     | 내용                                                                                 |
-|----------------------------------------|------------------------------------------------------------------------------------|
+| 문서                                     | 내용                                                                           |
+|----------------------------------------|------------------------------------------------------------------------------|
 | [아키텍처 다이어그램](/a2a/00-diagram.md)       | Agent Card 발견, 메시지 흐름, Task lifecycle, 비동기 패턴, 멀티 에이전트 위임, 전송 선택, In-Task 인증 |
-| [설계 및 실행 플로우 분석](/a2a/01-analysis.md)  | 핵심 개념, 프로토콜 계층, 핵심 오퍼레이션, 비동기 패턴, 보안 고려사항, MCP 비교, 버전별 변경사항                       |
-| [프로토콜 스펙 상세](/a2a/02-specification.md) | Agent Card 스키마, JSON-RPC 메서드, Task 상태 모델, 타입 정의, 인증 스키마, 에러 코드, gRPC 지원            |
-| [보안 분석](/a2a/03-security.md)           | 위협 모델, Agent Card 보안, 인증/인가, 전송 보안, 프롬프트 인젝션 방어, 엔터프라이즈 체크리스트                      |
-| [구현 가이드](/a2a/04-implementation.md)    | Google Cloud Agent Engine 배포, Codelab 예제, 서버/클라이언트 구현 패턴, 엔터프라이즈 배포                |
+| [설계 및 실행 플로우 분석](/a2a/01-analysis.md)  | 핵심 개념, 프로토콜 계층, 핵심 오퍼레이션, 비동기 패턴, 보안 고려사항, MCP 비교, 버전별 변경사항                  |
+| [프로토콜 스펙 상세](/a2a/02-specification.md) | Agent Card 스키마, JSON-RPC 메서드, Task 상태 모델, 타입 정의, 인증 스키마, 에러 코드, gRPC 지원      |
+| [보안 분석](/a2a/03-security.md)           | 위협 모델, Agent Card 보안, 인증/인가, 전송 보안, 프롬프트 인젝션 방어, 엔터프라이즈 체크리스트                |
+| [구현 가이드](/a2a/04-implementation.md)    | Google Cloud Agent Engine 배포, Codelab 예제, 서버/클라이언트 구현 패턴, 엔터프라이즈 배포          |
 
 ---
 
@@ -47,7 +48,7 @@ Remote Agent
 
 - **발견 가능성(Discoverability)**: Agent Card를 통해 호출 전 기능/제약/인증을 파악합니다.
 - **Task 중심 상호작용**: 단발 요청이 아니라 상태를 가진 작업 단위로 협업합니다.
-- **멀티모달 메시지 모델**: Message는 멤버 기반 판별(text, url, data 등)로 구성된 Part들로 이루어집니다.
+- **멀티모달 메시지 모델**: Message는 멤버 기반 판별(text, url, raw, data)로 구성된 Part들로 이루어집니다.
 - **비동기 우선 설계**: 긴 작업은 streaming(SSE)과 push notification으로 분리 처리합니다.
 - **멀티 전송 지원**: JSON-RPC, gRPC, HTTP+JSON을 `supportedInterfaces`로 동등하게 지원합니다.
 - **보안 내장 설계**: OAuth2(PKCE, Device Code), mTLS, API Key, OpenID Connect + Agent Card 서명(JWS + RFC 8785).

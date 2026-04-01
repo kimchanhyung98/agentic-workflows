@@ -119,9 +119,9 @@ sequenceDiagram
 flowchart LR
     C["Client Agent"] --> AC["Agent Card 조회"]
     AC --> IF{"supportedInterfaces 확인"}
-    IF -->|"json-rpc"| JR["JSON-RPC 2.0<br/>(HTTP/1.1+)"]
-    IF -->|"grpc"| GR["gRPC<br/>(HTTP/2 + TLS)"]
-    IF -->|"http"| HT["HTTP+JSON<br/>(REST-like)"]
+    IF -->|"JSONRPC"| JR["JSON-RPC 2.0<br/>(HTTP/1.1+)"]
+    IF -->|"GRPC"| GR["gRPC<br/>(HTTP/2 + TLS)"]
+    IF -->|"HTTP"| HT["HTTP+JSON<br/>(REST-like)"]
     JR --> REQ["A2A 요청"]
     GR --> REQ
     HT --> REQ

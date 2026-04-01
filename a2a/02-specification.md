@@ -7,21 +7,21 @@
 
 ## 1. 프로토콜 개요
 
-| 항목      | 내용                                                        |
-|---------|-----------------------------------------------------------|
-| 이름      | Agent2Agent (A2A) Protocol                                |
-| 현재 버전   | v1.0 (안정 릴리스, 프로덕션 준비 완료)                                 |
-| 상태      | Stable                                                    |
+| 항목      | 내용                                                                                               |
+|---------|--------------------------------------------------------------------------------------------------|
+| 이름      | Agent2Agent (A2A) Protocol                                                                       |
+| 현재 버전   | v1.0 (안정 릴리스, 프로덕션 준비 완료)                                                                        |
+| 상태      | Stable                                                                                           |
 | 관리 주체   | Linux Foundation (TSC: AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, ServiceNow) |
-| 전송 프로토콜 | JSON-RPC 2.0, gRPC, HTTP+JSON                             |
-| 기반      | HTTP/2 + TLS                                              |
+| 전송 프로토콜 | JSON-RPC 2.0, gRPC, HTTP+JSON                                                                    |
+| 기반      | HTTP/2 + TLS                                                                                     |
 
 ### 버전 이력
 
-| 버전     | 주요 변경사항                                                                            |
-|--------|------------------------------------------------------------------------------------|
-| v0.2.x | 초기 스펙, JSON-RPC 기반, 기본 Task/Message/Artifact 모델                                    |
-| v0.3.0 | gRPC 1급 지원, Agent Card 서명, auth-required/rejected 상태 추가, Extensions 메커니즘, 멀티 전송 협상 |
+| 버전     | 주요 변경사항                                                                                                                                     |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| v0.2.x | 초기 스펙, JSON-RPC 기반, 기본 Task/Message/Artifact 모델                                                                                             |
+| v0.3.0 | gRPC 1급 지원, Agent Card 서명, auth-required/rejected 상태 추가, Extensions 메커니즘, 멀티 전송 협상                                                          |
 | v1.0   | 프로덕션 안정 릴리스, 멀티 테넌시, Part 재설계(멤버 기반 판별), SCREAMING_SNAKE_CASE 열거형, google.rpc.Status 에러, 최신 OAuth 플로우, supportedInterfaces 도입, 커서 기반 페이지네이션 |
 
 ---
@@ -34,43 +34,48 @@ Agent Card는 에이전트의 공개 메타데이터 문서로, `/.well-known/ag
 
 ```json
 {
-  "id": "string (required)",
   "name": "string (required)",
-  "description": "string (optional)",
-  "version": "string (required)",
-  "provider": {
-    "id": "string",
-    "name": "string",
-    "logoUrl": "string"
-  },
-  "serviceEndpoint": "string (required, URI)",
-  "capabilities": {
-    "streaming": "boolean (default: false)",
-    "pushNotifications": "boolean (default: false)",
-    "extendedAgentCard": "boolean (default: false)"
-  },
+  "description": "string (required)",
   "supportedInterfaces": [
     {
-      "url": "string (URI)",
-      "protocolBinding": "string (e.g. 'json-rpc', 'grpc', 'http')",
-      "protocolVersion": "string (e.g. '1.0')"
+      "url": "string (URI, required)",
+      "protocolBinding": "string (required, e.g. 'JSONRPC', 'GRPC', 'HTTP')",
+      "protocolVersion": "string (required, e.g. '1.0')",
+      "tenant": "string (optional)"
     }
   ],
-  "skills": [ "AgentSkill[]" ],
-  "defaultInputModes": [ "string[]" ],
-  "defaultOutputModes": [ "string[]" ],
+  "provider": {
+    "url": "string (required)",
+    "organization": "string (required)"
+  },
+  "version": "string (required)",
+  "documentationUrl": "string (optional)",
+  "capabilities": {
+    "streaming": "boolean (optional)",
+    "pushNotifications": "boolean (optional)",
+    "extendedAgentCard": "boolean (optional)",
+    "extensions": [ "AgentExtension[]" ]
+  },
   "securitySchemes": { "[schemeName]": "SecurityScheme" },
-  "security": [ { "[schemeName]": ["scope1"] } ],
-  "extensions": [ "AgentExtension[]" ],
-  "signatures": [ "AgentCardSignature[]" ]
+  "securityRequirements": [ "SecurityRequirement[]" ],
+  "defaultInputModes": [ "string[] (required)" ],
+  "defaultOutputModes": [ "string[] (required)" ],
+  "skills": [ "AgentSkill[] (required)" ],
+  "signatures": [ "AgentCardSignature[]" ],
+  "iconUrl": "string (optional)"
 }
 ```
 
 v0.3 대비 주요 변경사항:
 
+- `id`, `serviceEndpoint`, `url` (최상위 필드) 제거 → URL은 `supportedInterfaces[].url`로 이동
 - `protocolVersion` (최상위 필드) 제거 → `supportedInterfaces[].protocolVersion`으로 이동
-- `interfaces[]` → `supportedInterfaces[]`로 변경, 각 항목에 `url`, `protocolBinding`, `protocolVersion` 포함
+- `interfaces[]` → `supportedInterfaces[]`로 변경, 각 항목에 `url`, `protocolBinding`, `protocolVersion`, `tenant` 포함
+- `provider` 구조 변경: `{id, name, logoUrl}` → `{url, organization}`
 - `capabilities.extendedAgentCard` 필드 추가 (기존 `supportsAuthenticatedExtendedCard` 대체)
+- `security` → `securityRequirements`로 변경
+- `extensions` → `capabilities.extensions`로 이동
+- `documentationUrl`, `iconUrl` 추가
 
 ### 2.2 AgentSkill
 
@@ -78,13 +83,12 @@ v0.3 대비 주요 변경사항:
 {
   "id": "string (required)",
   "name": "string (required)",
-  "description": "string (optional)",
-  "inputDescription": "string (optional)",
-  "outputDescription": "string (optional)",
-  "inputSchema": "JSON Schema (optional)",
-  "outputSchema": "JSON Schema (optional)",
-  "tags": ["string"],
-  "examples": ["string"]
+  "description": "string (required)",
+  "tags": ["string (required)"],
+  "examples": ["string"],
+  "inputModes": ["string (optional, MIME types)"],
+  "outputModes": ["string (optional, MIME types)"],
+  "securityRequirements": ["SecurityRequirement (optional)"]
 }
 ```
 
@@ -93,8 +97,9 @@ v0.3 대비 주요 변경사항:
 ```json
 {
   "url": "string (URI, required)",
-  "protocolBinding": "string (e.g. 'json-rpc', 'grpc', 'http')",
-  "protocolVersion": "string (e.g. '1.0')"
+  "protocolBinding": "string (required, e.g. 'JSONRPC', 'GRPC', 'HTTP')",
+  "tenant": "string (optional)",
+  "protocolVersion": "string (required, e.g. '1.0')"
 }
 ```
 
@@ -129,19 +134,17 @@ RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘입니다.
 
 ```json
 {
-  "id": "currency-exchange-agent",
   "name": "Currency Exchange Agent",
   "description": "Provides real-time currency exchange rates",
   "version": "1.0.0",
-  "serviceEndpoint": "https://api.example.com/a2a/v1",
   "capabilities": {
     "streaming": true,
     "pushNotifications": false,
     "extendedAgentCard": false
   },
   "supportedInterfaces": [
-    { "url": "https://api.example.com/a2a/v1", "protocolBinding": "json-rpc", "protocolVersion": "1.0" },
-    { "url": "https://api.example.com/a2a/grpc", "protocolBinding": "grpc", "protocolVersion": "1.0" }
+    { "url": "https://api.example.com/a2a/v1", "protocolBinding": "JSONRPC", "protocolVersion": "1.0" },
+    { "url": "https://api.example.com/a2a/grpc", "protocolBinding": "GRPC", "protocolVersion": "1.0" }
   ],
   "skills": [
     {
@@ -165,7 +168,7 @@ RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘입니다.
       }
     }
   },
-  "security": [{ "oauth2": ["agent:read"] }]
+  "securityRequirements": [{ "schemes": { "oauth2": { "list": ["agent:read"] } } }]
 }
 ```
 
@@ -175,19 +178,19 @@ RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘입니다.
 
 ### 3.1 메서드 목록
 
-| 메서드                                  | 설명                         | 필수                                |
-|--------------------------------------|----------------------------|-----------------------------------|
-| `SendMessage`                        | 메시지 송신, Task 또는 Message 반환 | Yes                               |
-| `SendStreamingMessage`               | SSE 기반 스트리밍 메시지 송신         | No (streaming capability)         |
-| `GetTask`                            | 특정 Task 상태/결과 조회           | Yes                               |
-| `ListTasks`                          | Task 목록 조회                 | No                                |
-| `CancelTask`                         | Task 취소 요청                 | No                                |
-| `SubscribeToTask`                    | Task 업데이트 스트리밍 구독          | No                                |
-| `CreateTaskPushNotificationConfig`   | 웹훅 설정 생성                   | No (push capability)              |
-| `GetTaskPushNotificationConfig`      | 웹훅 설정 조회                   | No                                |
-| `ListTaskPushNotificationConfigs`    | 웹훅 설정 목록 조회                | No                                |
-| `DeleteTaskPushNotificationConfig`   | 웹훅 설정 삭제                   | No                                |
-| `GetExtendedAgentCard`               | 인증된 Agent Card 조회          | No (extendedAgentCard capability) |
+| 메서드                                | 설명                         | 필수                                |
+|------------------------------------|----------------------------|-----------------------------------|
+| `SendMessage`                      | 메시지 송신, Task 또는 Message 반환 | Yes                               |
+| `SendStreamingMessage`             | SSE 기반 스트리밍 메시지 송신         | No (streaming capability)         |
+| `GetTask`                          | 특정 Task 상태/결과 조회           | Yes                               |
+| `ListTasks`                        | Task 목록 조회                 | No                                |
+| `CancelTask`                       | Task 취소 요청                 | No                                |
+| `SubscribeToTask`                  | Task 업데이트 스트리밍 구독          | No                                |
+| `CreateTaskPushNotificationConfig` | 웹훅 설정 생성                   | No (push capability)              |
+| `GetTaskPushNotificationConfig`    | 웹훅 설정 조회                   | No                                |
+| `ListTaskPushNotificationConfigs`  | 웹훅 설정 목록 조회                | No                                |
+| `DeleteTaskPushNotificationConfig` | 웹훅 설정 삭제                   | No                                |
+| `GetExtendedAgentCard`             | 인증된 Agent Card 조회          | No (extendedAgentCard capability) |
 
 ### 3.2 SendMessage
 
@@ -253,14 +256,14 @@ SSE 기반 스트리밍 호출. 장기 실행 또는 진행 가시성이 중요�
   "params": {
     "contextId": "session-uuid-001",
     "status": "TASK_STATE_WORKING",
-    "maxResults": 20,
-    "cursor": "next-cursor-token",
+    "pageSize": 20,
+    "pageToken": "next-page-token",
     "tenant": "tenant-001"
   }
 }
 ```
 
-v1.0에서 새로 추가된 메서드이며, 페이지 기반 페이지네이션 대신 커서 기반 페이지네이션(`cursor`)을 사용합니다.
+v1.0에서 새로 추가된 메서드이며, `pageSize`/`pageToken`/`nextPageToken` 기반 페이지네이션을 사용합니다.
 
 ### 3.6 CancelTask
 
@@ -302,17 +305,17 @@ v1.0에서 새로 추가된 메서드이며, 페이지 기반 페이지네이션
 
 v1.0에서 모든 열거형 값은 SCREAMING_SNAKE_CASE로 변경되었습니다.
 
-| 상태                            | 코드 | 설명       | 유형  |
-|-------------------------------|----|----------|-----|
-| `TASK_STATE_UNSPECIFIED`      | 0  | 미지정      | -   |
-| `TASK_STATE_SUBMITTED`        | 1  | 제출됨      | 초기  |
-| `TASK_STATE_WORKING`          | 2  | 진행 중     | 활성  |
-| `TASK_STATE_COMPLETED`        | 3  | 완료       | 터미널 |
-| `TASK_STATE_FAILED`           | 4  | 실패       | 터미널 |
-| `TASK_STATE_CANCELED`         | 5  | 취소됨      | 터미널 |
-| `TASK_STATE_INPUT_REQUIRED`   | 6  | 추가 입력 필요 | 중단  |
-| `TASK_STATE_AUTH_REQUIRED`    | 7  | 인증 필요    | 중단  |
-| `TASK_STATE_REJECTED`         | 8  | 거부됨      | 터미널 |
+| 상태                          | 코드 | 설명       | 유형  |
+|-----------------------------|----|----------|-----|
+| `TASK_STATE_UNSPECIFIED`    | 0  | 미지정      | -   |
+| `TASK_STATE_SUBMITTED`      | 1  | 제출됨      | 초기  |
+| `TASK_STATE_WORKING`        | 2  | 진행 중     | 활성  |
+| `TASK_STATE_COMPLETED`      | 3  | 완료       | 터미널 |
+| `TASK_STATE_FAILED`         | 4  | 실패       | 터미널 |
+| `TASK_STATE_CANCELED`       | 5  | 취소됨      | 터미널 |
+| `TASK_STATE_INPUT_REQUIRED` | 6  | 추가 입력 필요 | 중단  |
+| `TASK_STATE_REJECTED`       | 7  | 거부됨      | 터미널 |
+| `TASK_STATE_AUTH_REQUIRED`  | 8  | 인증 필요    | 중단  |
 
 역할(Role) 열거형도 동일하게 변경: `user` → `ROLE_USER`, `agent` → `ROLE_AGENT`
 
@@ -350,15 +353,13 @@ v1.0에서 모든 열거형 값은 SCREAMING_SNAKE_CASE로 변경되었습니다
   "id": "task-uuid-001",
   "contextId": "session-uuid-001",
   "status": { "state": "TASK_STATE_COMPLETED", "timestamp": "..." },
-  "createdAt": "2025-07-15T10:29:55Z",
-  "lastModified": "2025-07-15T10:30:05Z",
-  "messages": [ "Message[]" ],
+  "history": [ "Message[]" ],
   "artifacts": [ "Artifact[]" ],
   "metadata": {}
 }
 ```
 
-v1.0에서 `createdAt`, `lastModified` 타임스탬프 필드가 추가되었습니다.
+타임스탬프는 `TaskStatus.timestamp`를 통해 추적되며, Task의 생성/수정 시점은 status 이력으로 확인합니다.
 
 ---
 
@@ -368,14 +369,14 @@ v1.0에서 `createdAt`, `lastModified` 타임스탬프 필드가 추가되었습
 
 ```json
 {
-  "id": "string (optional, server-generated)",
+  "messageId": "string (required)",
+  "contextId": "string (optional)",
+  "taskId": "string (optional)",
   "role": "ROLE_USER | ROLE_AGENT",
   "parts": [ "Part[] (required, 최소 1개)" ],
-  "taskId": "string (optional)",
-  "contextId": "string (optional)",
-  "referenceTaskIds": ["string (optional)"],
-  "messageId": "string (required for requests)",
-  "createdAt": "RFC3339 timestamp (optional)"
+  "metadata": "object (optional)",
+  "extensions": ["string (optional)"],
+  "referenceTaskIds": ["string (optional)"]
 }
 ```
 
@@ -396,9 +397,9 @@ v1.0에서는 `kind` 필드가 제거되고, 멤버 기반 판별(member-based d
   "filename": "report.pdf"
 }
 
-// 파일 Part - 인라인 바이너리 (bytes 필드 존재)
+// 파일 Part - 인라인 바이너리 (raw 필드 존재)
 {
-  "bytes": "base64-encoded-content",
+  "raw": "base64-encoded-content",
   "mediaType": "image/png",
   "filename": "chart.png"
 }
@@ -413,8 +414,8 @@ v1.0에서는 `kind` 필드가 제거되고, 멤버 기반 판별(member-based d
 v0.3 대비 주요 변경사항:
 
 - `TextPart`, `FilePart`, `DataPart` 구분 제거 → 통합 Part 타입
-- `kind` 필드 제거 → 멤버 존재 여부로 유형 판별 (`text`, `url`, `bytes`, `data`)
-- `file.uri` → `url` (최상위), `file.bytes` → `bytes` (최상위), `file.name` → `filename`
+- `kind` 필드 제거 → 멤버 존재 여부로 유형 판별 (`text`, `url`, `raw`, `data`)
+- `file.uri` → `url` (최상위), `file.bytes` → `raw` (최상위), `file.name` → `filename`
 
 ### 5.3 Artifact
 
@@ -422,15 +423,14 @@ Task 수행 결과로 생성되는 산출물입니다.
 
 ```json
 {
-  "id": "artifact-001",
+  "artifactId": "artifact-001",
   "name": "Exchange Rate Result",
   "description": "USD to EUR exchange rate",
-  "mimeType": "application/json",
   "parts": [
     { "data": { "rate": 0.92 }, "mediaType": "application/json" }
   ],
-  "createdAt": "2025-07-15T10:30:05Z",
-  "metadata": {}
+  "metadata": {},
+  "extensions": []
 }
 ```
 
@@ -440,7 +440,7 @@ Task 수행 결과로 생성되는 산출물입니다.
 
 ### 6.1 StreamResponse (래퍼)
 
-스트리밍 응답은 멤버 이름 판별(member name discrimination)을 사용합니다. v1.0에서는 `kind` 필드 대신 어떤 멤버가 존재하는지로 이벤트 유형을 판별합니다.
+스트리밍 응답은 `oneof payload` 패턴을 사용합니다. v1.0에서는 `kind` 필드 대신 어떤 멤버가 존재하는지로 이벤트 유형을 판별합니다.
 
 ```json
 // Task 전체 상태 (task 멤버 존재)
@@ -449,14 +449,14 @@ Task 수행 결과로 생성되는 산출물입니다.
 // 메시지 (message 멤버 존재)
 { "message": { "role": "ROLE_AGENT", "parts": [...] } }
 
-// 상태 업데이트 이벤트 (taskStatusUpdate 멤버 존재)
-{ "taskStatusUpdate": { "taskId": "...", "status": {...} } }
+// 상태 업데이트 이벤트 (statusUpdate 멤버 존재)
+{ "statusUpdate": { "taskId": "...", "contextId": "...", "status": {...} } }
 
-// Artifact 업데이트 이벤트 (taskArtifactUpdate 멤버 존재)
-{ "taskArtifactUpdate": { "taskId": "...", "artifact": {...}, "timestamp": "..." } }
+// Artifact 업데이트 이벤트 (artifactUpdate 멤버 존재)
+{ "artifactUpdate": { "taskId": "...", "contextId": "...", "artifact": {...}, "append": false, "lastChunk": true } }
 ```
 
-v0.3에서는 `{"kind": "taskStatusUpdate", ...}` 형태였으나, v1.0에서는 `{"taskStatusUpdate": {...}}` 형태로 변경되었습니다.
+v0.3에서는 `{"kind": "taskStatusUpdate", ...}` 형태였으나, v1.0에서는 `{"statusUpdate": {...}}` 형태로 변경되었습니다.
 
 ### 6.2 스트리밍 동작 규칙
 
@@ -481,7 +481,8 @@ v0.3에서는 `{"kind": "taskStatusUpdate", ...}` 형태였으나, v1.0에서는
 
 ### 7.2 OAuth2SecurityScheme 예시
 
-v1.0에서 Implicit, Password 플로우가 제거되고, Device Code 플로우(RFC 8628)가 추가되었습니다. Authorization Code 플로우에는 PKCE 지원(`pkceRequired`)이 추가되었습니다.
+v1.0에서 Implicit, Password 플로우가 제거되고, Device Code 플로우(RFC 8628)가 추가되었습니다. Authorization Code 플로우에는 PKCE 지원(
+`pkceRequired`)이 추가되었습니다.
 
 ```json
 {
@@ -600,10 +601,9 @@ Agent Card의 `supportedInterfaces`에서 정적으로 선언하며, 동적 협�
 
 ```json
 {
-  "serviceEndpoint": "https://api.example.com/a2a/v1",
   "supportedInterfaces": [
-    { "url": "https://api.example.com/a2a/v1", "protocolBinding": "json-rpc", "protocolVersion": "1.0" },
-    { "url": "https://api.example.com/a2a/grpc", "protocolBinding": "grpc", "protocolVersion": "1.0" }
+    { "url": "https://api.example.com/a2a/v1", "protocolBinding": "JSONRPC", "protocolVersion": "1.0" },
+    { "url": "https://api.example.com/a2a/grpc", "protocolBinding": "GRPC", "protocolVersion": "1.0" }
   ]
 }
 ```
@@ -611,8 +611,8 @@ Agent Card의 `supportedInterfaces`에서 정적으로 선언하며, 동적 협�
 클라이언트 선택 규칙:
 
 1. Agent Card 파싱 → `supportedInterfaces`에서 지원 전송 목록 추출
-2. `serviceEndpoint` 우선 사용
-3. 미지원 시 `supportedInterfaces`에서 대체 선택
+2. `supportedInterfaces` 배열의 첫 번째 항목 우선 사용 (선호 순서)
+3. 클라이언트가 지원하는 `protocolBinding`에 맞는 인터페이스 선택
 
 ### 9.3 버전 협상
 
@@ -625,7 +625,7 @@ Agent Card의 `supportedInterfaces`에서 정적으로 선언하며, 동적 협�
 | 언어                    | 패키지                            | 상태          |
 |-----------------------|--------------------------------|-------------|
 | Python                | `a2a-sdk`                      | 공식, PyPI 배포 |
-| JavaScript/TypeScript | `@anthropic-ai/a2a`            | 공식          |
+| JavaScript/TypeScript | `@a2a-js/sdk`                  | 공식          |
 | Go                    | `github.com/a2aproject/a2a-go` | 공식          |
 | Java                  | -                              | 공식          |
 | .NET                  | -                              | 공식          |
