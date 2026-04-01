@@ -25,6 +25,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 
 | 디렉토리                                              | 설명                                                             | 분석 대상             |
 |---------------------------------------------------|----------------------------------------------------------------|-------------------|
+| [a2a](/a2a/README.md)                             | Agent2Agent 프로토콜, Agent Card 기반 발견, 태스크/스트리밍/푸시 비동기 협업 모델 분석            | A2A Protocol      |
 | [aperant](/aperant/README.md)                     | Electron 기반 자율 멀티에이전트 코딩 앱, 다단계 오케스트레이션, 멀티 프로바이더, worktree 격리 | Aperant           |
 | [gitagent](/gitagent/README.md)                   | Git-native 에이전트 표준/CLI, 스키마 검증, 어댑터 export/import, 컴플라이언스(SOD) 모델 | Open GitAgent     |
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                 | LangChain Skills  |
