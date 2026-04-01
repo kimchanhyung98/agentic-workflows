@@ -2,11 +2,13 @@
 
 ## 1. 개요
 
-- 대상: Agent2Agent(A2A) 프로토콜
+- 대상: Agent2Agent(A2A) 프로토콜 (v1.0, Linux Foundation 관리)
 - 목적: 서로 다른 에이전트 프레임워크/벤더 간 상호운용 가능한 협업 인터페이스 제공
-- 접근: Agent Card 기반 discovery + JSON-RPC 기반 오퍼레이션 + Task 상태 모델
+- 접근: Agent Card 기반 discovery + JSON-RPC/gRPC 기반 오퍼레이션 + Task 상태 모델
+- 생태계: 150개 이상의 조직 참여, TSC 8개사(AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, ServiceNow), Python/Go/JS/Java/.NET SDK 공식 지원
 
-A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 상태와 결과를 표준 방식으로 받는 것"에 집중합니다. 또한 장기 실행을 전제로 streaming(SSE)과 push notification을 함께 다룹니다.
+A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 상태와 결과를 표준 방식으로 받는 것"에 집중합니다. 또한 장기 실행을 전제로 streaming(SSE)과 push notification을 함께
+다룹니다.
 
 ---
 
@@ -14,15 +16,17 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ### 2.1 Agent Card
 
-- 에이전트의 공개 메타데이터 문서입니다.
-- 일반적으로 기능(capabilities), 엔드포인트, 인증 요구사항, 입력/출력 기대를 제공합니다.
+- 에이전트의 공개 메타데이터 문서로, `/.well-known/agent-card.json` 경로에 게시됩니다.
+- 기능(capabilities), `supportedInterfaces`, 인증 요구사항, 스킬, Extensions를 제공합니다.
 - 클라이언트는 호출 전에 Agent Card를 확인해 "이 에이전트가 무엇을, 어떤 방식으로 처리 가능한지"를 판단합니다.
+- JWS(RFC 7515) + JSON Canonicalization(RFC 8785) 기반 디지털 서명을 지원합니다.
 
 ### 2.2 Task
 
 - A2A 상호작용의 중심 단위입니다.
 - 단순 request/response보다 긴 수명의 작업 객체로 관리됩니다.
-- 상태 전이(예: 진행 중, 추가 입력 필요, 완료/실패/취소)를 갖고 `getTask`, `listTasks` 등으로 조회 가능합니다.
+- 상태 전이를 갖고 `GetTask`, `ListTasks` 등으로 조회 가능합니다.
+- 8가지 상태: `SUBMITTED`, `WORKING`, `COMPLETED`, `FAILED`, `CANCELED`, `INPUT_REQUIRED`, `AUTH_REQUIRED`, `REJECTED`
 
 ### 2.3 Message
 
@@ -43,11 +47,12 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ## 3. 프로토콜 계층
 
-1. **Discovery 계층**: Agent Card 조회/해석
-2. **Transport/API 계층**: HTTP + JSON-RPC 호출 규약
-3. **Interaction 계층**: Message/Part 기반 입력·출력
-4. **Task 상태 계층**: 작업 생성, 진행, 조회, 취소, 구독
-5. **Async 전달 계층**: SSE 스트리밍 + Push notification
+1. **Discovery 계층**: Agent Card 조회/해석 (`/.well-known/agent-card.json`)
+2. **Transport/API 계층**: JSON-RPC 2.0 / gRPC / HTTP+JSON (3가지 동등 지원, `supportedInterfaces`로 선언)
+3. **Interaction 계층**: Message/Part(멤버 기반 판별: text, url, data 등) 입력·출력
+4. **Task 상태 계층**: 작업 생성, 진행, 조회, 취소, 구독 + In-Task 인증
+5. **Async 전달 계층**: SSE 스트리밍 + Push notification(웹훅)
+6. **Security 계층**: OAuth2(PKCE, Device Code), mTLS, API Key, OpenID Connect + Agent Card 서명
 
 이 계층 분리 덕분에 구현체는 "발견", "호출", "장기 실행 통지"를 독립적으로 설계할 수 있습니다.
 
@@ -55,34 +60,34 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ## 4. 핵심 오퍼레이션
 
-### 4.1 `sendMessage`
+### 4.1 `SendMessage`
 
 - 기본 동기 호출입니다.
 - 요청을 보내고 표준 응답을 수신합니다.
 - 짧거나 즉시 완료 가능한 작업에 적합합니다.
 
-### 4.2 `sendStreamingMessage`
+### 4.2 `SendStreamingMessage`
 
 - SSE 기반 스트리밍 호출입니다.
 - Task 진행 이벤트/중간 결과를 순차적으로 받습니다.
 - 장기 실행 또는 진행 가시성이 중요한 시나리오에 적합합니다.
 
-### 4.3 `getTask`
+### 4.3 `GetTask`
 
 - 특정 Task의 최신 상태/결과를 조회합니다.
 - 연결이 끊겼거나 나중에 결과를 재조회할 때 사용합니다.
 
-### 4.4 `listTasks`
+### 4.4 `ListTasks`
 
-- Task 목록을 조회합니다.
+- Task 목록을 필터링/조회합니다. 커서 기반 페이지네이션을 지원합니다.
 - 운영/모니터링 관점에서 유용합니다.
 
-### 4.5 `cancelTask`
+### 4.5 `CancelTask`
 
 - 장기 작업 중단을 요청합니다.
 - 자원 보호, 사용자 취소 UX, SLA 관리에 필요합니다.
 
-### 4.6 `subscribe` / push configuration
+### 4.6 `SubscribeToTask` / Push Notification Config
 
 - 장기 작업 결과를 웹훅 등으로 비동기 수신하기 위한 설정입니다.
 - 클라이언트가 상시 연결을 유지하지 않아도 완료/실패 이벤트를 받을 수 있습니다.
@@ -91,10 +96,10 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ## 5. 비동기 패턴
 
-- **패턴 A (순수 동기)**: `sendMessage` → 즉시 결과
-- **패턴 B (스트리밍)**: `sendStreamingMessage` → SSE로 진행률/중간 결과 수신
-- **패턴 C (폴링)**: `sendMessage` 또는 초기 호출 후 `getTask` 반복 조회
-- **패턴 D (푸시 기반)**: 초기 호출 + push config/subscribe → 완료 이벤트를 웹훅으로 수신
+- **패턴 A (순수 동기)**: `SendMessage` → 즉시 결과
+- **패턴 B (스트리밍)**: `SendStreamingMessage` → SSE로 진행률/중간 결과 수신
+- **패턴 C (폴링)**: `SendMessage` 또는 초기 호출 후 `GetTask` 반복 조회
+- **패턴 D (푸시 기반)**: 초기 호출 + `CreateTaskPushNotificationConfig` → 완료 이벤트를 웹훅으로 수신
 
 실무에서는 B + D 조합(초기 실시간 가시성 + 최종 비동기 통지)이 자주 사용됩니다.
 
@@ -102,25 +107,29 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ## 6. 보안/엔터프라이즈 고려사항
 
-엔터프라이즈 환경에서는 다음을 함께 고려해야 합니다.
+엔터프라이즈 환경에서는 다음을 함께 고려해야 합니다. (상세 분석은 [보안 분석](/a2a/03-security.md) 참고)
 
-- **인증/인가**: Agent Card에 명시된 인증 요구사항 준수
-- **전송 보안**: TLS 기반 통신 및 webhook endpoint 보호
+- **인증/인가**: Agent Card에 명시된 인증 요구사항 준수 (OAuth2 + PKCE/Device Code, mTLS, API Key, OpenID Connect)
+- **전송 보안**: TLS 1.3 기반 통신 및 webhook endpoint 보호
+- **Agent Card 무결성**: JWS(RFC 7515) + JSON Canonicalization(RFC 8785) 기반 서명으로 스푸핑 방지
+- **In-Task 인증**: 작업 중 추가 인증 필요 시 `TASK_STATE_AUTH_REQUIRED` 상태로 전환
+- **멀티테넌시**: `tenant` 필드로 단일 엔드포인트에서 다중 에이전트 격리 운영
 - **신뢰 경계**: 외부 에이전트 호출 시 데이터 최소 제공 원칙
+- **프롬프트 인젝션 방어**: 에이전트 간 전달 메시지 검증 및 샌드박싱
 - **감사 가능성**: Task/Message/Artifact 이력 추적
 - **정책 준수**: 데이터 거버넌스, 컴플라이언스 정책과의 정렬
-- **운영 복원력**: 재시도, 타임아웃, 중복 이벤트 처리(idempotency)
+- **운영 복원력**: 재시도, 타임아웃, 중복 이벤트 처리(idempotency), 서킷 브레이커
 
 ---
 
 ## 7. A2A vs MCP 비교
 
-| 구분 | A2A | MCP |
-|---|---|---|
-| 초점 | 에이전트 간 협업/위임 | 모델(또는 에이전트)과 도구/데이터 연결 |
-| 핵심 단위 | Agent, Task, Message, Artifact | Tool, Resource, Prompt 등 |
-| 대표 시나리오 | 다른 에이전트에게 작업 요청/진행 관리 | 파일/DB/API 등 외부 능력 표준 접근 |
-| 관계 | MCP를 사용하는 에이전트끼리 A2A로 협업 가능 | A2A 에이전트 내부 도구 계층으로 결합 가능 |
+| 구분      | A2A                            | MCP                       |
+|---------|--------------------------------|---------------------------|
+| 초점      | 에이전트 간 협업/위임                   | 모델(또는 에이전트)과 도구/데이터 연결    |
+| 핵심 단위   | Agent, Task, Message, Artifact | Tool, Resource, Prompt 등  |
+| 대표 시나리오 | 다른 에이전트에게 작업 요청/진행 관리          | 파일/DB/API 등 외부 능력 표준 접근   |
+| 관계      | MCP를 사용하는 에이전트끼리 A2A로 협업 가능    | A2A 에이전트 내부 도구 계층으로 결합 가능 |
 
 핵심은 대체 관계가 아니라 **상호보완 관계**라는 점입니다.
 
@@ -128,13 +137,19 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 
 ## 8. 구현 체크리스트
 
-- [ ] Agent Card를 공개하고 capability/auth 정보를 명확히 기술했는가
-- [ ] `sendMessage`, `sendStreamingMessage` 두 경로를 모두 지원/검증했는가
-- [ ] Task 상태 전이 및 `getTask`/`listTasks` 조회를 구현했는가
-- [ ] `cancelTask`의 중단 시맨틱과 예외 처리를 정의했는가
-- [ ] subscribe/push notification 경로(웹훅 검증 포함)를 준비했는가
+- [ ] Agent Card를 `/.well-known/agent-card.json`에 공개하고 capability/auth/skills/supportedInterfaces 정보를 명확히 기술했는가
+- [ ] `SendMessage`, `SendStreamingMessage` 두 경로를 모두 지원/검증했는가
+- [ ] Task 상태 전이(8가지 상태) 및 `GetTask`/`ListTasks` 조회를 구현했는가
+- [ ] `CancelTask`의 중단 시맨틱과 예외 처리를 정의했는가
+- [ ] `SubscribeToTask`/Push Notification 경로(웹훅 검증 포함)를 준비했는가
 - [ ] SSE 끊김/재연결, 중복 이벤트 처리 전략을 마련했는가
 - [ ] 인증/권한/감사로그/데이터 보존 정책을 운영 기준에 맞췄는가
+- [ ] Agent Card 서명(JWS + JSON Canonicalization) 적용 여부를 검토했는가
+- [ ] gRPC 전송 지원 필요성을 평가했는가
+- [ ] `TASK_STATE_AUTH_REQUIRED`/`TASK_STATE_REJECTED` 상태에 대한 클라이언트 핸들링을 구현했는가
+- [ ] 멀티테넌시(`tenant` 필드) 지원 여부를 결정했는가
+
+> 구현 상세는 [구현 가이드](/a2a/04-implementation.md)를 참고하세요.
 
 ---
 
@@ -146,3 +161,22 @@ A2A는 "에이전트가 다른 에이전트에게 일을 위임하고, 진행 �
 - **분리된 책임 vs 디버깅 난이도**: A2A(협업) + MCP(도구) 조합은 구조적으로 우수하지만 문제 추적 경로가 길어질 수 있습니다.
 
 결론적으로 A2A는 멀티에이전트 협업의 "계약 계층"으로 유용하며, MCP와 결합할 때 실제 운영 가치가 크게 올라갑니다.
+
+---
+
+## 10. 버전별 주요 변경사항
+
+| 영역 | v0.2.x | v0.3.0 | v1.0 |
+|---|---|---|---|
+| 전송 프로토콜 | JSON-RPC만 | +gRPC, HTTP+JSON | 동등 지원, `supportedInterfaces` 선언 |
+| Agent Card | 기본 | +JWS 서명, Extensions | +JSON Canonicalization(RFC 8785), `supportedInterfaces` |
+| Task 상태 | 5가지 | +`auth-required`, `rejected` | 8가지, SCREAMING_SNAKE_CASE 열거형 |
+| Part 타입 | 비구조적 | TextPart/FilePart/DataPart + `kind` | 통합 Part, 멤버 기반 판별 (`kind` 제거) |
+| 에러 처리 | 기본 | A2A 에러 코드 | `google.rpc.Status` + `ErrorInfo` 채택 |
+| 멀티테넌시 | 없음 | 없음 | `tenant` 필드 네이티브 지원 |
+| OAuth | 기본 | 기본 | +PKCE, Device Code / -Implicit, -Password |
+| 메서드명 | `message/send` | 동일 | `SendMessage` (PascalCase) |
+| SDK | Python 중심 | 확대 | Python, Go, JS, Java, .NET 공식 |
+| 관리 | Google | Google | Linux Foundation (TSC 8개사) |
+
+> 스펙 상세는 [프로토콜 스펙 상세](/a2a/02-specification.md)를 참고하세요.
