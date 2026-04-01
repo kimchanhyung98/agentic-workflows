@@ -23,14 +23,14 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 
 ### 도구 및 프레임워크 분석
 
-| 디렉토리                                              | 설명                                                             | 분석 대상             |
-|---------------------------------------------------|----------------------------------------------------------------|-------------------|
-| [a2a](/a2a/README.md)                             | Agent2Agent 프로토콜, Agent Card 기반 발견, 태스크/스트리밍/푸시 비동기 협업 모델 분석            | A2A Protocol      |
-| [aperant](/aperant/README.md)                     | Electron 기반 자율 멀티에이전트 코딩 앱, 다단계 오케스트레이션, 멀티 프로바이더, worktree 격리 | Aperant           |
+| 디렉토리                                              | 설명                                                                | 분석 대상             |
+|---------------------------------------------------|-------------------------------------------------------------------|-------------------|
+| [a2a](/a2a/README.md)                             | Agent2Agent 프로토콜, Agent Card 기반 발견, 태스크/스트리밍/푸시 비동기 협업 모델 분석      | A2A Protocol      |
+| [aperant](/aperant/README.md)                     | Electron 기반 자율 멀티에이전트 코딩 앱, 다단계 오케스트레이션, 멀티 프로바이더, worktree 격리    | Aperant           |
 | [gitagent](/gitagent/README.md)                   | Git-native 에이전트 표준/CLI, 스키마 검증, 어댑터 export/import, 컴플라이언스(SOD) 모델 | Open GitAgent     |
-| [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                 | LangChain Skills  |
-| [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                     | Oh My OpenAgent   |
-| [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                               | OpenCode Worktree |
+| [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                    | LangChain Skills  |
+| [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                        | Oh My OpenAgent   |
+| [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                                  | OpenCode Worktree |
 
 ### 자율 개선 루프
 
@@ -40,8 +40,8 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 
 ### 자율 연구 자동화
 
-| 디렉토리                                        | 설명                                                               | 주요 출처       |
-|---------------------------------------------|------------------------------------------------------------------|-------------|
+| 디렉토리                                    | 설명                                                                      | 주요 출처              |
+|-----------------------------------------|-------------------------------------------------------------------------|--------------------|
 | [ai-scientist](/ai-scientist/README.md) | End-to-End AI 연구 자동화, Agentic Tree Search, Automated Reviewer, 피어 리뷰 통과 | Sakana AI / Nature |
 
 ## 라이선스
