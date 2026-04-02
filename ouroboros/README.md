@@ -12,6 +12,8 @@ Ouroboros는 Claude Code, Codex CLI 같은 런타임 위에서 동작하는 **sp
 |---|---|
 | [아키텍처 다이어그램](/ouroboros/00-diagram.md) | 계층 구조, 6-Phase 루프, 런타임 어댑터, MCP 양방향 허브, 평가 게이트 |
 | [설계 및 실행 플로우 분석](/ouroboros/01-analysis.md) | 하네스 구조, 코드 모듈, 명령 체계, 활용 사례, 트레이드오프 |
+| [종합 리서치 리포트](/ouroboros/02-research.md) | 생태계 비교, SDD 트렌드, 경쟁 도구, 학술 배경, 고유성 분석 |
+| [코드 심층 분석](/ouroboros/03-code-analysis.md) | 도메인 모델, 6단계 엔진, MCP/플러그인, 프로바이더, TUI/CLI, 아키텍처 평가 |
 
 ---
 
