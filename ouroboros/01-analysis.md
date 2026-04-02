@@ -95,7 +95,7 @@ Ouroboros는 MCP를 양방향으로 사용합니다.
 
 ## 4. 실행 플로우 상세
 
-## 4.1 Interview → Seed
+### 4.1 Interview → Seed
 
 1. 사용자 아이디어 입력
 2. Socratic 질문 반복
