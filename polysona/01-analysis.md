@@ -13,7 +13,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 ## 2. AI Agent 하네스 구조 분석
 
-## 2.1 Codex 하네스
+### 2.1 Codex 하네스
 
 - `AGENTS.md`: 시스템 철학, 금지 규칙(no speculation), 컨텍스트 로딩 프로토콜, 고정 사실(프레임워크 10개 등) 정의
 - `agents/openai.yaml`: Codex 에이전트 카탈로그(profiler/trendsetter/content-writer/virtual-follower/admin)
@@ -22,7 +22,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 핵심은 **명령(Skill)과 역할(Agent) 분리**입니다. 사용자는 `/trend` 같은 동작 단위로 호출하고, 내부적으로는 trendsetter가 책임집니다.
 
-## 2.2 Claude 하네스
+### 2.2 Claude 하네스
 
 - `.claude-plugin/marketplace.json`: 플러그인 등록 메타데이터
 - `hooks/hooks.json`: SessionStart/PreToolUse/PostToolUse 훅 체인 선언
@@ -32,7 +32,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 즉 Claude 경로는 plugin + hooks 조합으로 런타임 가드레일을 구현합니다.
 
-## 2.3 공통 하네스 패턴
+### 2.3 공통 하네스 패턴
 
 1. **SSOT 문서화**: 사실의 단일 소유 문서를 강제
 2. **No-speculation 규칙**: 추측 기반 출력 금지
@@ -57,7 +57,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 ## 4. 코드 관점의 실행 플로우
 
-## 4.1 서버/대시보드 계층
+### 4.1 서버/대시보드 계층
 
 - `server/index.ts`: Hono 엔트리, `/api` 라우팅, 개발/배포 정적 파일 분기
 - `server/routes/api.ts`: persona/콘텐츠/QA 시뮬레이션/에이전트 상태 API 제공
@@ -65,7 +65,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 구조적으로 Polysona는 "AI 실행 엔진" 자체보다 **데이터/상태 관측(operability)**에 많은 비중을 둡니다.
 
-## 4.2 PLOON 파서(`server/lib/ploon.ts`)
+### 4.2 PLOON 파서(`server/lib/ploon.ts`)
 
 `parsePloon()`은 Markdown 기반 PLOON 포맷을 JSON 유사 객체로 변환합니다.
 
@@ -75,7 +75,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 즉, 사람이 읽기 쉬운 Markdown과 기계 파싱 가능성을 동시에 확보했습니다.
 
-## 4.3 상태 집계 API 특징
+### 4.3 상태 집계 API 특징
 
 - `/api/status`: personas + drafts + published 수량, lastActivity 집계
 - `/api/agents/status`: 에이전트/스킬 파일 존재성 점검
@@ -99,17 +99,17 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 ## 6. 활용 사례 정리 (실무 적용 관점)
 
-## 6.1 퍼스널 브랜딩/콘텐츠 운영
+### 6.1 퍼스널 브랜딩/콘텐츠 운영
 
 - 인터뷰로 페르소나를 추출하고 플랫폼별 글 생성 → QA → 게시까지 자동화
 - 특히 1인 창작자/전문가 계정 운영에 적합
 
-## 6.2 팀 단위 에이전트 운영 가드레일
+### 6.2 팀 단위 에이전트 운영 가드레일
 
 - no-speculation, read-before-write, SSOT 같은 규약을 명시 문서로 강제
 - 멀티 에이전트 품질 흔들림을 줄이는 데 유용
 
-## 6.3 에이전트 이식성 실험
+### 6.3 에이전트 이식성 실험
 
 - 동일 persona 자산을 Codex/Claude/OpenCode에 공유해 결과 편차 비교 가능
 - "모델 교체 시 정체성 유지" 실험용 베이스로 적합
@@ -118,14 +118,14 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 
 ## 7. 강점과 트레이드오프
 
-## 강점
+### 강점
 
 1. **하네스 명확성**: Host별 통합 지점(AGENTS/openai.yaml/plugin/hooks)이 분리돼 유지보수가 쉽습니다.
 2. **데이터 투명성**: 상태가 모두 파일로 남아 감사/재현/회귀 확인이 쉽습니다.
 3. **실행 안전장치**: Write→Read 검증, pre/post hook 경고, no-speculation 규칙이 견고합니다.
 4. **운영 가시성**: 대시보드/API가 파이프라인 상태를 즉시 보여줍니다.
 
-## 트레이드오프
+### 트레이드오프
 
 1. **파일 기반 동시성 한계**: 다중 세션 동시 수정 시 충돌 관리가 필요합니다.
 2. **규칙 의존성**: 에이전트가 스펙을 준수한다는 가정이 강합니다(강제 실행 엔진은 제한적).

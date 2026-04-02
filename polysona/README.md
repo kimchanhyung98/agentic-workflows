@@ -31,7 +31,7 @@ Dashboard (Hono API + React/Vite UI)
 
 ### 핵심 설계 포인트
 
-- **하네스 이중화**: Codex(`AGENTS.md`, `agents/openai.yaml`, `.agents/skills`)와 Claude(`.claude-plugin`, `hooks/hooks.json`)를 동시에 지원합니다.
+- **이중 하네스 지원**: Codex(`AGENTS.md`, `agents/openai.yaml`, `.agents/skills`)와 Claude(`.claude-plugin`, `hooks/hooks.json`)를 동시에 지원합니다.
 - **역할 고정형 멀티에이전트**: 5개 에이전트가 파이프라인 단계별 책임을 명확히 분리합니다.
 - **파일 시스템 기반 상태관리**: Git 친화적 Markdown(PLOON) 저장소를 단일 진실 공급원(SSOT)으로 사용합니다.
 - **저장 강제 프로토콜**: trend/content/qa/publish 스킬이 결과 파일 Write→Read 검증을 강제해 허위 성공 응답을 줄입니다.
