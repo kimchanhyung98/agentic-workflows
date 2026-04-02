@@ -1,6 +1,6 @@
 # Ouroboros 아키텍처 다이어그램
 
-## 1. Ouroboros 하네스 계층 구조
+## 1. Ouroboros 하니스 계층 구조
 
 ```mermaid
 flowchart TD

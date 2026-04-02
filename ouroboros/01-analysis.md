@@ -5,7 +5,7 @@
 이 문서는 두 축을 함께 다룹니다.
 
 1. **Ouroboros 분석**
-   - AI agent 하네스 구조
+   - AI agent 하니스 구조
    - 활용 사례 및 운영 방식
 2. **Polysona 분석**
    - 코드/실행 플로우 구조
@@ -17,9 +17,9 @@
 
 ## 2. Ouroboros: AI Agent Harness 관점 분석
 
-### 2.1 하네스의 핵심 역할
+### 2.1 하니스의 핵심 역할
 
-공개 README 기준 Ouroboros는 단일 챗봇이 아니라 다음을 묶은 실행 하네스입니다.
+공개 README 기준 Ouroboros는 단일 챗봇이 아니라 다음을 묶은 실행 하니스입니다.
 
 - 입력 채널(Desktop UI, Telegram)
 - Supervisor(큐·워커·예산 관리)
@@ -29,7 +29,7 @@
 
 즉, **“작업 수행기 + 자기개선 런타임”**을 하나의 운영 단위로 통합한 형태입니다.
 
-### 2.2 하네스 내부 레이어
+### 2.2 하니스 내부 레이어
 
 README/아키텍처 설명에서 드러나는 레이어는 다음과 같습니다.
 
@@ -97,8 +97,7 @@ README/AGENTS.md 기준 핵심은 다음입니다.
 
 ### 3.3 데이터 모델 특징
 
-Polysona는 `personas/{id}/` 아래 Markdown 파일(`persona.md`, `nuance.md`, `accounts.md`)을 SSOT로 두고, 대화 명령으로 이를 갱신·주입하는
-패턴을 사용합니다.
+Polysona는 `personas/{id}/` 아래 Markdown 파일(`persona.md`, `nuance.md`, `accounts.md`)을 단일 출처(SSOT, Single Source of Truth)로 두고, 대화 명령으로 이를 갱신·주입하는 패턴을 사용합니다.
 
 즉, DB 중심이 아니라 **파일 기반 페르소나 레이어**를 중심으로 런타임 간 이식성을 확보합니다.
 
@@ -116,7 +115,7 @@ Polysona는 `personas/{id}/` 아래 Markdown 파일(`persona.md`, `nuance.md`, `
 
 | 관점 | Ouroboros | Polysona |
 |---|---|---|
-| 주 관심사 | 자기개선형 실행 하네스 | 페르소나 기반 콘텐츠 오케스트레이션 |
+| 주 관심사 | 자기개선형 실행 하니스 | 페르소나 기반 콘텐츠 오케스트레이션 |
 | 핵심 자산 | 코드/상태/진화 히스토리 | persona 데이터셋(`persona/nuance/accounts`) |
 | 루프 구조 | 작업 처리 + 자기수정 + 리뷰 | 인터뷰 → 트렌드 → 작성 → QA → 발행 |
 | 안전 장치 | 하드 규칙 + 안전검토 + 복구 | 훅 기반 가드(덮어쓰기/출력 품질 경고) |
@@ -124,17 +123,16 @@ Polysona는 `personas/{id}/` 아래 Markdown 파일(`persona.md`, `nuance.md`, `
 
 실무적으로는 다음 조합이 가능합니다.
 
-- **Ouroboros를 실행 하네스로 사용**하고,
+- **Ouroboros를 실행 하니스로 사용**하고,
 - **Polysona를 상위 페르소나/콘텐츠 워크플로우 레이어로 연결**하는 2계층 구성
 
-이 경우 실행 안정성(하네스)과 페르소나 정합성(오케스트레이션)을 분리해 운영할 수 있습니다.
+이 경우 실행 안정성(하니스)과 페르소나 정합성(오케스트레이션)을 분리해 운영할 수 있습니다.
 
 ---
 
 ## 5. 웹 검색 기반 추가 관찰
 
-수집된 공개 자료 기준으로, `ouroboros` 명칭의 파생 프로젝트가 다수 존재하며(포크/변형 포함), 현재는 원류 Colab/Telegram 계열과 Desktop 계열로
-문맥이 분화되어 있습니다. 따라서 분석/도입 시에는 다음을 명시하는 것이 안전합니다.
+수집된 공개 자료 기준으로, `ouroboros` 명칭의 파생 프로젝트가 다수 존재하며(포크/변형 포함), 현재는 원류 Colab/Telegram 계열과 Desktop 계열로 문맥이 분화되어 있습니다. 따라서 분석/도입 시에는 다음을 명시하는 것이 안전합니다.
 
 1. 대상 저장소(예: `joi-lab/ouroboros` vs `joi-lab/ouroboros-desktop`)
 2. 실행 환경(Colab/Telegram vs Native Desktop)
@@ -144,6 +142,6 @@ Polysona는 `personas/{id}/` 아래 Markdown 파일(`persona.md`, `nuance.md`, `
 
 ## 6. 결론
 
-- **Ouroboros**는 “자기개선 가능한 AI agent harness” 사례로, 실행/안전/메모리/진화를 일체화한 구조가 강점입니다.
+- **Ouroboros**는 “자기개선 가능한 AI agent harness(하니스)” 사례로, 실행/안전/메모리/진화를 일체화한 구조가 강점입니다.
 - **Polysona**는 “페르소나를 에이전트 런타임 간 이식”하는 오케스트레이션 계층으로, 명령 체인과 파일 기반 데이터 모델이 강점입니다.
-- 두 접근은 경쟁이라기보다 계층 분리가 가능하며, 하네스(운영 안정성) + 페르소나 레이어(콘텐츠 정합성) 조합이 실용적입니다.
+- 두 접근은 경쟁이라기보다 계층 분리가 가능하며, 하니스(운영 안정성) + 페르소나 레이어(콘텐츠 정합성) 조합이 실용적입니다.
