@@ -31,6 +31,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                    | LangChain Skills  |
 | [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                        | Oh My OpenAgent   |
 | [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                                  | OpenCode Worktree |
+| [polysona](/polysona/README.md)                   | 멀티 페르소나 오케스트레이터, 5-에이전트 콘텐츠 파이프라인, Codex/Claude 하네스 통합 분석           | Polysona          |
 
 ### 자율 개선 루프
 
