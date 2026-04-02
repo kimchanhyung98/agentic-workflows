@@ -68,34 +68,28 @@ flowchart TD
     C0 --> C1
     C1 -->|실패 시| C2
     C1 & C2 --> C3
-
     C1 & C2 --> D1
     D1 --> D2
     D1 --> D3
     D1 --> D4
-
     D3 --> E1
     D3 --> E2
     D3 --> E3
     D3 --> E4
     D3 --> E5
-
     C0 --> F1
     F1 --> F2
     C3 --> F3
     F3 --> F4
     F4 --> F5
-
     D3 --> G1
     G1 --> G2
     D3 --> G3
     G1 -->|품질 점수| G3
     G1 -->|문제 도구| F4
-
     F5 --> H1
     H1 --> H2
     H2 --> H3
-
     F5 --> I2
     D4 --> I3
 ```
@@ -112,57 +106,56 @@ sequenceDiagram
     participant AN as Analyzer
     participant EV as Evolver
     participant DB as SkillStore
-
-    U->>O: execute(task, workspace)
+    U ->> O: execute(task, workspace)
 
     rect rgb(230, 245, 255)
-        Note over O,A: Phase 1: Skill-Guided Execution
-        O->>R: select_skills_with_llm(task)
-        R->>R: 품질 필터링 → BM25+embedding 사전필터 → LLM plan-then-select
-        R-->>O: 선택된 스킬 + 컨텍스트
-        O->>A: set_skill_context() + process()
+        Note over O, A: Phase 1: Skill-Guided Execution
+        O ->> R: select_skills_with_llm(task)
+        R ->> R: 품질 필터링 → BM25+embedding 사전필터 → LLM plan-then-select
+        R -->> O: 선택된 스킬 + 컨텍스트
+        O ->> A: set_skill_context() + process()
 
         loop max_iterations
-            A->>A: 스킬 컨텍스트 (1회차만) + 메시지 캡핑
-            A->>T: tool 호출 (shell/gui/mcp/web)
-            T-->>A: 결과 (30,000자 캡핑)
-            A->>A: <COMPLETE> 확인 / 가이던스 주입
+            A ->> A: 스킬 컨텍스트 (1회차만) + 메시지 캡핑
+            A ->> T: tool 호출 (shell/gui/mcp/web)
+            T -->> A: 결과 (30,000자 캡핑)
+            A ->> A: <COMPLETE> 확인 / 가이던스 주입
         end
 
         alt 성공
-            A-->>O: 결과 반환
+            A -->> O: 결과 반환
         else 실패
-            O->>O: 워크스페이스 정리 (실패 아티팩트 삭제)
+            O ->> O: 워크스페이스 정리 (실패 아티팩트 삭제)
         end
     end
 
     rect rgb(255, 245, 230)
-        Note over O,A: Phase 2: Tool-Fallback (Phase 1 실패 시)
-        O->>A: clear_skill_context() + process()
+        Note over O, A: Phase 2: Tool-Fallback (Phase 1 실패 시)
+        O ->> A: clear_skill_context() + process()
         loop max_iterations (풀 예산)
-            A->>T: tool 호출 (스킬 없이)
-            T-->>A: 결과
+            A ->> T: tool 호출 (스킬 없이)
+            T -->> A: 결과
         end
-        A-->>O: 결과 반환
+        A -->> O: 결과 반환
     end
 
     rect rgb(245, 255, 230)
-        Note over O,EV: Post-Execution Pipeline
-        O->>AN: analyze_execution(recording)
-        AN->>AN: 대화로그 포맷팅 (우선순위 절삭)
-        AN->>AN: LLM 에이전트 분석 (최대 5반복)
-        AN-->>DB: record_analysis() (카운터 원자적 업데이트)
-        AN-->>EV: evolution_suggestions
+        Note over O, EV: Post-Execution Pipeline
+        O ->> AN: analyze_execution(recording)
+        AN ->> AN: 대화로그 포맷팅 (우선순위 절삭)
+        AN ->> AN: LLM 에이전트 분석 (최대 5반복)
+        AN -->> DB: record_analysis() (카운터 원자적 업데이트)
+        AN -->> EV: evolution_suggestions
 
         alt 진화 제안 존재
-            EV->>EV: _run_evolution_loop (최대 5반복, 도구 사용)
-            EV->>EV: apply-retry 사이클 (최대 3회)
-            EV->>DB: evolve_skill() (이전 비활성화 + 새 버전)
-            EV->>R: update_skill() (즉시 사용 가능)
+            EV ->> EV: _run_evolution_loop (최대 5반복, 도구 사용)
+            EV ->> EV: apply-retry 사이클 (최대 3회)
+            EV ->> DB: evolve_skill() (이전 비활성화 + 새 버전)
+            EV ->> R: update_skill() (즉시 사용 가능)
         end
     end
 
-    O-->>U: 최종 결과 + evolved_skills 정보
+    O -->> U: 최종 결과 + evolved_skills 정보
 ```
 
 ## 3. 3중 진화 트리거 시스템
@@ -184,19 +177,17 @@ flowchart LR
     subgraph Trigger3["Trigger 3: Metric Monitor"]
         C1["주기적 스킬 건강 검사"] --> C2["_diagnose_skill_health()"]
         C2 --> C3{"진단 결과"}
-        C3 -->|"fallback_rate > 0.4"| C4["FIX 후보"]
-        C3 -->|"applied + completion < 0.35"| C5["FIX 후보"]
-        C3 -->|"effective_rate < 0.55"| C6["DERIVED 후보"]
+        C3 -->|" fallback_rate > 0.4 "| C4["FIX 후보"]
+        C3 -->|" applied + completion < 0.35 "| C5["FIX 후보"]
+        C3 -->|" effective_rate < 0.55 "| C6["DERIVED 후보"]
         C4 & C5 & C6 --> C7["LLM 확인"]
     end
 
     A4 & B4 & C7 --> D["SkillEvolver"]
-
     D --> E{"진화 모드"}
     E -->|기존 스킬 수정| F["FIX<br/>in-place 업데이트<br/>새 skill_id, 같은 경로"]
     E -->|파생 스킬 생성| G["DERIVED<br/>새 디렉토리<br/>부모 is_active 유지"]
     E -->|새 패턴 포착| H["CAPTURED<br/>완전히 새로운 스킬<br/>부모 없음"]
-
     F & G & H --> I["에이전트 루프 (최대 5반복)"]
     I --> J["apply-retry (최대 3회)"]
     J --> K["validate_skill_dir()"]
@@ -265,7 +256,6 @@ flowchart TD
     SS --> ST
     WS --> WT
     MS --> MT
-
     C --> SC1 & SC2 & GC1 & GC2 & MC1 & MC2 & MC3 & MC4 & WC
 ```
 
@@ -297,7 +287,6 @@ flowchart TD
     TS3 -->|Yes| TS4
     TS3 -->|No| TS5
     TS4 --> TS5
-
     SC --> SS1
     SS1 --> SS2
     SS2 -->|Yes| SS3

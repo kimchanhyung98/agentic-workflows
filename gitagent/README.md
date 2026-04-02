@@ -8,9 +8,9 @@ GitAgent는 "리포지토리 자체를 에이전트 정의"로 취급하는 **gi
 
 ## 문서 구성
 
-| 문서 | 내용 |
-|---|---|
-| [아키텍처 다이어그램](/gitagent/00-diagram.md) | 7-Layer 파일 구조, CLI 명령 체계, validate 파이프라인, export/run 흐름, SOD 검증, hook 매핑, 전체 라이프사이클 |
+| 문서                                         | 내용                                                                                                           |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| [아키텍처 다이어그램](/gitagent/00-diagram.md)      | 7-Layer 파일 구조, CLI 명령 체계, validate 파이프라인, export/run 흐름, SOD 검증, hook 매핑, 전체 라이프사이클                          |
 | [설계 및 실행 플로우 분석](/gitagent/01-analysis.md) | 설계 원칙, 7-Layer 파일 모델, CLI 소스 구조, 명령별 실행 플로우, Skill/Tool/Workflow/Hook/Memory/Compliance 시스템, 어댑터 체계, 아키텍처 패턴 |
 
 ---
@@ -54,15 +54,15 @@ gitagent CLI (Node.js + TypeScript)
 
 ### 기술 스택
 
-| 구분 | 기술 |
-|---|---|
-| 언어/런타임 | TypeScript, Node.js (>=18) |
-| CLI 프레임워크 | commander v12 |
-| 스키마 검증 | ajv v8, ajv-formats |
-| 데이터 포맷 | YAML (`js-yaml`), Markdown |
-| 터미널 출력 | chalk v5 |
-| 사용자 입력 | inquirer v9 |
-| 패키징 | npm (`@shreyaskapale/gitagent` v0.1.7) |
+| 구분        | 기술                                     |
+|-----------|----------------------------------------|
+| 언어/런타임    | TypeScript, Node.js (>=18)             |
+| CLI 프레임워크 | commander v12                          |
+| 스키마 검증    | ajv v8, ajv-formats                    |
+| 데이터 포맷    | YAML (`js-yaml`), Markdown             |
+| 터미널 출력    | chalk v5                               |
+| 사용자 입력    | inquirer v9                            |
+| 패키징       | npm (`@shreyaskapale/gitagent` v0.1.7) |
 
 ---
 

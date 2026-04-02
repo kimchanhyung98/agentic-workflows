@@ -38,12 +38,12 @@ OpenSpace는 "에이전트가 작업을 수행한 뒤, 그 실행 경험 자체�
 
 ### 해결 전략
 
-| 전략 | 구현 |
-|------|------|
-| Skill 중심 재사용 | SKILL.md 파일 기반, YAML frontmatter + Markdown 본문 |
-| 지속 진화 | FIX / DERIVED / CAPTURED 3모드 자동화 |
+| 전략           | 구현                                                      |
+|--------------|---------------------------------------------------------|
+| Skill 중심 재사용 | SKILL.md 파일 기반, YAML frontmatter + Markdown 본문          |
+| 지속 진화        | FIX / DERIVED / CAPTURED 3모드 자동화                        |
 | 품질 계측 기반 트리거 | Post-Execution, Tool Degradation, Metric Monitor 3중 트리거 |
-| 호스트 에이전트 부착형 | MCP 서버 + host_skills로 기존 에이전트 확장 |
+| 호스트 에이전트 부착형 | MCP 서버 + host_skills로 기존 에이전트 확장                        |
 
 ### 기술 스택
 
@@ -127,6 +127,7 @@ LLMClient  GroundingClient  SkillEngine
 ```
 
 실행 흐름:
+
 1. `argparse`로 CLI 인자 파싱 (모델, 설정, max-iterations, UI 옵션)
 2. `refresh-cache` 서브커맨드: MCP 서버별 도구 캐시 갱신
 3. `_load_config()`: 호스트 감지 → LLM 자격증명 해석 → `OpenSpaceConfig` 생성
@@ -145,12 +146,12 @@ FastMCP 기반, stdio(기본) / SSE 두 가지 전송 모드 지원.
 
 **노출 도구 4개:**
 
-| 도구 | 용도 | 주요 파라미터 |
-|------|------|-------------|
-| `execute_task` | 전체 그라운딩 엔진으로 작업 실행 | task, workspace_dir, max_iterations, skill_dirs |
-| `search_skills` | 로컬 + 클라우드 스킬 검색 | query, source, limit, auto_import |
-| `fix_skill` | 스킬 수동 수정 (FIX만) | skill_dir, direction |
-| `upload_skill` | 스킬 클라우드 업로드 | skill_dir, visibility, tags |
+| 도구              | 용도                 | 주요 파라미터                                         |
+|-----------------|--------------------|-------------------------------------------------|
+| `execute_task`  | 전체 그라운딩 엔진으로 작업 실행 | task, workspace_dir, max_iterations, skill_dirs |
+| `search_skills` | 로컬 + 클라우드 스킬 검색    | query, source, limit, auto_import               |
+| `fix_skill`     | 스킬 수동 수정 (FIX만)    | skill_dir, direction                            |
+| `upload_skill`  | 스킬 클라우드 업로드        | skill_dir, visibility, tags                     |
 
 `_MCPSafeStdout`: text 출력을 stderr로, binary(`.buffer`)를 실제 stdout으로 라우팅. stdio 전송 시 JSON-RPC 메시지 오염을 방지한다.
 
@@ -196,12 +197,12 @@ Flask REST API로 프론트엔드에 스킬 목록/상세/계보 그래프, 워�
 
 핵심 메커니즘:
 
-| 메커니즘 | 설명 |
-|---------|------|
-| 스킬 컨텍스트 주입 | 1회차에서만 시스템 프롬프트에 스킬 가이드 삽입, 2회차부터 제거 |
-| 메시지 캡핑 | `_MAX_SINGLE_CONTENT_CHARS = 30,000`자. 대형 도구 결과의 컨텍스트 지배 방지 |
-| 트렁케이션 | 시스템 메시지 + 최초 사용자 지시 + 최근 8라운드만 유지 |
-| 가이던스 메시지 | MiniMax 호환을 위해 `user` 역할로 주입 (이전 가이던스 제거 후 추가) |
+| 메커니즘       | 설명                                                          |
+|------------|-------------------------------------------------------------|
+| 스킬 컨텍스트 주입 | 1회차에서만 시스템 프롬프트에 스킬 가이드 삽입, 2회차부터 제거                        |
+| 메시지 캡핑     | `_MAX_SINGLE_CONTENT_CHARS = 30,000`자. 대형 도구 결과의 컨텍스트 지배 방지 |
+| 트렁케이션      | 시스템 메시지 + 최초 사용자 지시 + 최근 8라운드만 유지                           |
+| 가이던스 메시지   | MiniMax 호환을 위해 `user` 역할로 주입 (이전 가이던스 제거 후 추가)              |
 
 ### 4.3 OpenSpace 오케스트레이터 (`tool_layer.py`)
 
@@ -231,7 +232,8 @@ Phase 1 실패 시 워크스페이스에서 스킬 실행으로 생성된 파일
 
 litellm 래퍼로 단일 라운드 LLM 호출 + 도구 실행을 처리한다.
 
-**지원 모델**: litellm을 통해 모든 주요 제공자 (OpenRouter, Anthropic, OpenAI, MiniMax 등). 게이트웨이 제공자 자동 접두사 (`openrouter/`, `aihubmix/`).
+**지원 모델**: litellm을 통해 모든 주요 제공자 (OpenRouter, Anthropic, OpenAI, MiniMax 등). 게이트웨이 제공자 자동 접두사 (`openrouter/`,
+`aihubmix/`).
 
 **`complete()` 메서드 흐름**:
 
@@ -245,11 +247,11 @@ litellm 래퍼로 단일 라운드 LLM 호출 + 도구 실행을 처리한다.
 
 **재시도 전략**:
 
-| 오류 유형 | 간격 |
-|---------|------|
+| 오류 유형      | 간격               |
+|------------|------------------|
 | Rate limit | 60s → 90s → 120s |
-| 서버 과부하 | 5s → 10s → 20s |
-| 연결 오류 | 10s → 20s → 40s |
+| 서버 과부하     | 5s → 10s → 20s   |
+| 연결 오류      | 10s → 20s → 40s  |
 
 ---
 
@@ -274,6 +276,7 @@ GroundingClient
 **노출 도구 5개**: `shell_agent`(LLM 기반 자율 코드 작성/실행, 최대 5스텝), `read_file`, `write_file`, `list_dir`, `run_shell`
 
 `ShellAgentTool` 내부 동작:
+
 - 시스템 프롬프트에 플랫폼/사용자 정보, 작업 디렉토리, conda 환경 주입
 - 코드 블록 정규식 추출 (python/bash 패턴)
 - `[TASK_COMPLETED]`/`[TASK_FAILED]` 마커로 완료 판정
@@ -284,6 +287,7 @@ GroundingClient
 **이중 모드**: Local (pyautogui 직접) / Server (HTTP 연결)
 
 Anthropic Computer Use 통합 (`AnthropicGUIClient`):
+
 - 모델: `claude-sonnet-4-5`, `computer-use-2025-01-24` API
 - 3단계 좌표 변환: Display Size (LLM) → Physical Pixels → PyAutoGUI Logical
 - 스크린샷 리사이징: 실제 해상도 → `display_size`(기본 1024x768) 축소
@@ -297,11 +301,13 @@ Anthropic Computer Use 통합 (`AnthropicGUIClient`):
 가장 복잡한 백엔드. 다중 MCP 서버를 관리하며 4종 커넥터를 제공한다.
 
 **HttpConnector 전송 협상 (3단계 폴백)**:
+
 1. **Streamable HTTP** (신규 MCP 전송) 시도
 2. 실패 시 **SSE** (레거시) 폴백
 3. 모두 실패 시 **JSON-RPC HTTP** 최종 폴백
 
-**도구 캐시 2계층**: 원본 캐시 (`mcp_tool_cache.json`) + 정제 캐시 (`mcp_tool_cache_sanitized.json`). Claude API 호환을 위한 `_sanitize_mcp_schema()`가 비표준 필드를 제거한다.
+**도구 캐시 2계층**: 원본 캐시 (`mcp_tool_cache.json`) + 정제 캐시 (`mcp_tool_cache_sanitized.json`). Claude API 호환을 위한
+`_sanitize_mcp_schema()`가 비표준 필드를 제거한다.
 
 **의존성 설치 관리** (`MCPInstallerManager`): npx/uvx/pip 자동 탐지 + 사용자 확인 + 실패 캐시
 
@@ -329,17 +335,18 @@ BaseConnectionManager (추상)
 
 **SkillRecord** 핵심 필드:
 
-| 필드 | 설명 |
-|------|------|
-| `skill_id` | 고유 ID (`{name}__imp_{uuid8}` 또는 `{name}__v{gen}_{uuid8}`) |
-| `name` | 논리적 이름 (버전 간 공유) |
-| `path` | SKILL.md 경로 |
-| `is_active` | 최신 버전만 True |
-| `category` | TOOL_GUIDE / WORKFLOW / REFERENCE |
-| `lineage` | SkillLineage (Version DAG) |
-| `total_selections/applied/completions/fallbacks` | 실행 통계 |
+| 필드                                               | 설명                                                        |
+|--------------------------------------------------|-----------------------------------------------------------|
+| `skill_id`                                       | 고유 ID (`{name}__imp_{uuid8}` 또는 `{name}__v{gen}_{uuid8}`) |
+| `name`                                           | 논리적 이름 (버전 간 공유)                                          |
+| `path`                                           | SKILL.md 경로                                               |
+| `is_active`                                      | 최신 버전만 True                                               |
+| `category`                                       | TOOL_GUIDE / WORKFLOW / REFERENCE                         |
+| `lineage`                                        | SkillLineage (Version DAG)                                |
+| `total_selections/applied/completions/fallbacks` | 실행 통계                                                     |
 
 **리니지 규칙**:
+
 - IMPORTED / CAPTURED → 루트 노드, `generation=0`
 - FIXED → 부모 1개 (동일 스킬), 같은 name/path, 새 skill_id, 이전 `is_active=False`
 - DERIVED → 부모 1+개, 새 name/디렉토리, 부모 `is_active` 유지
@@ -369,6 +376,7 @@ BaseConnectionManager (추상)
 ```
 
 **SkillRanker 2단계 검색**:
+
 - Stage 1: BM25 러프 랭킹 (`rank_bm25.BM25Okapi`, 토큰 중첩 폴백)
 - Stage 2: 임베딩 리랭킹 (`openai/text-embedding-3-small`, 코사인 유사도)
 - 임베딩 캐시: 디스크 영속화, 스킬 진화 시 `invalidate_cache()`
@@ -398,15 +406,16 @@ BaseConnectionManager (추상)
 
 **3가지 진화 트리거**:
 
-| 트리거 | 진입점 | 발생 시점 |
-|--------|-------|---------|
-| Post-Execution | `process_analysis()` | 분석 후 evolution_suggestions 존재 시 |
-| Tool Degradation | `process_tool_degradation()` | ToolQualityManager 문제 도구 감지 시 |
-| Metric Monitor | `process_metric_check()` | 주기적 스킬 건강 검사 |
+| 트리거              | 진입점                          | 발생 시점                           |
+|------------------|------------------------------|---------------------------------|
+| Post-Execution   | `process_analysis()`         | 분석 후 evolution_suggestions 존재 시 |
+| Tool Degradation | `process_tool_degradation()` | ToolQualityManager 문제 도구 감지 시   |
+| Metric Monitor   | `process_metric_check()`     | 주기적 스킬 건강 검사                    |
 
 **각 진화 모드 구현**:
 
-**FIX**: 부모 스킬 in-place 수정 → 에이전트 루프(최대 5반복) → apply-retry(최대 3회) → 새 skill_id 생성 → `SkillStore.evolve_skill()` 원자적 트랜잭션 (새 버전 삽입 + 이전 비활성화) → `.skill_id` 사이드카 업데이트
+**FIX**: 부모 스킬 in-place 수정 → 에이전트 루프(최대 5반복) → apply-retry(최대 3회) → 새 skill_id 생성 → `SkillStore.evolve_skill()` 원자적
+트랜잭션 (새 버전 삽입 + 이전 비활성화) → `.skill_id` 사이드카 업데이트
 
 **DERIVED**: 부모 로드 → 에이전트 루프 → 새 이름 추출 + 위생화(소문자, 하이픈, 50자) → 새 디렉토리 생성 → apply-retry → DB 영속화 (부모 is_active 유지)
 
@@ -415,20 +424,21 @@ BaseConnectionManager (추상)
 **에이전트 루프 종료 제어**: `<EVOLUTION_COMPLETE>` (성공) / `<EVOLUTION_FAILED>` (자기 거부) 토큰 기반. 마지막 반복에서는 도구 비활성화 + JSON 출력 강제.
 
 **패치 시스템** (`patch.py` + `fuzzy_match.py`):
+
 - PATCH (multi-file diff), FULL (완전 내용), DIFF (SEARCH/REPLACE) 3종 자동 감지
 - 6단계 퍼지 매칭: 정확 → trim → 블록 앵커(Levenshtein) → 공백 정규화 → 들여쓰기 유연 → trim 경계
 
 **안전장치**:
 
-| 장치 | 메커니즘 |
-|------|---------|
-| 동시성 제한 | `asyncio.Semaphore(max_concurrent=3)` |
-| 무한 루프 방지 | 에이전트 루프 5회, apply-retry 3회 상한 |
-| 자기 거부 | `<EVOLUTION_FAILED>` 토큰 출력 |
-| 데이터 부족 보호 | `min_selections(5)` 이하면 재평가 스킵 |
-| 반복 처리 방지 | `addressed_degradations` 세트 (도구 회복 시 리셋) |
-| 모호한 응답 | 기본적으로 "스킵" 처리 |
-| 이름 위생화 | 매 진화마다 50자, 소문자-하이픈 강제 |
+| 장치        | 메커니즘                                     |
+|-----------|------------------------------------------|
+| 동시성 제한    | `asyncio.Semaphore(max_concurrent=3)`    |
+| 무한 루프 방지  | 에이전트 루프 5회, apply-retry 3회 상한            |
+| 자기 거부     | `<EVOLUTION_FAILED>` 토큰 출력               |
+| 데이터 부족 보호 | `min_selections(5)` 이하면 재평가 스킵           |
+| 반복 처리 방지  | `addressed_degradations` 세트 (도구 회복 시 리셋) |
+| 모호한 응답    | 기본적으로 "스킵" 처리                            |
+| 이름 위생화    | 매 진화마다 50자, 소문자-하이픈 강제                   |
 
 ### 7.5 SkillStore (SQLite)
 
@@ -436,9 +446,11 @@ BaseConnectionManager (추상)
 
 **SQLite 설정**: WAL 모드, `busy_timeout=30000ms`, `cache_size=16MB`, 재시도: 지수 백오프 (최대 5회)
 
-**핵심 테이블**: `skill_records`, `skill_lineage_parents` (다대다), `execution_analyses` (task_id UNIQUE), `skill_judgments`, `skill_tool_deps`, `skill_tags`
+**핵심 테이블**: `skill_records`, `skill_lineage_parents` (다대다), `execution_analyses` (task_id UNIQUE), `skill_judgments`,
+`skill_tool_deps`, `skill_tags`
 
 **쓰기/읽기 분리**:
+
 - 쓰기: async → `asyncio.to_thread` → sync → `self._mu` 락 → `self._conn`
 - 읽기: sync → `self._reader()` → 독립 단기 연결 (WAL 병렬 읽기)
 
@@ -465,6 +477,7 @@ BaseConnectionManager (추상)
 ### 8.2 ToolQualityManager
 
 **자기 진화 사이클** (트리거: `global_execution_count >= last + evolve_interval(5)`):
+
 1. 도구 변경 감지 (description hash 비교)
 2. 재평가 대상 선별 (변경/미평가/불일치)
 3. LLM 문서 품질 평가 (최대 5개/사이클, clarity + completeness)
@@ -505,6 +518,7 @@ BaseConnectionManager (추상)
 ### 9.3 호스트 에이전트 통합
 
 LLM 자격증명 해석 3-Tier:
+
 1. **Tier 1**: `OPENSPACE_LLM_*` 환경변수 (최우선)
 2. **Tier 2**: 호스트 설정 자동감지 (`~/.nanobot/config.json`, `~/.openclaw/openclaw.json`)
 3. **Tier 3**: Provider 네이티브 환경변수 (litellm 자동 처리)
@@ -550,21 +564,23 @@ Phase 4: 이름별 중복 제거 + limit
 OpenAI `gdpval` 데이터셋에서 **결정론적 50개 서브셋** 선정 (44개 직업군, 9개 산업 커버).
 
 **2-Phase 프로토콜**:
+
 - Phase 1 (Cold Start): 스킬 없이 시작, 순차 실행하며 스킬 축적
 - Phase 2 (Warm Rerun): Phase 1 전체 스킬 라이브러리로 동일 태스크 재실행
 
 ### 11.2 평가 지표
 
-| 지표 | 산정 방식 |
-|------|---------|
-| Quality | ClawWork `LLMEvaluator`(GPT-4o), 태스크당 평균 48.8개 루브릭, 0~1 |
-| Income | 0.6 Payment Cliff (score < 0.6 → 수입 없음) |
-| Token Efficiency | 6차원 (전체/에이전트 x prompt/completion/total) |
-| Value Capture | Income / Task Value x 100 |
+| 지표               | 산정 방식                                                   |
+|------------------|---------------------------------------------------------|
+| Quality          | ClawWork `LLMEvaluator`(GPT-4o), 태스크당 평균 48.8개 루브릭, 0~1 |
+| Income           | 0.6 Payment Cliff (score < 0.6 → 수입 없음)                 |
+| Token Efficiency | 6차원 (전체/에이전트 x prompt/completion/total)                 |
+| Value Capture    | Income / Task Value x 100                               |
 
 ### 11.3 토큰 추적 (TokenTracker)
 
 litellm `CustomLogger` 콜백으로 모든 LLM 호출 자동 인터셉트. `ContextVar`로 소스 태깅:
+
 - `agent`: 메인 에이전트 루프
 - `skill_select`: 스킬 선택
 - `analyzer`: 실행 후 분석
@@ -574,6 +590,7 @@ litellm `CustomLogger` 콜백으로 모든 LLM 호출 자동 인터셉트. `Cont
 ### 11.4 스킬 DB 현황 (벤치마크 후)
 
 50개 태스크에서 **226개 스킬** 생성 (활성 206개):
+
 - `captured`: 141개 (62%) — 실행 중 자동 포착
 - `derived`: 45개 (20%) — 기존 스킬 파생
 - `fixed`: 22개 (10%) — 오류 수정
@@ -595,13 +612,13 @@ litellm 버전 상한 사유: **PYSEC-2026-2** 공급망 공격 (v1.82.7/1.82.8 
 
 ### 12.1 설정 파일 구조
 
-| 파일 | 역할 |
-|------|------|
+| 파일                      | 역할                       |
+|-------------------------|--------------------------|
 | `config_grounding.json` | 백엔드, 도구 검색, 품질 추적, 스킬 설정 |
-| `config_security.json` | OS별 보안 정책 |
-| `config_mcp.json` | MCP 서버 정의 |
-| `config_agents.json` | 에이전트별 설정 |
-| `config_dev.json` | 개발 환경 오버라이드 |
+| `config_security.json`  | OS별 보안 정책                |
+| `config_mcp.json`       | MCP 서버 정의                |
+| `config_agents.json`    | 에이전트별 설정                 |
+| `config_dev.json`       | 개발 환경 오버라이드              |
 
 ### 12.2 Pydantic 설정 모델
 
@@ -620,7 +637,8 @@ GroundingConfig (BaseModel)
 
 ### 12.3 환경변수 오버라이드
 
-`OPENSPACE_CONFIG_JSON` (인라인 JSON), `OPENSPACE_CONFIG_PATH` (파일 경로), `OPENSPACE_SHELL_*`, `OPENSPACE_SKILLS_*`, `OPENSPACE_MCP_SERVERS_JSON`, `OPENSPACE_LOG_LEVEL` 등.
+`OPENSPACE_CONFIG_JSON` (인라인 JSON), `OPENSPACE_CONFIG_PATH` (파일 경로), `OPENSPACE_SHELL_*`, `OPENSPACE_SKILLS_*`,
+`OPENSPACE_MCP_SERVERS_JSON`, `OPENSPACE_LOG_LEVEL` 등.
 
 ---
 
@@ -628,19 +646,20 @@ GroundingConfig (BaseModel)
 
 ### 13.1 5계층 보안
 
-| 계층 | 내용 |
-|------|------|
-| 명령어 검사 | `shlex.split()` 토큰화 → OS별 차단 목록 매칭 → 대화형 프롬프트 (MCP에서 기본 거부) |
-| 도구 스키마 검증 | `jsonschema.validate()` 파라미터 유효성 검사 |
-| 샌드박스 격리 | E2BSandbox (선택적, 기본 비활성) |
-| 스킬 안전성 | `check_skill_safety()` — 차단: ClawdAuthenticatorTool, 경고: malware/phish/keylogger/api_key 등 |
-| 클라우드 보안 | zip 경로 순회 방지 (`is_relative_to`), API 키 마스킹 |
+| 계층        | 내용                                                                                         |
+|-----------|--------------------------------------------------------------------------------------------|
+| 명령어 검사    | `shlex.split()` 토큰화 → OS별 차단 목록 매칭 → 대화형 프롬프트 (MCP에서 기본 거부)                                |
+| 도구 스키마 검증 | `jsonschema.validate()` 파라미터 유효성 검사                                                        |
+| 샌드박스 격리   | E2BSandbox (선택적, 기본 비활성)                                                                   |
+| 스킬 안전성    | `check_skill_safety()` — 차단: ClawdAuthenticatorTool, 경고: malware/phish/keylogger/api_key 등 |
+| 클라우드 보안   | zip 경로 순회 방지 (`is_relative_to`), API 키 마스킹                                                 |
 
 ### 13.2 보안 관찰 사항
 
 **강점**: 토큰 수준 명령어 검사 (`shlex.split`)로 공백 삽입 우회 방지. OS별 분리된 차단 목록.
 
 **약점**:
+
 - 기본 `sandbox_enabled = false` — 프로덕션 도입 시 E2B/컨테이너 격리 필수
 - `-rf`, `-9` 등 플래그가 독립 토큰으로 차단되어 `ls -9 *.txt` 같은 무해한 명령도 차단 가능
 - MCP 서버 환경에서 stdin 없으므로 대화형 프롬프트 불가 → 기본 거부
@@ -651,19 +670,20 @@ GroundingConfig (BaseModel)
 
 ### 14.1 핵심 설계 패턴
 
-| 패턴 | 적용 |
-|------|------|
-| Strategy | Provider ABC + BackendType으로 백엔드 교체 |
-| Registry | ProviderRegistry, AgentRegistry, SkillRegistry |
-| Template Method | BaseAgent.process() → GroundingAgent.process() |
-| Observer/Callback | tool_result_callback, _auto_record_execution() |
-| Facade | OpenSpace 클래스가 전체 하위 시스템 통합 인터페이스 제공 |
-| Builder | GroundingAgentPrompts.build_system_prompt() |
+| 패턴                    | 적용                                                |
+|-----------------------|---------------------------------------------------|
+| Strategy              | Provider ABC + BackendType으로 백엔드 교체               |
+| Registry              | ProviderRegistry, AgentRegistry, SkillRegistry    |
+| Template Method       | BaseAgent.process() → GroundingAgent.process()    |
+| Observer/Callback     | tool_result_callback, _auto_record_execution()    |
+| Facade                | OpenSpace 클래스가 전체 하위 시스템 통합 인터페이스 제공              |
+| Builder               | GroundingAgentPrompts.build_system_prompt()       |
 | Transport Negotiation | HttpConnector: StreamableHTTP → SSE → JSON-RPC 폴백 |
 
 ### 14.2 코드 품질 관찰
 
 **강점**:
+
 - 일관된 로깅 (`Logger.get_logger(__name__)`)
 - 비동기 우선 설계 (거의 모든 I/O가 `async/await`)
 - 방어적 에러 처리 (초기화 실패 → `non-fatal` 경고, 부분 기능 저하 허용)
@@ -671,6 +691,7 @@ GroundingConfig (BaseModel)
 - 보안 의존성 고정 사유 주석화
 
 **약점**:
+
 - 전역 상태 의존 (`RecordingManager._global_instance`, `_config` 모듈 변수)
 - `tool_layer.py`의 `execute()` ~200줄 — 단일 책임 원칙 위반 경향
 - 토큰 추정 `len(text) // 4` — 비영어권 텍스트에서 부정확
@@ -691,14 +712,14 @@ OpenSpace의 가장 독창적인 설계 결정:
 
 ### 15.2 핵심 수치
 
-| 지표 | 값 |
-|------|-----|
-| Python 소스 파일 | 151개 |
-| 벤치마크 태스크 | 50개 (9 산업, 44 직업군) |
-| 생성 스킬 | 226개 (50 태스크 후) |
-| 토큰 절감 | 45.9% (Phase 2 vs Phase 1) |
-| 수입 향상 | 4.2x (ClawWork 대비) |
-| GitHub Stars | ~3,500 |
+| 지표           | 값                          |
+|--------------|----------------------------|
+| Python 소스 파일 | 151개                       |
+| 벤치마크 태스크     | 50개 (9 산업, 44 직업군)         |
+| 생성 스킬        | 226개 (50 태스크 후)            |
+| 토큰 절감        | 45.9% (Phase 2 vs Phase 1) |
+| 수입 향상        | 4.2x (ClawWork 대비)         |
+| GitHub Stars | ~3,500                     |
 
 ### 15.3 도입 시 체크 포인트
 

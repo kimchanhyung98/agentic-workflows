@@ -2,18 +2,19 @@
 
 `HKUDS/OpenSpace`의 소스 코드를 전수 분석하고, 웹 리서치를 통해 최신 정보를 수집하여 구조화한 문서입니다.
 
-OpenSpace는 기존 코딩 에이전트(Claude Code, Codex, OpenClaw 등)에 MCP + Skill 엔진을 붙여, 작업 수행 중 스킬을 자동 수정(FIX)·파생(DERIVED)·추출(CAPTURED)하는 **자기 진화형 에이전트 런타임**입니다.
+OpenSpace는 기존 코딩 에이전트(Claude Code, Codex, OpenClaw 등)에 MCP + Skill 엔진을 붙여, 작업 수행 중 스킬을 자동 수정(FIX)·파생(DERIVED)·추출(
+CAPTURED)하는 **자기 진화형 에이전트 런타임**입니다.
 
 ---
 
 ## 문서 구성
 
-| 문서 | 내용 |
-|---|---|
-| [아키텍처 다이어그램](/openspace/00-diagram.md) | 시스템 계층 구조, 2단계 실행 파이프라인, 3중 진화 트리거, Provider 아키텍처, 검색 파이프라인, 벤치마크 흐름, 데이터 모델, 보안 계층 |
-| [코드 기반 심층 분석](/openspace/01-analysis.md) | 151개 소스 파일 전수 분석 — 엔트리포인트, Agent Runtime, LLM Client, Backend Provider, Skill Engine, Quality Tracking, MCP 통합, 벤치마크, 설정, 보안, 설계 패턴 |
-| [전략적 도입 분석](/openspace/02-strategic-analysis.md) | 경쟁 프레임워크 7종 비교, 실무 도입 분석, SWOT, 아키텍처 독창성 평가 |
-| [종합 리서치 보고서](/openspace/03-research-report.md) | 학술 논문, GitHub 활동(~3,500 stars), 커뮤니티 반응, HKUDS 생태계, 경쟁 비교, 미디어 보도, 연구 동향 |
+| 문서                                               | 내용                                                                                                                                  |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [아키텍처 다이어그램](/openspace/00-diagram.md)           | 시스템 계층 구조, 2단계 실행 파이프라인, 3중 진화 트리거, Provider 아키텍처, 검색 파이프라인, 벤치마크 흐름, 데이터 모델, 보안 계층                                                 |
+| [코드 기반 심층 분석](/openspace/01-analysis.md)         | 151개 소스 파일 전수 분석 — 엔트리포인트, Agent Runtime, LLM Client, Backend Provider, Skill Engine, Quality Tracking, MCP 통합, 벤치마크, 설정, 보안, 설계 패턴 |
+| [전략적 도입 분석](/openspace/02-strategic-analysis.md) | 경쟁 프레임워크 7종 비교, 실무 도입 분석, SWOT, 아키텍처 독창성 평가                                                                                         |
+| [종합 리서치 보고서](/openspace/03-research-report.md)   | 학술 논문, GitHub 활동(~3,500 stars), 커뮤니티 반응, HKUDS 생태계, 경쟁 비교, 미디어 보도, 연구 동향                                                            |
 
 ---
 
@@ -70,14 +71,14 @@ Cloud Skill Community (선택)
 
 ## 핵심 수치
 
-| 지표 | 값 |
-|------|-----|
-| Python 소스 파일 | 151개 |
-| 벤치마크 태스크 | 50개 (9 산업, 44 직업군) |
-| 생성 스킬 (50 태스크 후) | 226개 (활성 206개) |
-| 토큰 절감 | 45.9% (Phase 2 vs Phase 1) |
-| 수입 향상 | 4.2x (ClawWork 대비) |
-| GitHub Stars | ~3,500 |
+| 지표               | 값                          |
+|------------------|----------------------------|
+| Python 소스 파일     | 151개                       |
+| 벤치마크 태스크         | 50개 (9 산업, 44 직업군)         |
+| 생성 스킬 (50 태스크 후) | 226개 (활성 206개)             |
+| 토큰 절감            | 45.9% (Phase 2 vs Phase 1) |
+| 수입 향상            | 4.2x (ClawWork 대비)         |
+| GitHub Stars     | ~3,500                     |
 
 ---
 

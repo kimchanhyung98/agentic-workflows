@@ -17,14 +17,14 @@
 
 ### 기술 스택
 
-| 계층 | 기술 |
-|---|---|
-| 프레임워크 | Electron 40 |
-| UI | React 19, Zustand, Tailwind CSS v4 |
-| AI 런타임 | Vercel AI SDK v6 (`streamText`) |
-| 상태 관리 | XState task machine + plan file persistence |
-| 언어 | TypeScript (strict) |
-| 플랫폼 | Windows, macOS, Linux |
+| 계층     | 기술                                          |
+|--------|---------------------------------------------|
+| 프레임워크  | Electron 40                                 |
+| UI     | React 19, Zustand, Tailwind CSS v4          |
+| AI 런타임 | Vercel AI SDK v6 (`streamText`)             |
+| 상태 관리  | XState task machine + plan file persistence |
+| 언어     | TypeScript (strict)                         |
+| 플랫폼    | Windows, macOS, Linux                       |
 
 ---
 
@@ -35,8 +35,11 @@
 - Renderer는 preload API를 통해 `TASK_START`, `TASK_STOP`, `TASK_REVIEW` 같은 IPC 이벤트를 발행한다.
 - `ipc-setup.ts`는 실제 구현을 `ipc-handlers/*` 도메인 모듈로 위임한다.
 - `task/execution-handlers.ts`는 git repo 여부, 초기 커밋 존재, 인증 상태, spec/plan 파일 상태를 확인하고 실행 분기를 결정한다.
-- `agent-events-handlers.ts`는 worker에서 올라오는 `task-event`, `execution-progress`, `result`, `exit` 메시지를 받아 UI와 plan 파일을 갱신한다.
-- `taskStateManager`는 XState actor를 통해 `backlog → planning → plan_review → coding → qa_review → qa_fixing → human_review` 흐름을 관리하고, `xstateState`/`executionPhase`를 `implementation_plan.json`에 동기화한다.
+- `agent-events-handlers.ts`는 worker에서 올라오는 `task-event`, `execution-progress`, `result`, `exit` 메시지를 받아 UI와 plan 파일을
+  갱신한다.
+- `taskStateManager`는 XState actor를 통해
+  `backlog → planning → plan_review → coding → qa_review → qa_fixing → human_review` 흐름을 관리하고, `xstateState`/
+  `executionPhase`를 `implementation_plan.json`에 동기화한다.
 
 **의도:** UI 상태, worker 이벤트, plan 파일 상태를 한 곳에서 정렬해 "카드 위치는 바뀌었는데 실제 plan은 다른 상태" 같은 불일치를 줄이는 데 초점이 있다.
 
@@ -45,13 +48,15 @@
 - `AgentManager`는 task/spec/QA 실행의 진입점 facade다.
 - `AgentProcessManager`는 worker thread spawn, 종료, 재시작, event relay를 담당한다.
 - `AgentEvents`는 worker의 structured progress를 우선 사용하고, 필요할 때만 로그 텍스트를 fallback으로 파싱해 phase를 추정한다.
-- `taskExecutionContext` Map에는 `projectPath`, `specId`, `options`, `swapCount`, `generation`, `projectId` 등이 저장되어 restart 시 동일 컨텍스트를 재구성한다.
+- `taskExecutionContext` Map에는 `projectPath`, `specId`, `options`, `swapCount`, `generation`, `projectId` 등이 저장되어
+  restart 시 동일 컨텍스트를 재구성한다.
 - `AgentQueueManager`는 이름과 달리 일반 task 빌드 큐가 아니라 **roadmap / ideation 러너의 queue와 progress persistence**를 담당한다.
 
 ### 2.3 AI 실행 계층
 
 - build 실행 시 `createOrGetWorktree()`가 `.auto-claude/worktrees/tasks/{specId}` 아래 worktree를 준비한다.
-- `worker.ts`는 serialized session config를 받아 security profile과 tool context를 복원하고, MCP clients를 초기화한 뒤 agent type별 실행 경로를 선택한다.
+- `worker.ts`는 serialized session config를 받아 security profile과 tool context를 복원하고, MCP clients를 초기화한 뒤 agent type별 실행
+  경로를 선택한다.
 - `build_orchestrator`, `qa_reviewer`, `spec_orchestrator`는 각각 `BuildOrchestrator`, `QALoop`, `SpecOrchestrator`로 라우팅된다.
 - 그 외 agent type은 단일 세션 경로를 타며, `runContinuableSession()`이 내부적으로 AI session runner를 감싼다.
 - `ToolRegistry`는 내장 도구 9개와 MCP 도구를 합성하고, `Tool.define`은 security hook과 write-path containment를 적용한다.
@@ -65,10 +70,13 @@
 1. `complexity_assessment`를 먼저 실행한다.
 2. complexity가 `simple`이면 `quick_spec → validation`
 3. complexity가 `standard`이면 `discovery → requirements → spec_writing → planning → validation`
-4. complexity가 `complex`이면 `discovery → requirements → research → context → spec_writing → self_critique → planning → validation`
-5. phase 산출물(`requirements.json`, `context.json`, `research.json`, `spec.md`, `implementation_plan.json`)은 다음 phase의 prompt에 누적 주입된다.
+4. complexity가 `complex`이면
+   `discovery → requirements → research → context → spec_writing → self_critique → planning → validation`
+5. phase 산출물(`requirements.json`, `context.json`, `research.json`, `spec.md`, `implementation_plan.json`)은 다음 phase의
+   prompt에 누적 주입된다.
 
-추가로 `useAgenticOrchestration`이 켜진 경우 `spec_orchestrator_agentic` 프롬프트와 `SpawnSubagent` 도구를 사용해 AI 주도형 spec orchestration 경로를 탈 수 있다.
+추가로 `useAgenticOrchestration`이 켜진 경우 `spec_orchestrator_agentic` 프롬프트와 `SpawnSubagent` 도구를 사용해 AI 주도형 spec orchestration
+경로를 탈 수 있다.
 
 **BuildOrchestrator** — spec를 구현으로 전환:
 
@@ -88,25 +96,25 @@
 
 현재 코드는 11개 프로바이더를 지원한다.
 
-| 프로바이더 | 인증 / 특징 |
-|---|---|
-| Anthropic | OAuth 토큰 + API key |
-| OpenAI | API key + 파일 기반 OAuth (Codex) |
-| Google (Gemini) | API key |
-| AWS Bedrock | region + AWS credential chain |
-| Azure OpenAI | API key + deployment/baseURL |
-| Mistral | API key |
-| Groq | API key |
-| xAI | API key |
-| OpenRouter | API key |
-| ZAI | API key + OpenAI-compatible endpoint |
-| Ollama | 로컬 OpenAI-compatible endpoint, 기본적으로 무인증 |
+| 프로바이더           | 인증 / 특징                                  |
+|-----------------|------------------------------------------|
+| Anthropic       | OAuth 토큰 + API key                       |
+| OpenAI          | API key + 파일 기반 OAuth (Codex)            |
+| Google (Gemini) | API key                                  |
+| AWS Bedrock     | region + AWS credential chain            |
+| Azure OpenAI    | API key + deployment/baseURL             |
+| Mistral         | API key                                  |
+| Groq            | API key                                  |
+| xAI             | API key                                  |
+| OpenRouter      | API key                                  |
+| ZAI             | API key + OpenAI-compatible endpoint     |
+| Ollama          | 로컬 OpenAI-compatible endpoint, 기본적으로 무인증 |
 
 - `providers/registry.ts`는 provider SDK를 묶어 unified registry를 만든다.
 - `providers/factory.ts`는 provider별 quirks를 숨긴다.
-  - OpenAI Codex OAuth 계정은 `.responses()` 경로를 사용한다.
-  - Azure는 deployment name 기반으로 `.chat()`을 호출한다.
-  - Ollama와 ZAI는 OpenAI-compatible adapter를 사용한다.
+    - OpenAI Codex OAuth 계정은 `.responses()` 경로를 사용한다.
+    - Azure는 deployment name 기반으로 `.chat()`을 호출한다.
+    - Ollama와 ZAI는 OpenAI-compatible adapter를 사용한다.
 - `resolveAuthFromQueue()`는 `providerAccounts + globalPriorityOrder`를 순회하며 계정을 선택한다.
 - 적절한 account를 찾지 못하면 레거시 Claude profile auth로 fallback한다.
 - `PhaseConfig`는 spec / planning / coding / QA 단계별 모델과 thinking level을 분리한다.
@@ -121,15 +129,15 @@
 
 1. task와 project를 조회한다.
 2. git 초기 조건을 검증한다.
-   - 저장소가 아니면 실행 거부
-   - 초기 커밋이 없으면 실행 거부
+    - 저장소가 아니면 실행 거부
+    - 초기 커밋이 없으면 실행 거부
 3. 인증 상태를 검증한다.
-   - 활성 Claude profile auth 또는 provider account가 하나 이상 있어야 한다.
+    - 활성 Claude profile auth 또는 provider account가 하나 이상 있어야 한다.
 4. `implementation_plan.json`의 실제 subtask 유무를 먼저 확인한다.
-   - in-memory `task.subtasks`보다 plan 파일이 더 신뢰 가능한 source로 취급된다.
+    - in-memory `task.subtasks`보다 plan 파일이 더 신뢰 가능한 source로 취급된다.
 5. 현재 XState 상태에 따라 `PLANNING_STARTED`, `PLAN_APPROVED`, `USER_RESUMED` 중 하나를 `taskStateManager`에 보낸다.
 6. file watcher를 시작한다.
-   - worktree spec dir가 이미 있으면 worktree 쪽을 우선 감시한다.
+    - worktree spec dir가 이미 있으면 worktree 쪽을 우선 감시한다.
 7. `spec.md`가 없으면 `startSpecCreation()`을 호출한다.
 8. `spec.md`는 있지만 plan이 없거나 subtask가 비어 있으면 `startTaskExecution()`을 호출해 planner부터 다시 탄다.
 9. spec와 plan이 모두 있으면 기존 build 파이프라인을 바로 재개한다.
@@ -183,22 +191,22 @@ worker 경로의 세션 실행은 `runContinuableSession()`과 `runAgentSession(
 Aperant에는 review gate가 두 개 있다.
 
 1. **plan review**
-   - planning 완료 후 `requireReviewBeforeCoding`이 켜져 있으면 `plan_review` 상태로 들어간다.
-   - 사용자가 승인해야 coding으로 넘어간다.
+    - planning 완료 후 `requireReviewBeforeCoding`이 켜져 있으면 `plan_review` 상태로 들어간다.
+    - 사용자가 승인해야 coding으로 넘어간다.
 2. **final human review**
-   - QA 통과 후 `human_review` 상태로 들어간다.
-   - `TASK_REVIEW`가 승인/반려를 결정한다.
+    - QA 통과 후 `human_review` 상태로 들어간다.
+    - `TASK_REVIEW`가 승인/반려를 결정한다.
 
 `TASK_REVIEW`의 실제 동작:
 
 - 승인
-  - main spec dir의 `qa_report.md`에 APPROVED 기록
-  - `MARK_DONE` 이벤트 전송
+    - main spec dir의 `qa_report.md`에 APPROVED 기록
+    - `MARK_DONE` 이벤트 전송
 - 반려
-  - worktree가 있다면 main 작업공간에 반영된 merge 흔적을 `git reset`, `git checkout -- .`, `git clean -fd -e .auto-claude`로 되돌린다
-  - `QA_FIX_REQUEST.md`와 `feedback_images/`는 worktree spec dir가 있으면 그쪽에 기록한다
-  - `startQAProcess()`는 **build가 실제로 실행된 경로**를 기준으로 다시 시작한다
-  - `USER_RESUMED`를 보내 XState를 coding 쪽으로 되돌린다
+    - worktree가 있다면 main 작업공간에 반영된 merge 흔적을 `git reset`, `git checkout -- .`, `git clean -fd -e .auto-claude`로 되돌린다
+    - `QA_FIX_REQUEST.md`와 `feedback_images/`는 worktree spec dir가 있으면 그쪽에 기록한다
+    - `startQAProcess()`는 **build가 실제로 실행된 경로**를 기준으로 다시 시작한다
+    - `USER_RESUMED`를 보내 XState를 coding 쪽으로 되돌린다
 
 주의할 점은 "승인 = 항상 worktree 즉시 삭제"가 아니라는 점이다.
 
@@ -211,11 +219,14 @@ Aperant에는 review gate가 두 개 있다.
 Aperant 문서를 이해할 때 가장 빠지기 쉬운 부분이 **XState state**와 **execution phase**의 이중 구조다.
 
 1. **XState task machine**
-   - 상태: `backlog`, `planning`, `plan_review`, `coding`, `qa_review`, `qa_fixing`, `human_review`, `error`, `creating_pr`, `pr_created`, `done`
-   - 이벤트: `PLANNING_STARTED`, `PLAN_APPROVED`, `CODING_STARTED`, `QA_STARTED`, `QA_PASSED`, `QA_FAILED`, `USER_RESUMED`, `MARK_DONE` 등
+    - 상태: `backlog`, `planning`, `plan_review`, `coding`, `qa_review`, `qa_fixing`, `human_review`, `error`,
+      `creating_pr`, `pr_created`, `done`
+    - 이벤트: `PLANNING_STARTED`, `PLAN_APPROVED`, `CODING_STARTED`, `QA_STARTED`, `QA_PASSED`, `QA_FAILED`,
+      `USER_RESUMED`, `MARK_DONE` 등
 2. **Execution phase protocol**
-   - phase: `planning`, `coding`, `rate_limit_paused`, `auth_failure_paused`, `qa_review`, `qa_fixing`, `complete`, `failed`
-   - worker 로그 안의 `__EXEC_PHASE__:` structured marker를 우선 사용한다
+    - phase: `planning`, `coding`, `rate_limit_paused`, `auth_failure_paused`, `qa_review`, `qa_fixing`, `complete`,
+      `failed`
+    - worker 로그 안의 `__EXEC_PHASE__:` structured marker를 우선 사용한다
 
 `AgentEvents`의 역할:
 
@@ -240,16 +251,16 @@ Aperant 문서를 이해할 때 가장 빠지기 쉬운 부분이 **XState state
 
 내장 도구는 총 9개다.
 
-| 도구 | 설명 |
-|---|---|
-| Read | 파일 읽기 |
-| Write | 파일 쓰기 |
-| Edit | 파일 편집 |
-| Bash | 셸 명령 실행 |
-| Glob | 파일 패턴 매칭 |
-| Grep | 내용 검색 |
-| WebFetch | 웹 콘텐츠 가져오기 |
-| WebSearch | 웹 검색 |
+| 도구            | 설명           |
+|---------------|--------------|
+| Read          | 파일 읽기        |
+| Write         | 파일 쓰기        |
+| Edit          | 파일 편집        |
+| Bash          | 셸 명령 실행      |
+| Glob          | 파일 패턴 매칭     |
+| Grep          | 내용 검색        |
+| WebFetch      | 웹 콘텐츠 가져오기   |
+| WebSearch     | 웹 검색         |
 | SpawnSubagent | 서브에이전트 세션 실행 |
 
 여기에 agent type별 MCP 도구가 더해진다.
@@ -260,7 +271,8 @@ Aperant 문서를 이해할 때 가장 빠지기 쉬운 부분이 **XState state
 - `electron` / `puppeteer`
 - `auto-claude` 전용 MCP 도구 (`update_subtask_status`, `get_build_progress`, `record_discovery`, `update_qa_status` 등)
 
-핵심은 "모든 agent가 같은 도구를 쓰는 것"이 아니라, `AGENT_CONFIGS`가 **agent type → builtin tools → MCP servers → autoClaude tools** 매핑을 중앙에서 관리한다는 점이다.
+핵심은 "모든 agent가 같은 도구를 쓰는 것"이 아니라, `AGENT_CONFIGS`가 **agent type → builtin tools → MCP servers → autoClaude tools** 매핑을
+중앙에서 관리한다는 점이다.
 
 ### 4.2 보안 훅과 경로 제어
 
@@ -300,7 +312,8 @@ Aperant 문서를 이해할 때 가장 빠지기 쉬운 부분이 **XState state
 - `psql/mysql/mongosh/redis-cli` → 위험한 DB 명령 검증
 - `kill/pkill/killall` → 프로세스 종료 검증
 
-중요한 점은 `securityProfile`이 여전히 worker context에 실려 다니지만, **실제 allow/deny 판단의 주체는 더 이상 security profile command set이 아니라 denylist + validator**라는 점이다.
+중요한 점은 `securityProfile`이 여전히 worker context에 실려 다니지만, **실제 allow/deny 판단의 주체는 더 이상 security profile command set이 아니라
+denylist + validator**라는 점이다.
 
 ---
 
@@ -310,12 +323,12 @@ Aperant 문서를 이해할 때 가장 빠지기 쉬운 부분이 **XState state
 
 `AgentType` union 기준으로 현재 33개 agent type이 정의돼 있다.
 
-| 범주 | 에이전트 타입 | 역할 |
-|---|---|---|
-| 스펙 생성 | `spec_orchestrator`, `spec_discovery`, `spec_gatherer`, `spec_researcher`, `spec_context`, `spec_writer`, `spec_critic`, `spec_validation`, `spec_compaction` | spec 파이프라인 및 보조 phase |
-| 빌드 / QA | `build_orchestrator`, `planner`, `coder`, `qa_reviewer`, `qa_fixer` | 구현 계획, 구현, 검증, 수정 |
-| PR / 리뷰 | `pr_reviewer`, `pr_finding_validator`, `pr_orchestrator_parallel`, `pr_followup_parallel`, `pr_followup_extraction`, `pr_security_specialist`, `pr_quality_specialist`, `pr_logic_specialist`, `pr_codebase_fit_specialist`, `pr_template_filler` | PR 분석, 병렬 리뷰, finding 검증 |
-| 유틸리티 / 분석 | `insights`, `analysis`, `batch_analysis`, `batch_validation`, `merge_resolver`, `commit_message`, `roadmap_discovery`, `competitor_analysis`, `ideation` | 코드 탐색, 유틸리티 생성, 로드맵/아이데이션 |
+| 범주        | 에이전트 타입                                                                                                                                                                                                                                           | 역할                        |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
+| 스펙 생성     | `spec_orchestrator`, `spec_discovery`, `spec_gatherer`, `spec_researcher`, `spec_context`, `spec_writer`, `spec_critic`, `spec_validation`, `spec_compaction`                                                                                     | spec 파이프라인 및 보조 phase     |
+| 빌드 / QA   | `build_orchestrator`, `planner`, `coder`, `qa_reviewer`, `qa_fixer`                                                                                                                                                                               | 구현 계획, 구현, 검증, 수정         |
+| PR / 리뷰   | `pr_reviewer`, `pr_finding_validator`, `pr_orchestrator_parallel`, `pr_followup_parallel`, `pr_followup_extraction`, `pr_security_specialist`, `pr_quality_specialist`, `pr_logic_specialist`, `pr_codebase_fit_specialist`, `pr_template_filler` | PR 분석, 병렬 리뷰, finding 검증  |
+| 유틸리티 / 분석 | `insights`, `analysis`, `batch_analysis`, `batch_validation`, `merge_resolver`, `commit_message`, `roadmap_discovery`, `competitor_analysis`, `ideation`                                                                                          | 코드 탐색, 유틸리티 생성, 로드맵/아이데이션 |
 
 과거 요약처럼 agent 수를 대략적으로 뭉뚱그릴 수도 있지만, 최신 구현을 설명하려면 **spec/PR/utilities까지 포함한 33개 agent type**이라고 보는 편이 정확하다.
 
@@ -332,28 +345,29 @@ Aperant 문서를 이해할 때 가장 빠지기 쉬운 부분이 **XState state
 
 **모델 shorthand:**
 
-| shorthand | 실제 모델 | 비고 |
-|---|---|---|
-| `opus` | `claude-opus-4-6` | adaptive thinking 지원 |
-| `opus-1m` | `claude-opus-4-6` | 1M context window (beta) |
-| `opus-4.5` | `claude-opus-4-5-20251101` | |
-| `sonnet` | `claude-sonnet-4-6` | 기본 모델 |
-| `haiku` | `claude-haiku-4-5-20251001` | |
+| shorthand  | 실제 모델                       | 비고                       |
+|------------|-----------------------------|--------------------------|
+| `opus`     | `claude-opus-4-6`           | adaptive thinking 지원     |
+| `opus-1m`  | `claude-opus-4-6`           | 1M context window (beta) |
+| `opus-4.5` | `claude-opus-4-5-20251101`  |                          |
+| `sonnet`   | `claude-sonnet-4-6`         | 기본 모델                    |
+| `haiku`    | `claude-haiku-4-5-20251001` |                          |
 
 **프로바이더 자동 감지:**
 
-모델 ID 접두사로 프로바이더를 자동 판별한다: `claude-` → Anthropic, `gpt-`/`o1-`/`o3-` → OpenAI, `gemini-` → Google, `mistral-` → Mistral, `llama-` → Groq, `grok-` → xAI, `glm-` → ZAI
+모델 ID 접두사로 프로바이더를 자동 판별한다: `claude-` → Anthropic, `gpt-`/`o1-`/`o3-` → OpenAI, `gemini-` → Google, `mistral-` → Mistral,
+`llama-` → Groq, `grok-` → xAI, `glm-` → ZAI
 
 ### 5.3 Thinking Level 시스템
 
 thinking level은 4단계로, 각 단계별 토큰 예산이 정해져 있다.
 
-| 레벨 | 토큰 예산 |
-|---|---|
-| `low` | 1,024 |
-| `medium` | 4,096 |
-| `high` | 16,384 |
-| `xhigh` | 32,768 |
+| 레벨       | 토큰 예산  |
+|----------|--------|
+| `low`    | 1,024  |
+| `medium` | 4,096  |
+| `high`   | 16,384 |
+| `xhigh`  | 32,768 |
 
 **Spec phase별 기본 thinking:**
 
@@ -394,7 +408,8 @@ CLI override(`--thinking`)가 있으면 이것이 우선한다.
 
 ### 6.3 startup recovery
 
-앱 시작 시 `runStartupRecoveryScan()`이 모든 project의 `implementation_plan.json`을 훑어 `in_progress`로 남았지만 실제 프로세스가 없는 subtask를 `pending`으로 되돌린다.
+앱 시작 시 `runStartupRecoveryScan()`이 모든 project의 `implementation_plan.json`을 훑어 `in_progress`로 남았지만 실제 프로세스가 없는 subtask를
+`pending`으로 되돌린다.
 
 ### 6.4 pause / resume
 
@@ -409,16 +424,16 @@ pause 시 sentinel file이 spec dir에 기록되고, `TASK_RESUME_PAUSED`는 `RE
 
 `error-classifier.ts`는 8개 에러 코드로 세분화해 적절한 복구 경로를 선택한다.
 
-| 에러 코드 | HTTP | 설명 | 복구 경로 |
-|---|---|---|---|
-| `rate_limited` | 429 | 일시적 rate limit | auto-swap / 대기 후 재시도 |
-| `billing_error` | 429 | 잔액 부족, 크레딧 소진 | account 전환 (일시적이지 않음) |
-| `auth_failure` | 401 | 인증 만료/실패 | 토큰 갱신 → account 전환 |
-| `concurrency_error` | 400 | 도구 동시 실행 충돌 | 자동 재시도 |
-| `tool_execution_error` | — | 도구 실행 예외 | 에이전트에 에러 전달 |
-| `aborted` | — | 사용자/시스템 취소 | 정리 후 종료 |
-| `max_steps_reached` | — | step 상한 도달 | continuation 또는 종료 |
-| `generic_error` | — | 기타 | 에러 보고 |
+| 에러 코드                  | HTTP | 설명             | 복구 경로                 |
+|------------------------|------|----------------|-----------------------|
+| `rate_limited`         | 429  | 일시적 rate limit | auto-swap / 대기 후 재시도  |
+| `billing_error`        | 429  | 잔액 부족, 크레딧 소진  | account 전환 (일시적이지 않음) |
+| `auth_failure`         | 401  | 인증 만료/실패       | 토큰 갱신 → account 전환    |
+| `concurrency_error`    | 400  | 도구 동시 실행 충돌    | 자동 재시도                |
+| `tool_execution_error` | —    | 도구 실행 예외       | 에이전트에 에러 전달           |
+| `aborted`              | —    | 사용자/시스템 취소     | 정리 후 종료               |
+| `max_steps_reached`    | —    | step 상한 도달     | continuation 또는 종료    |
+| `generic_error`        | —    | 기타             | 에러 보고                 |
 
 `billing_error`와 `rate_limited`의 구분이 중요하다.
 둘 다 429지만, "insufficient balance", "credits exhausted" 같은 키워드가 있으면 `billing_error`로 분류된다.
@@ -477,11 +492,11 @@ worker 프로세스 생성 시 환경변수는 다층 우선순위로 해석된�
 
 **메모리 타입 (16종):**
 
-| 범주 | 타입 |
-|---|---|
+| 범주      | 타입                                                                                              |
+|---------|-------------------------------------------------------------------------------------------------|
 | 핵심 인사이트 | `gotcha`, `decision`, `preference`, `pattern`, `requirement`, `error_pattern`, `module_insight` |
-| 실행 최적화 | `prefetch_pattern`, `work_state`, `causal_dependency`, `task_calibration` |
-| 전문 추적 | `e2e_observation`, `dead_end`, `work_unit_outcome`, `workflow_recipe`, `context_cost` |
+| 실행 최적화  | `prefetch_pattern`, `work_state`, `causal_dependency`, `task_calibration`                       |
+| 전문 추적   | `e2e_observation`, `dead_end`, `work_unit_outcome`, `workflow_recipe`, `context_cost`           |
 
 **검색 파이프라인:**
 
@@ -491,7 +506,8 @@ worker 프로세스 생성 시 환경변수는 다층 우선순위로 해석된�
 
 **메모리 관계:**
 
-메모리 간 관계를 `required_with`, `conflicts_with`, `validates`, `supersedes`, `derived_from` 타입으로 연결하며, 각 관계에 confidence score가 붙는다.
+메모리 간 관계를 `required_with`, `conflicts_with`, `validates`, `supersedes`, `derived_from` 타입으로 연결하며, 각 관계에 confidence
+score가 붙는다.
 
 **운영 메커니즘:**
 
@@ -500,7 +516,8 @@ worker 프로세스 생성 시 환경변수는 다층 우선순위로 해석된�
 - **Decay half-life**: 오래된 메모리의 신뢰도를 시간에 따라 감쇄
 - **Injection**: `runAgentSession()`의 `prepareStep` 콜백으로 스텝 사이에 검색된 메모리를 주입
 - **Scope**: `global`, `module`, `work_unit`, `session` 단위로 메모리 유효 범위를 구분
-- **Source tracking**: 메모리 출처를 `agent_explicit`, `observer_inferred`, `qa_auto`, `mcp_auto`, `commit_auto`, `user_taught`로 분류
+- **Source tracking**: 메모리 출처를 `agent_explicit`, `observer_inferred`, `qa_auto`, `mcp_auto`, `commit_auto`,
+  `user_taught`로 분류
 
 ### 9.2 Semantic Merge 시스템
 
@@ -517,19 +534,20 @@ worker 프로세스 생성 시 환경변수는 다층 우선순위로 해석된�
 
 **변경 타입 (35+):**
 
-import 추가/제거/수정, 함수 추가/제거/수정/이름변경, React hook/JSX 조작, 변수/상수/클래스/메서드/속성 추가/수정, TypeScript 타입/인터페이스 추가/수정, Python decorator 추가/제거, 코멘트 추가/수정, 포매팅 전용 변경 등
+import 추가/제거/수정, 함수 추가/제거/수정/이름변경, React hook/JSX 조작, 변수/상수/클래스/메서드/속성 추가/수정, TypeScript 타입/인터페이스 추가/수정, Python
+decorator 추가/제거, 코멘트 추가/수정, 포매팅 전용 변경 등
 
 **병합 전략:**
 
-| 전략 | 적용 대상 |
-|---|---|
-| `COMBINE_IMPORTS` | import 문 통합 |
-| `HOOKS_FIRST`, `HOOKS_THEN_WRAP` | React hook + JSX 래핑 |
-| `APPEND_FUNCTIONS`, `APPEND_METHODS` | 함수/메서드 추가 |
-| `COMBINE_PROPS` | JSX prop 통합 |
-| `ORDER_BY_DEPENDENCY` | 의존 관계 기반 정렬 |
-| `AI_REQUIRED` | AI 해결 필요 |
-| `HUMAN_REQUIRED` | 사람 확인 필요 |
+| 전략                                   | 적용 대상               |
+|--------------------------------------|---------------------|
+| `COMBINE_IMPORTS`                    | import 문 통합         |
+| `HOOKS_FIRST`, `HOOKS_THEN_WRAP`     | React hook + JSX 래핑 |
+| `APPEND_FUNCTIONS`, `APPEND_METHODS` | 함수/메서드 추가           |
+| `COMBINE_PROPS`                      | JSX prop 통합         |
+| `ORDER_BY_DEPENDENCY`                | 의존 관계 기반 정렬         |
+| `AI_REQUIRED`                        | AI 해결 필요            |
+| `HUMAN_REQUIRED`                     | 사람 확인 필요            |
 
 **충돌 심각도:** `NONE`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`
 
@@ -587,51 +605,53 @@ spec dir 내용은 complexity tier와 실행 경로에 따라 조금씩 달라�
 └── metadata.json
 ```
 
-`project_index.json`, `complexity_assessment.json`, `research.json`은 항상 생기는 파일이 아니라 spec pipeline의 complexity/path에 따라 달라진다.
+`project_index.json`, `complexity_assessment.json`, `research.json`은 항상 생기는 파일이 아니라 spec pipeline의 complexity/path에 따라
+달라진다.
 
 ---
 
 ## 11. 장점과 트레이드오프
 
-| 관점 | 장점 | 트레이드오프 |
-|---|---|---|
-| 상태 일관성 | XState + plan file persistence로 UI/worker/file 상태를 맞추기 쉽다 | 상태 원천이 여러 층(XState, execution phase, plan file)이라 디버깅 진입 비용이 높다 |
-| spec 파이프라인 | complexity에 따라 빠른 경로와 정밀 경로를 나눌 수 있다 | phase 수가 많아질수록 spec 생성 흐름을 추적하기 어렵다 |
-| 개발 안전성 | worktree 격리, merge/discard 핸들러, path safety로 main 오염을 줄인다 | merge 이후 cleanup은 handler와 사용자 선택에 따라 달라져 운영 규칙 이해가 필요하다 |
-| 확장성 | 11개 provider, phase별 모델 선택, MCP 조합으로 확장성이 높다 | provider/account 조합이 늘수록 테스트 매트릭스가 커진다 |
-| 복원력 | auto-swap, startup recovery, pause/resume, stale exit guard가 있다 | 상태 복원 로직이 복잡해 edge case 검증 부담이 커진다 |
-| 도구 보안 | denylist, validator, write-path containment이 결합돼 있다 | allow-by-default bash 모델이라 새 위험 패턴이 나오면 validator/denylist 갱신이 필요하다 |
+| 관점         | 장점                                                              | 트레이드오프                                                              |
+|------------|-----------------------------------------------------------------|---------------------------------------------------------------------|
+| 상태 일관성     | XState + plan file persistence로 UI/worker/file 상태를 맞추기 쉽다       | 상태 원천이 여러 층(XState, execution phase, plan file)이라 디버깅 진입 비용이 높다     |
+| spec 파이프라인 | complexity에 따라 빠른 경로와 정밀 경로를 나눌 수 있다                            | phase 수가 많아질수록 spec 생성 흐름을 추적하기 어렵다                                 |
+| 개발 안전성     | worktree 격리, merge/discard 핸들러, path safety로 main 오염을 줄인다       | merge 이후 cleanup은 handler와 사용자 선택에 따라 달라져 운영 규칙 이해가 필요하다            |
+| 확장성        | 11개 provider, phase별 모델 선택, MCP 조합으로 확장성이 높다                    | provider/account 조합이 늘수록 테스트 매트릭스가 커진다                              |
+| 복원력        | auto-swap, startup recovery, pause/resume, stale exit guard가 있다 | 상태 복원 로직이 복잡해 edge case 검증 부담이 커진다                                  |
+| 도구 보안      | denylist, validator, write-path containment이 결합돼 있다             | allow-by-default bash 모델이라 새 위험 패턴이 나오면 validator/denylist 갱신이 필요하다 |
 
 ---
 
 ## 12. 핵심 상수 / 임계값
 
-| 상수 | 값 | 용도 |
-|---|---|---|
-| `DEFAULT_MAX_STEPS` | 500 | 에이전트 step 기본 상한 |
-| `MAX_AUTH_RETRIES` | 1 | 401 인증 재시도 횟수 |
-| `MAX_PLANNING_VALIDATION_RETRIES` | 3 | planning schema 검증 재시도 |
-| `MAX_SUBTASK_RETRIES` | 3 | subtask별 실패 재시도 |
-| `MAX_QA_ITERATIONS` | 50 | QA review/fix 루프 상한 |
-| `MAX_CONSECUTIVE_ERRORS` | 3 | QA escalation 트리거 |
-| `RECURRING_ISSUE_THRESHOLD` | 3 | 반복 이슈 escalation 트리거 |
-| `DEFAULT_MAX_CONCURRENCY` | 3 | 병렬 subtask 동시 실행 수 |
-| `CONTEXT_WINDOW_THRESHOLD` | 85% | 컨텍스트 윈도우 경고 |
-| `CONTEXT_WINDOW_ABORT_THRESHOLD` | 90% | 컨텍스트 윈도우 중단/continuation |
-| `CONVERGENCE_NUDGE` | 75% steps | 마무리 유도 시점 |
-| `RATE_LIMIT_BASE_DELAY_MS` | 30,000 | rate limit 대기 기본값 |
-| `RATE_LIMIT_MAX_DELAY_MS` | 300,000 | rate limit 대기 최대값 |
-| `AUTO_CONTINUE_DELAY_MS` | 3,000 | orchestrator 자동 진행 딜레이 |
-| `ERROR_RETRY_DELAY_MS` | 5,000 | 에러 재시도 딜레이 |
-| `STREAM_INACTIVITY_TIMEOUT_MS` | 60,000 | 스트림 비활성 타임아웃 |
-| `POST_STREAM_TIMEOUT_MS` | 10,000 | 스트림 후 promise 타임아웃 |
+| 상수                                | 값         | 용도                       |
+|-----------------------------------|-----------|--------------------------|
+| `DEFAULT_MAX_STEPS`               | 500       | 에이전트 step 기본 상한          |
+| `MAX_AUTH_RETRIES`                | 1         | 401 인증 재시도 횟수            |
+| `MAX_PLANNING_VALIDATION_RETRIES` | 3         | planning schema 검증 재시도   |
+| `MAX_SUBTASK_RETRIES`             | 3         | subtask별 실패 재시도          |
+| `MAX_QA_ITERATIONS`               | 50        | QA review/fix 루프 상한      |
+| `MAX_CONSECUTIVE_ERRORS`          | 3         | QA escalation 트리거        |
+| `RECURRING_ISSUE_THRESHOLD`       | 3         | 반복 이슈 escalation 트리거     |
+| `DEFAULT_MAX_CONCURRENCY`         | 3         | 병렬 subtask 동시 실행 수       |
+| `CONTEXT_WINDOW_THRESHOLD`        | 85%       | 컨텍스트 윈도우 경고              |
+| `CONTEXT_WINDOW_ABORT_THRESHOLD`  | 90%       | 컨텍스트 윈도우 중단/continuation |
+| `CONVERGENCE_NUDGE`               | 75% steps | 마무리 유도 시점                |
+| `RATE_LIMIT_BASE_DELAY_MS`        | 30,000    | rate limit 대기 기본값        |
+| `RATE_LIMIT_MAX_DELAY_MS`         | 300,000   | rate limit 대기 최대값        |
+| `AUTO_CONTINUE_DELAY_MS`          | 3,000     | orchestrator 자동 진행 딜레이   |
+| `ERROR_RETRY_DELAY_MS`            | 5,000     | 에러 재시도 딜레이               |
+| `STREAM_INACTIVITY_TIMEOUT_MS`    | 60,000    | 스트림 비활성 타임아웃             |
+| `POST_STREAM_TIMEOUT_MS`          | 10,000    | 스트림 후 promise 타임아웃       |
 
 ---
 
 ## 13. 요약
 
 Aperant의 실행 플로우는 단순한 "프롬프트 실행기"가 아니라,
-**(1) IPC + XState 상태기계, (2) complexity-adaptive 오케스트레이션, (3) 격리된 git 작업공간, (4) 멀티 프로바이더 인증/모델 추상화, (5) 자동 복원과 pause/resume, (6) human review gate**
+**(1) IPC + XState 상태기계, (2) complexity-adaptive 오케스트레이션, (3) 격리된 git 작업공간, (4) 멀티 프로바이더 인증/모델 추상화, (5) 자동 복원과
+pause/resume, (6) human review gate**
 를 결합한 구조다.
 
 특히 중요한 점은 다음 세 가지다.
