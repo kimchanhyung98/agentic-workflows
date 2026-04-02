@@ -31,6 +31,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                    | LangChain Skills  |
 | [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                        | Oh My OpenAgent   |
 | [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                                  | OpenCode Worktree |
+| [ouroboros](/ouroboros/README.md)                 | Specification-first 에이전트 하네스, 인터뷰 기반 Seed 고정, 3단계 평가/진화 루프        | Q00 Ouroboros     |
 
 ### 자율 개선 루프
 
