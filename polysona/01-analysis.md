@@ -219,7 +219,7 @@ key: value         → scope[key] = value 직접 할당
 ### 8.2 팀 단위 에이전트 운영 가드레일
 
 - no-speculation, Write-then-Read, SSOT 같은 규약을 명시 문서로 강제
-- context:fork로 생성-평가 편향 격리
+- context: fork로 생성-평가 편향 격리
 - 훅 시스템으로 런타임 레벨 데이터 보호
 
 ### 8.3 에이전트 이식성 실험
@@ -236,7 +236,7 @@ key: value         → scope[key] = value 직접 할당
 
 1. **심리학적 깊이**: 10개 프레임워크 통합으로 표면이 아닌 무의식 패턴까지 추출. 단일 이론의 맹점을 상호 보완
 2. **GAP 보존 원칙**: 의식-무의식 간 모순을 해소하지 않고 보존 → 콘텐츠 진정성의 구조적 원천
-3. **context:fork QA 격리**: 생성-평가 편향을 시스템 수준에서 차단. 단순 프롬프트 체이닝을 넘어선 아키텍처 결정
+3. **context: fork QA 격리**: 생성-평가 편향을 시스템 수준에서 차단. 단순 프롬프트 체이닝을 넘어선 아키텍처 결정
 4. **Write-then-Read 검증**: AI 환각(hallucination) 방지의 구조적 해법
 5. **이식성**: `/export`로 페르소나를 CLAUDE.md/AGENTS.md로 변환. 특정 도구 종속 탈피
 6. **데이터 투명성**: 상태가 모두 PLOON Markdown 파일로 남아 감사/재현/회귀 확인 용이
@@ -261,7 +261,7 @@ Polysona는 "잘 대답하는 단일 에이전트"보다, **사용자 정체성 
 
 1. **심리학적 깊이**: 10개 프레임워크 × 5개 에고 레이어 × GAP 보존으로 표면이 아닌 심층 페르소나 추출
 2. **이식성**: Codex/Claude를 넘나드는 persona 실행. `/export`로 어떤 AI 에이전트에도 적용
-3. **검증 가능성**: Write-then-Read, context:fork, PLOON으로 결과물과 상태를 파일로 남기는 운영 모델
+3. **검증 가능성**: Write-then-Read, context: fork, PLOON으로 결과물과 상태를 파일로 남기는 운영 모델
 
 프로덕션 관점에서는 향후 `content/*`와 `personas/*`의 스키마 진화/마이그레이션 전략, 동시성 제어, SaaS 연동(MCP, v1.6 예정) 단계가 핵심 확장 지점입니다.
 

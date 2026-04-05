@@ -18,8 +18,8 @@
 | 버전 | v1.3.0 |
 | 라이선스 | MIT |
 | 생성일 | 2026-03-29 |
-| 스타 | 30 |
-| 포크 | 7 |
+| 스타 | 30 (2026-03-29 작성 시점 기준, 변동 가능) |
+| 포크 | 7 (2026-03-29 작성 시점 기준, 변동 가능) |
 | 기여자 | 1명 (LilMGenius, 45 커밋) |
 | 주요 언어 | HTML (61.6%), TypeScript (36.2%), Python, Shell, JavaScript |
 | 기술 스택 | Bun, Hono, React 19, Vite 7, Tailwind CSS 4 |
@@ -64,12 +64,12 @@ Polysona는 콘텐츠 생성을 위한 5단계 에이전트 파이프라인을 �
 
 ### 2.2 PLOON 데이터 포맷
 
-Polysona는 자체 데이터 포맷인 PLOON(Polysona Lightweight Object-Oriented Notation으로 추정)을 사용한다. 웹에서 별도 문서화는 발견되지 않으며, 프로젝트 내부 전용 포맷으로 보인다.
+Polysona는 자체 데이터 포맷인 PLOON을 사용한다. 웹에서 별도 문서화는 발견되지 않으며, 프로젝트 내부 전용 포맷(정의 미공개)으로 보인다.
 
 **형식**: `[table#N](col1,col2,...)` + 파이프 구분 행
 
 **예시**:
-```
+```text
 [table#1](layer,value,source)
 unconscious-self|빠른 실행과 반복을 통해 의미를 만드는 사람|McAdams Life Story
 conscious-ideal|단순하고 명확한 것을 추구하는 미니멀리스트|Laddering
@@ -134,7 +134,7 @@ Polysona의 가장 차별화된 핵심은 10가지 심리학 프레임워크를 
 - **출처**: Dan McAdams, Northwestern University (1993)
 - **목적**: 삶의 서사 구조 추출 - 챕터, 전환점, 의미 부여 패턴
 - **핵심 질문**: "당신의 인생을 5-7개 챕터로 나누면?" / "가장 높은 점, 낮은 점, 전환점은?"
-- **AI 적용 연구**: 최근 LLM 기반 접근이 생애 내러티브에서 FFM 성격 특성을 예측하는 데 정량적 엄밀성을 달성함 (arxiv.org/html/2506.19258v1)
+- **AI 적용 연구**: 최근 LLM 기반 접근이 생애 내러티브에서 FFM 성격 특성을 예측하는 데 정량적 엄밀성을 달성함 (https://arxiv.org/html/2506.19258v1)
 - **출력 대상**: `persona.md core`
 
 #### (2) Laddering (+MI+ACT) (가치 위계)

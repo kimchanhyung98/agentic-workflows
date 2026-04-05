@@ -136,7 +136,7 @@ flowchart TD
     GAP4 --- L5
 ```
 
-## 5. Write-then-Read 검증 & context:fork 격리
+## 5. Write-then-Read 검증 & context: fork 격리
 
 ```mermaid
 sequenceDiagram
