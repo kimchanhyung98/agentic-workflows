@@ -47,7 +47,7 @@
 
 ### 파이프라인 구조
 
-```
+```text
 SETUP (1회 또는 주기적 갱신)
   ① Profiler → 인터뷰 로그 추출 → persona.md + nuance.md + accounts.md
 
@@ -161,7 +161,7 @@ LOOP (콘텐츠 사이클마다 반복)
 
 ### 3.5 5개 에고 레이어 모델
 
-```
+```text
 Layer 1: others-see-me       ← 타인의 시선 (Johari, 五倫)     → persona.md blind
          ↕ GAP?
 Layer 2: want-to-be-seen     ← 보여지고 싶은 모습 (Goffman)   → nuance.md voice
@@ -177,7 +177,7 @@ Layer 5: unconscious-self    ← 무의식적 자아 (McAdams/IFS/Koan) → pers
 
 모든 레이어 쌍 간 모순을 감지하여 즉시 기록:
 
-```
+```text
 ~2026-03-29: GAP: conscious-ideal(minimalism) ↔ unconscious-self(over-engineering under stress)
 ~2026-03-29: GAP: others-see-me(result-fixated) ↔ want-to-be-seen(process-oriented mentor)
 ~2026-03-29: GAP: rolemodel(high-risk operator) ↔ unconscious-self(risk-avoidant execution pattern)
@@ -210,7 +210,7 @@ Polysona 전용 구조화 마크다운 형식:
 
 **persona.md** — "이 사람이 누구인가":
 
-```
+```text
 ## core     → [table#1](layer,value,source)     — 자아 수직 단면
 ## decide   → [table#1](priority,approach,source) — 의사결정 논리
 ## energy   → [table#1](source,level,context)     — 동기 에너지 지도
@@ -220,7 +220,7 @@ Polysona 전용 구조화 마크다운 형식:
 
 **nuance.md** — "이 사람이 어떻게 말하는가":
 
-```
+```text
 ## voice    → [table#1](register,style,avoid)         — 어조 레지스터
 ## platform → [table#1](platform,tone,hook_pattern,emoji_density) — 플랫폼별 조율
 ## phrasing → [table#1](type,example)                  — 금기어/선호어
@@ -228,7 +228,7 @@ Polysona 전용 구조화 마크다운 형식:
 
 **accounts.md** — "이 사람이 누구를 벤치마크하는가":
 
-```
+```text
 ## rolemodel → [table#1](name,platform,why,signal) — 롤모델 목록
 ## virtual   → [table#1](profile,concern,expectation) — 가상 팔로워 프로파일
 ```
@@ -246,7 +246,7 @@ Polysona 전용 구조화 마크다운 형식:
 
 ### 5.1 전체 흐름
 
-```
+```text
 /interview → persona.md + nuance.md + accounts.md
     ↓
 /trend → content/trends/YYYY-MM-DD-scan-slug.md (5개 순위 토픽)
@@ -264,7 +264,7 @@ Polysona 전용 구조화 마크다운 형식:
 
 모든 데이터 생성 에이전트가 동일하게 따르는 필수 패턴:
 
-```
+```text
 Write 도구 → 파일 저장 → Read 도구 → 존재 확인 → 확인된 경로와 함께 응답
 쓰기 실패 시: "실패했다고 보고. 성공 주장 금지."
 ```
@@ -289,7 +289,7 @@ Write 도구 → 파일 저장 → Read 도구 → 존재 확인 → 확인된 �
 
 ### 6.1 서버 아키텍처 (Hono + Bun)
 
-```
+```text
 server/index.ts (Hono 서버)
 ├── /api/status              → 시스템 상태
 ├── /api/personas            → 페르소나 목록 (personas/ 스캔)
@@ -306,7 +306,7 @@ server/index.ts (Hono 서버)
 
 마크다운 라인별 상태 기계:
 
-```
+```text
 빈 줄     → table/columns 리셋
 ## 섹션   → scope 전환
 [테이블]  → table 이름, columns 배열 설정
@@ -317,7 +317,7 @@ key:val   → scope[key] = value
 
 ### 6.3 클라이언트 페이지 구조
 
-```
+```text
 /           → Home          — 시스템 상태, 통계, 에이전트 상태 카드
 /personas   → Personas      — 페르소나 목록 카드 그리드
 /personas/:id → PersonaDetail — 가장 데이터 집약적 페이지
@@ -338,7 +338,7 @@ key:val   → scope[key] = value
 
 ### 6.5 빌드 시스템
 
-```
+```text
 "dev": "bun run build && bun run server/index.ts"  ← Vite 빌드 후 Bun 서버 실행
 "build": "vite build"                                ← client/ → dist/
 ```
@@ -387,7 +387,7 @@ cat "personas/$ACTIVE/persona.md" 2>/dev/null || echo "No persona found. Run /in
 
 ### 8.1 5슬라이드 구조
 
-```
+```text
 Slide 1 (Cover)    → "Polygon처럼 다면적인 자아를 Persona 단위로 구조화"
 Slide 2 (Problem)  → "에이전트는 일을 하지만, '나'를 모른다"
 Slide 3 (Evidence) → +50 팔로워 (내 말투로 답글 → 실제 성과)

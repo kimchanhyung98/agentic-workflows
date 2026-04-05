@@ -73,7 +73,7 @@ Claude 경로는 plugin + hooks 조합으로 런타임 가드레일을 구현합
 
 **GAP 발견**: 모든 레이어 쌍 간 모순을 감지하여 즉시 기록합니다. 모순은 해소하지 않고 보존합니다 — 인간은 모순적이며, 그 모순이 콘텐츠의 심리적 진정성의 원천입니다.
 
-```
+```text
 ~2026-03-29: GAP: conscious-ideal(minimalism) ↔ unconscious-self(over-engineering under stress)
 ~2026-03-29: GAP: others-see-me(result-fixated) ↔ want-to-be-seen(process-oriented mentor)
 ~2026-03-29: GAP: rolemodel(high-risk operator) ↔ unconscious-self(risk-avoidant execution)
@@ -168,7 +168,7 @@ accounts.md 롤모델의 `why`(왜 그 사람인가)와 `signal`(스타일 신�
 
 `parsePloon()`은 Markdown 기반 PLOON 포맷을 JSON 유사 객체로 변환합니다.
 
-```
+```text
 ## 섹션명           → 새 scope 전환
 [table#N](cols)    → 테이블 헤더, 컬럼 정의
 값1 | 값2           → 컬럼 매핑으로 레코드 배열 push
