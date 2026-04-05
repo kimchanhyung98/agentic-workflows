@@ -60,7 +60,7 @@ Ouroboros는 "뱀이 자신의 꼬리를 먹는" 신화에서 이름을 딴 **�
 
 Rust의 `Result` 타입을 Python 3.12 제네릭으로 구현. 시스템 전체에서 예외 대신 사용합니다.
 
-```
+```text
 Result[T, E]
 ├── Result.ok(value)    → _is_ok = True
 ├── Result.err(error)   → _is_ok = False
@@ -73,7 +73,7 @@ Result[T, E]
 
 `Pydantic BaseModel(frozen=True)`로 구현된 불변 워크플로우 사양서입니다.
 
-```
+```text
 Seed (frozen=True)
 ├── [방향성 - 절대 불변]
 │   ├── goal: str                           # 주요 목표
@@ -100,7 +100,7 @@ Seed (frozen=True)
 
 수락 기준(Acceptance Criteria)의 계층적 분해를 관리하는 자료 구조입니다.
 
-```
+```text
 ACNode (frozen dataclass)           ACTree (mutable dataclass)
 ├── id: str                         ├── root_id: str | None
 ├── content: str                    ├── nodes: dict[str, ACNode]
@@ -121,7 +121,7 @@ ACNode (frozen dataclass)           ACTree (mutable dataclass)
 
 진화 루프에서 각 세대의 기록을 추적합니다.
 
-```
+```text
 OntologyLineage (frozen Pydantic)
 ├── lineage_id, goal
 ├── status: ACTIVE / CONVERGED / EXHAUSTED / ABORTED
@@ -143,7 +143,7 @@ OntologyDelta
 
 ### 2.5 이벤트 소싱 (`events/base.py`, `persistence/`)
 
-```
+```text
 BaseEvent (frozen=True Pydantic)
 ├── id: str (UUID4)
 ├── type: str ("domain.entity.verb_past_tense")
@@ -179,7 +179,7 @@ EventStore (SQLAlchemy Core + aiosqlite)
 
 #### 소크라테스식 인터뷰 (`bigbang/interview.py`)
 
-```
+```text
 사용자 입력 (초기 컨텍스트)
     │
     ▼
@@ -246,7 +246,7 @@ PM 인터뷰 완료 시 산출물:
 
 5가지 존재론적 질문 유형 (ESSENCE, ROOT_CAUSE, PREREQUISITES, HIDDEN_ASSUMPTIONS, EXISTING_CONTEXT)을 기반으로 **AOP(Aspect-Oriented) 기반 온톨로지 위버** 구현:
 
-```
+```text
 OntologicalAspect.execute(context, core_operation)
     ├── 캐시 확인 (5분 TTL, 최대 100 항목)
     ├── strategy.analyze(context) → AnalysisResult
@@ -260,7 +260,7 @@ OntologicalAspect.execute(context, core_operation)
 
 #### 복잡도 점수 계산 (`routing/complexity.py`)
 
-```
+```text
 complexity_score =
     0.30 × min(token_count / 4000, 1.0)
   + 0.30 × min(tool_count / 5, 1.0)
@@ -286,7 +286,7 @@ complexity_score =
 
 #### 4단계 실행 사이클 (`execution/double_diamond.py`)
 
-```
+```text
 AC (수락 기준)
     ▼
 DISCOVER (발산) → "문제 공간 탐색: 어떤 도전/위험/가정이 있는가?"
@@ -312,7 +312,7 @@ CycleResult (성공/실패 + phase_results)
 
 Kahn 알고리즘을 사용한 위상 정렬로 AC 간 의존성 레벨 계산:
 
-```
+```text
 레벨 0: [AC_1, AC_3]  ← 의존성 없음, 병렬 실행
 레벨 1: [AC_2]        ← AC_1 완료 후 실행
 레벨 2: [AC_4, AC_5]  ← AC_2 완료 후 실행
@@ -347,7 +347,7 @@ Kahn 알고리즘을 사용한 위상 정렬로 AC 간 의존성 레벨 계산:
 
 #### Stage 1: 기계적 검증 (`evaluation/mechanical.py`) — 비용 $0
 
-```
+```text
 MechanicalVerifier
 ├── LINT    → 코드 스타일 검사
 ├── BUILD   → 컴파일 검증
@@ -404,7 +404,7 @@ Devil's Advocate는 `DevilAdvocateStrategy` (`strategies/devil_advocate.py`)를 
 
 PM 13.1 가중 공식:
 
-```
+```text
 combined = (goal_drift × 0.5) + (constraint_drift × 0.3) + (ontology_drift × 0.2)
 ```
 
@@ -423,7 +423,7 @@ combined = (goal_drift × 0.5) + (constraint_drift × 0.3) + (ontology_drift × 
 
 #### 진화 루프 (`evolution/loop.py`)
 
-```
+```text
 EvolutionaryLoop.run(initial_seed)
     │
     ▼  [세대 1: 인터뷰 → 시드 제공됨]
@@ -482,7 +482,7 @@ EvolutionaryLoop.run(initial_seed)
 
 Seed를 받아 Claude Agent SDK를 통해 실제 실행하는 엔진:
 
-```
+```text
 OrchestratorRunner.execute_seed(seed, execution_id)
     ├── ExecutionStrategy.get_strategy() → 태스크 유형별 전략
     ├── assemble_session_tool_catalog() → MCP 도구 조립
@@ -508,7 +508,7 @@ AC 추적은 마커 기반. 마커 없으면 자연어 패턴으로 휴리스틱
 
 ### 4.3 WorkflowState (`orchestrator/workflow_state.py`)
 
-```
+```text
 WorkflowState
 ├── acceptance_criteria: list[AcceptanceCriterion]
 ├── current_phase: Phase (DISCOVER/DEFINE/DEVELOP/DELIVER, 다이어그램상 DESIGN ≡ DEVELOP)
@@ -537,7 +537,7 @@ WorkflowState
 
 #### 보안 레이어 (`mcp/server/security.py`) — 4단계 파이프라인
 
-```
+```text
 SecurityLayer.check_request()
     1. Authenticator.authenticate()   → API_KEY (SHA-256), BEARER_TOKEN (HMAC-SHA256, 1시간 유효)
     2. RateLimiter.check()            → 토큰 버킷 알고리즘
@@ -576,7 +576,7 @@ SecurityLayer.check_request()
 
 #### 핵심 실행 흐름 (ExecuteSeedHandler)
 
-```
+```text
 handle(arguments)
     ├── 경로/내용 해석 + 보안 검증
     ├── 위임 컨텍스트 추출 (_ooo_parent_* 숨겨진 인수)
@@ -603,7 +603,7 @@ Ouroboros MCP 서버가 **다른 MCP 서버의 클라이언트 역할**을 하�
 
 `.claude-plugin/skills/*/SKILL.md`에서 YAML frontmatter + 섹션을 파싱하여 등록:
 
-```
+```text
 SkillRegistry.discover_all()
     → glob("*/SKILL.md") 순회
     → _parse_skill_md(content)
@@ -635,7 +635,7 @@ SkillRegistry.discover_all()
 
 ### 6.3 에이전트 풀 (`plugin/agents/pool.py`)
 
-```
+```text
 상태 머신: IDLE → BUSY → IDLE (성공) / FAILED → RECOVERING → IDLE
 
 AgentPool
@@ -696,7 +696,7 @@ class LLMAdapter(Protocol):
 
 ### 8.1 CLI 명령 체계 (`cli/main.py`)
 
-```
+```text
 ouroboros
 ├── init [start|list]      — 인터뷰 시작/목록
 ├── run [workflow|resume]   — 워크플로우 실행/재개
@@ -722,7 +722,7 @@ Rich `Live` 기반:
 
 #### 단일 진실 공급원(SSOT) 패턴
 
-```
+```text
 EventStore (SQLite) → 0.5초 폴링 → BaseEvent
     → create_message_from_event() → Textual Message
     → OuroborosTUI._update_state_from_event() → TUIState 갱신
@@ -731,7 +731,7 @@ EventStore (SQLite) → 0.5초 폴링 → BaseEvent
 
 #### 화면 내비게이션
 
-```
+```text
 SessionSelectorScreen → DashboardScreenV3 (기본)
     ├── [l] LogsScreen       — 실시간 로그
     ├── [d] DebugScreen      — 원시 이벤트 덤프
@@ -742,7 +742,7 @@ SessionSelectorScreen → DashboardScreenV3 (기본)
 
 #### DashboardScreenV3 레이아웃
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │  ◆ Discover → ○ Define → ○ Design → ○ Deliver    [2/5 AC] 1m23s│
 ├────────────────────────────┬─────────────────────────────────────┤

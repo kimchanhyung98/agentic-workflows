@@ -57,7 +57,7 @@ pip install ouroboros-ai[all]     # 전체
 
 Ouroboros의 실행 엔진은 6개 단계(Phase)로 구성된 오케스트레이션 하네스이다.
 
-```
+```text
 Phase 0: Big Bang (인터뷰 + Seed 생성)
     ↓
 Phase 1: PAL Router (비용/복잡도 기반 모델 티어 선택)
@@ -184,7 +184,7 @@ PAL Router는 작업 복잡도를 기반으로 모델 티어를 선택하는 **s
 Ouroboros는 MCP(Model Context Protocol)를 **서버와 클라이언트 양방향**으로 활용한다:
 
 - **Server mode**: Ouroboros 기능(execute_seed, session_status, query_events)을 MCP 도구로 외부 클라이언트에 노출
-- **Client mode**: 외부 MCP 서버 도구(filesystem, github, db 등)를 실행에 병합
+- **Client mode**: 외부 MCP 서버 도구(filesystem, GitHub, db 등)를 실행에 병합
 
 MCP는 2024년 11월 Anthropic이 발표한 이후 2026년 3월 기준 97백만 다운로드를 달성했으며, 5,000개 이상의 커뮤니티 MCP 서버가 존재한다. OpenAI, Microsoft, AWS 등 모든 주요 제공자가 지원한다. Ouroboros는 이 생태계의 도구 플랫폼/허브 역할을 수행한다.
 
@@ -192,7 +192,7 @@ MCP는 2024년 11월 Anthropic이 발표한 이후 2026년 3월 기준 97백만 
 
 ### 2.9 코드 모듈 구조
 
-```
+```text
 src/ouroboros/
 ├─ agents/          # 에이전트 정의 (socratic-interviewer, ontologist 등)
 ├─ bigbang/         # 인터뷰, 모호성 점수화, Seed 생성
@@ -296,7 +296,7 @@ SDD 생태계에서 Ouroboros가 독특한 위치를 차지하는 이유:
 
 ### 4.2 Ouroboros vs 주요 도구 포지셔닝
 
-```
+```text
                     높은 자율성
                         │
               Devin ────┤──── OpenHands
