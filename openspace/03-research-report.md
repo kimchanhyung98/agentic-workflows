@@ -99,7 +99,7 @@ HKUDS 연구 그룹은 OpenSpace의 기반이 되는 다수의 선행 연구를 
 
 ### 3.2 프로젝트 구조
 
-```
+```text
 OpenSpace/
 ├── openspace/               # 코어 엔진
 │   ├── agents/              # grounding_agent.py
@@ -139,7 +139,7 @@ openspace-dashboard --port 7788
 
 ### 4.1 3계층 아키텍처
 
-```
+```text
 Host Agent (Claude Code / Codex / OpenClaw 등)
     | MCP Protocol
 OpenSpace MCP Server (openspace-mcp)
@@ -253,7 +253,7 @@ GDPVal은 OpenAI가 개발한 경제적 가치 기반 AI 평가 벤치마크로,
 | 엔지니어링 프로젝트  | +8.7pp  | -43%  |
 | 스프레드시트      | +7.3pp  | -37%  |
 
-#### 진화된 스킬 분포 (165개)
+#### 진화된 스킬 분포 (165개, 진화 과정을 거친 스킬만 집계)
 
 | 분류          | 스킬 수 | 비율    |
 |-------------|------|-------|
@@ -264,6 +264,7 @@ GDPVal은 OpenAI가 개발한 경제적 가치 기반 AI 평가 벤치마크로,
 | 태스크 오케스트레이션 | 17   | 10.3% |
 | 도메인 워크플로우   | 13   | 7.9%  |
 | 웹 및 리서치     | 11   | 6.7%  |
+| 기타            | 2    | 1.2%  |
 
 **핵심 발견**: 진화된 스킬의 대다수는 도메인 특화 지식이 아니라 **실행 회복력과 오류 복구**에 집중했다. 이는 실무 환경에서 에이전트의 가장 큰 병목이 "문제 해결 능력"이 아니라 "안정적 실행"임을
 시사한다.
@@ -334,7 +335,7 @@ X(구 Twitter)에 [한국어 OpenClaw 커뮤니티](https://x.com/i/communities/
 
 HKUDS는 일관된 에이전트 생태계를 구축하고 있으며, OpenSpace는 이 생태계의 **진화 계층**으로 위치한다:
 
-```
+```text
 LightRAG (경량 RAG 시스템, EMNLP 2025)
     └→ RAG-Anything (멀티모달 RAG)
 

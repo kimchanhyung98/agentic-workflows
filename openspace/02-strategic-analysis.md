@@ -111,7 +111,7 @@ OpenSpace는 두 가지 경로를 제공한다.
 
 **Path A (권장: 기존 에이전트 확장)**
 
-```
+```text
 1. pip install -e .
 2. MCP config에 openspace-mcp 서버 등록 (JSON 5줄)
 3. host_skills 2개 디렉토리를 에이전트 skill 폴더에 복사
@@ -120,7 +120,7 @@ OpenSpace는 두 가지 경로를 제공한다.
 
 **Path B (OpenSpace 단독 실행)**
 
-```
+```text
 1. pip install -e .
 2. .env 파일에 LLM API 키 설정
 3. openspace --query "task" 실행
@@ -182,7 +182,7 @@ OpenSpace는 두 가지 경로를 제공한다.
 
 #### 2.4.1 현재 보안 계층
 
-```
+```text
 Security Policy Manager
     ├── 글로벌 정책 (allow_shell, allow_network, allow_file)
     ├── 백엔드별 정책 (shell/mcp/web 각각 독립)
@@ -318,7 +318,7 @@ EvoAgentX(워크플로우 진화), DGM-Hyperagents(자기 가속 에이전트), 
 
 - **고유 ID** (`.skill_id` sidecar 파일, 디렉토리 이동에도 유지)
 - **Version DAG** (SQLite에 부모-자식 lineage 기록)
-- **품질 메트릭** (적용률, 완료률, 유효률, fallback률)
+- **품질 메트릭** (적용률, 완료율, 유효률, fallback률)
 - **진화 이력** (FIX/DERIVED/CAPTURED + change_summary)
 
 이 설계는 Git의 commit DAG 개념을 skill 관리에 적용한 것으로, 기존 어떤 에이전트 프레임워크에서도 발견되지 않는 패턴이다.

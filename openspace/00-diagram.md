@@ -119,7 +119,7 @@ sequenceDiagram
             A ->> A: 스킬 컨텍스트 (1회차만) + 메시지 캡핑
             A ->> T: tool 호출 (shell/gui/mcp/web)
             T -->> A: 결과 (30,000자 캡핑)
-            A ->> A: <COMPLETE> 확인 / 가이던스 주입
+            A ->> A: &lt;COMPLETE&gt; 확인 / 가이던스 주입
         end
 
         alt 성공

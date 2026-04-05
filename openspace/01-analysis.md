@@ -57,7 +57,7 @@ OpenSpace는 "에이전트가 작업을 수행한 뒤, 그 실행 경험 자체�
 
 ## 2. 프로젝트 구조
 
-```
+```text
 OpenSpace/
 ├── pyproject.toml              # 빌드 설정 + 6개 콘솔 엔트리포인트
 ├── openspace/
@@ -94,7 +94,7 @@ OpenSpace/
 
 ### 모듈 의존성 흐름
 
-```
+```text
 __main__.py / mcp_server.py
        │
        ▼
@@ -122,7 +122,7 @@ LLMClient  GroundingClient  SkillEngine
 
 ### 3.1 CLI (`openspace/__main__.py`)
 
-```
+```text
 엔트리포인트: openspace = "openspace.__main__:run_main"
 ```
 
@@ -138,7 +138,7 @@ LLMClient  GroundingClient  SkillEngine
 
 ### 3.2 MCP 서버 (`openspace/mcp_server.py`)
 
-```
+```text
 엔트리포인트: openspace-mcp = "openspace.mcp_server:run_mcp_server"
 ```
 
@@ -157,7 +157,7 @@ FastMCP 기반, stdio(기본) / SSE 두 가지 전송 모드 지원.
 
 ### 3.3 Dashboard 서버 (`openspace/dashboard_server.py`)
 
-```
+```text
 엔트리포인트: openspace-dashboard = "openspace.dashboard_server:main" (포트 7788)
 ```
 
@@ -177,7 +177,7 @@ Flask REST API로 프론트엔드에 스킬 목록/상세/계보 그래프, 워�
 
 핵심 실행 흐름 (`process()` 메서드):
 
-```
+```text
 1. 워크스페이스 기존 파일 확인
 2. 사용 가능 도구 검색 (SearchCoordinator)
 3. 초기 메시지 구성
@@ -208,7 +208,7 @@ Flask REST API로 프론트엔드에 스킬 목록/상세/계보 그래프, 워�
 
 2단계 실행 파이프라인:
 
-```
+```text
 Phase 1: Skill-Guided
   ├── select_and_inject_skills → SkillRegistry.select()
   ├── GroundingAgent.set_skill_context() → 프롬프트에 스킬 주입
@@ -259,7 +259,7 @@ litellm 래퍼로 단일 라운드 LLM 호출 + 도구 실행을 처리한다.
 
 ### 6.1 Provider-Session-Connector 3계층 아키텍처
 
-```
+```text
 GroundingClient
   └── ProviderRegistry
         ├── ShellProvider ── ShellSession ── LocalShellConnector / ShellConnector
@@ -317,7 +317,7 @@ OpenRouter API를 통해 Perplexity AI의 `sonar-deep-research` 모델로 심층
 
 ### 6.6 Transport Layer
 
-```
+```text
 BaseConnectionManager (추상)
   ├── AioHttpConnectionManager        (HTTP)
   ├── AsyncContextConnectionManager   (stdio/SSE/StreamableHTTP)
@@ -357,7 +357,7 @@ BaseConnectionManager (추상)
 
 **LLM 기반 스킬 선택 파이프라인**:
 
-```
+```text
 1. 품질 필터링
    - selections >= 2 이고 completions = 0 → 제거
    - applied >= 2 이고 fallbacks/applied > 0.5 → 제거
@@ -385,7 +385,7 @@ BaseConnectionManager (추상)
 
 **분석 파이프라인**:
 
-```
+```text
 1. 레코딩 아티팩트 로드 (metadata.json, conversations.jsonl, traj.jsonl)
 2. 대화 포맷팅 (우선순위 기반 절삭)
    - P0 CRITICAL: 사용자 지시 → 절삭 안 함
@@ -466,7 +466,7 @@ BaseConnectionManager (추상)
 
 **페널티 계산**:
 
-```
+```text
 1. total_calls < 3 → 1.0 (공정한 평가 허용)
 2. recent_success_rate >= 0.4 → 1.0
 3. 그 외: base_penalty = 0.3 + (success_rate / 0.4) x 0.7
@@ -529,7 +529,7 @@ LLM 자격증명 해석 3-Tier:
 
 ### 10.1 업로드 워크플로
 
-```
+```text
 1. SKILL.md frontmatter에서 name, description 추출
 2. origin-parents 유효성 검증
 3. POST /artifacts/stage (multipart/form-data) → artifact_id
@@ -539,7 +539,7 @@ LLM 자격증명 해석 3-Tier:
 
 ### 10.2 하이브리드 검색 엔진
 
-```
+```text
 Phase 1: BM25 러프 랭킹 → 상위 limit x 3
 Phase 2: 벡터 스코어링 (코사인 유사도)
 Phase 3: hybrid_score = vector + lexical_boost
@@ -622,7 +622,7 @@ litellm 버전 상한 사유: **PYSEC-2026-2** 공급망 공격 (v1.82.7/1.82.8 
 
 ### 12.2 Pydantic 설정 모델
 
-```
+```text
 GroundingConfig (BaseModel)
 ├── ShellConfig      # mode, conda_env, working_dir
 ├── WebConfig        # 최소 설정

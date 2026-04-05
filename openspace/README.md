@@ -2,8 +2,7 @@
 
 `HKUDS/OpenSpace`의 소스 코드를 전수 분석하고, 웹 리서치를 통해 최신 정보를 수집하여 구조화한 문서입니다.
 
-OpenSpace는 기존 코딩 에이전트(Claude Code, Codex, OpenClaw 등)에 MCP + Skill 엔진을 붙여, 작업 수행 중 스킬을 자동 수정(FIX)·파생(DERIVED)·추출(
-CAPTURED)하는 **자기 진화형 에이전트 런타임**입니다.
+OpenSpace는 기존 코딩 에이전트(Claude Code, Codex, OpenClaw 등)에 MCP + Skill 엔진을 붙여, 작업 수행 중 스킬을 자동 수정(FIX)·파생(DERIVED)·추출(CAPTURED)하는 **자기 진화형 에이전트 런타임**입니다.
 
 ---
 
