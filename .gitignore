@@ -1,5 +1,3 @@
-# DEFAULT
-
 # @todo
 
 # Distribution / packaging
@@ -148,11 +146,15 @@ $RECYCLE.BIN/
 .windsurf/*
 
 # Claude
+**/CLAUDE.md
+!/CLAUDE.md
 .claude/commands/speckit.*
+.claude/hooks/.permissions-checked
 .claude/memory/*
 !.claude/memory/.gitkeep
 .claude/plans
 .claude/settings.local.json
+.remember
 
 # Codex
 .codex/commands/speckit.*
@@ -172,3 +174,6 @@ agent-os/
 .specify/
 .speckit/
 specs/
+
+# etc
+.cmux
