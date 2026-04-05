@@ -15,7 +15,7 @@ flowchart TD
 
     BB --> ORCH
 
-    subgraph ORCH["Orchestrator (6-Phase Harness)"]
+    subgraph ORCH["Orchestrator (5-Phase Harness)"]
         P1["Phase 1: PAL Router<br/>Frugal → Standard → Frontier"]
         P2["Phase 2: Double Diamond<br/>Discover → Define → Design → Deliver"]
         P3["Phase 3: Resilience<br/>stagnation 감지 + lateral persona"]

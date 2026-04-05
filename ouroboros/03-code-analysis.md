@@ -275,7 +275,7 @@ complexity_score =
 | 0.4~0.7 | STANDARD | 10x | claude-sonnet |
 | ≥ 0.7 | FRONTIER | 30x | claude-opus |
 
-`PALRouter`는 완전히 무상태(stateless)로 동일 입력에 동일 출력 보장. `random.choice()`로 같은 티어 내 모델 선택 (부하 분산).
+`PALRouter`는 완전히 무상태(stateless)이며, 동일 입력이면 동일한 복잡도 점수와 티어 판정이 나온다. 다만 같은 티어 내 개별 모델은 부하 분산을 위해 `random.choice()`로 선택되므로, 최종 모델 선택까지 완전히 결정적이지는 않다.
 
 #### 에스컬레이션 & 다운그레이드
 
@@ -511,7 +511,7 @@ AC 추적은 마커 기반. 마커 없으면 자연어 패턴으로 휴리스틱
 ```
 WorkflowState
 ├── acceptance_criteria: list[AcceptanceCriterion]
-├── current_phase: Phase (DISCOVER/DEFINE/DEVELOP/DELIVER)
+├── current_phase: Phase (DISCOVER/DEFINE/DEVELOP/DELIVER, 다이어그램상 DESIGN ≡ DEVELOP)
 ├── activity: ActivityType (IDLE/EXPLORING/BUILDING/TESTING/DEBUGGING/...)
 ├── tool_activity_map: {"Read"→EXPLORING, "Edit"→BUILDING, "Bash"→TESTING, ...}
 └── 비용 추정: $3/1M input + $15/1M output
