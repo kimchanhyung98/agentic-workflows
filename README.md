@@ -29,8 +29,10 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [aperant](/aperant/README.md)                     | Electron 기반 자율 멀티에이전트 코딩 앱, 다단계 오케스트레이션, 멀티 프로바이더, worktree 격리    | Aperant           |
 | [gitagent](/gitagent/README.md)                   | Git-native 에이전트 표준/CLI, 스키마 검증, 어댑터 export/import, 컴플라이언스(SOD) 모델 | Open GitAgent     |
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                    | LangChain Skills  |
+| [openspace](/openspace/README.md)                 | Self-evolving skill 엔진, MCP 통합, 품질 모니터링 기반 자동 진화                  | HKUDS OpenSpace   |
 | [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                        | Oh My OpenAgent   |
 | [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                                  | OpenCode Worktree |
+| [ouroboros](/ouroboros/README.md)                 | Specification-first 에이전트 하네스, 인터뷰 기반 Seed 고정, 3단계 평가/진화 루프        | Q00 Ouroboros     |
 | [polysona](/polysona/README.md)                   | 멀티 페르소나 오케스트레이터, 5-에이전트 콘텐츠 파이프라인, Codex/Claude 하네스 통합 분석           | Polysona          |
 
 ### 자율 개선 루프

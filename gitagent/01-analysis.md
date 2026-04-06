@@ -7,7 +7,8 @@
 - 성격: git-native 에이전트 표준 + CLI 구현체
 - 핵심 목표: **에이전트 정체성/규칙/도구를 코드 리포지토리처럼 선언, 버전관리, 이식**
 
-GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니라, **에이전트 정의 레이어를 표준화**해 Claude Code/OpenAI/CrewAI 등으로의 이동 비용을 줄이는 방향을 취합니다. "하나의 정의, 다수의 런타임" 전략입니다.
+GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니라, **에이전트 정의 레이어를 표준화**해 Claude Code/OpenAI/CrewAI 등으로의 이동 비용을 줄이는 방향을 취합니다. "하나의
+정의, 다수의 런타임" 전략입니다.
 
 ---
 
@@ -51,10 +52,10 @@ GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니
 
 ### Layer 1: Identity (Required)
 
-| 파일 | 역할 | 비고 |
-|---|---|---|
+| 파일           | 역할                        | 비고                             |
+|--------------|---------------------------|--------------------------------|
 | `agent.yaml` | Machine-readable manifest | JSON Schema로 엄격 검증, 유일한 강제 스키마 |
-| `SOUL.md` | 에이전트 정체성, 성격, 커뮤니케이션 스타일 | Human-readable, 비어있으면 검증 실패 |
+| `SOUL.md`    | 에이전트 정체성, 성격, 커뮤니케이션 스타일  | Human-readable, 비어있으면 검증 실패    |
 
 `agent.yaml`은 스펙에서 유일하게 스키마 검증이 강제되는 파일입니다. 핵심 필드:
 
@@ -85,44 +86,44 @@ compliance: { ... }          # 가장 복잡한 섹션
 
 ### Layer 2: Behavior & Rules
 
-| 파일 | 역할 |
-|---|---|
-| `RULES.md` | 강제 제약 (must-always, must-never, safety boundaries) |
-| `DUTIES.md` | 역할 분리 및 권한 경계 (segregation of duties 정책) |
-| `AGENTS.md` | 프레임워크 비종속 보조 지침 (Cursor/Copilot 등 폴백용) |
-| `PROMPT.md` | 커스텀 시스템 프롬프트 (선택적) |
+| 파일          | 역할                                                 |
+|-------------|----------------------------------------------------|
+| `RULES.md`  | 강제 제약 (must-always, must-never, safety boundaries) |
+| `DUTIES.md` | 역할 분리 및 권한 경계 (segregation of duties 정책)           |
+| `AGENTS.md` | 프레임워크 비종속 보조 지침 (Cursor/Copilot 등 폴백용)             |
+| `PROMPT.md` | 커스텀 시스템 프롬프트 (선택적)                                 |
 
 ### Layer 3: Capabilities
 
-| 디렉토리 | 역할 | 표준 |
-|---|---|---|
-| `skills/` | 재사용 가능 모듈 | Agent Skills open standard (agentskills.io) |
-| `tools/` | MCP 호환 도구 정의 | YAML 스키마, implementation type |
-| `workflows/` | 결정론적 다단계 절차 | depends_on, 조건 실행, 데이터 흐름 |
-| `agents/` | 서브에이전트 정의 | 계층적 에이전트 시스템 |
+| 디렉토리         | 역할           | 표준                                          |
+|--------------|--------------|---------------------------------------------|
+| `skills/`    | 재사용 가능 모듈    | Agent Skills open standard (agentskills.io) |
+| `tools/`     | MCP 호환 도구 정의 | YAML 스키마, implementation type               |
+| `workflows/` | 결정론적 다단계 절차  | depends_on, 조건 실행, 데이터 흐름                   |
+| `agents/`    | 서브에이전트 정의    | 계층적 에이전트 시스템                                |
 
 ### Layer 4: Knowledge & Memory
 
-| 디렉토리 | 역할 | 구조 |
-|---|---|---|
-| `knowledge/` | 참조 문서 | index.yaml으로 priority/always_load 관리 |
-| `memory/` | 세션 간 지속 상태 | memory.yaml + MEMORY.md + daily-log/ + context.md |
+| 디렉토리         | 역할         | 구조                                                |
+|--------------|------------|---------------------------------------------------|
+| `knowledge/` | 참조 문서      | index.yaml으로 priority/always_load 관리              |
+| `memory/`    | 세션 간 지속 상태 | memory.yaml + MEMORY.md + daily-log/ + context.md |
 
 ### Layer 5: Lifecycle & Ops
 
-| 디렉토리 | 역할 |
-|---|---|
-| `hooks/` | 이벤트 핸들러 (JSON over stdin/stdout 프로토콜) |
-| `config/` | 환경별 오버라이드 (default.yaml, production.yaml) |
+| 디렉토리        | 역할                                        |
+|-------------|-------------------------------------------|
+| `hooks/`    | 이벤트 핸들러 (JSON over stdin/stdout 프로토콜)     |
+| `config/`   | 환경별 오버라이드 (default.yaml, production.yaml) |
 | `examples/` | 교정 인터랙션 (good-outputs.md, bad-outputs.md) |
 
 ### Layer 6: Compliance
 
-| 파일 | 역할 |
-|---|---|
-| `compliance/risk-assessment.md` | 리스크 평가 문서 |
-| `compliance/regulatory-map.yaml` | 규제 매핑 |
-| `compliance/validation-schedule.yaml` | 검증 스케줄 |
+| 파일                                    | 역할        |
+|---------------------------------------|-----------|
+| `compliance/risk-assessment.md`       | 리스크 평가 문서 |
+| `compliance/regulatory-map.yaml`      | 규제 매핑     |
+| `compliance/validation-schedule.yaml` | 검증 스케줄    |
 
 ### Layer 7: Runtime
 
@@ -143,15 +144,15 @@ install, audit, skills, run, lyzr, registry
 
 ### 4.2 유틸리티 (`src/utils/`)
 
-| 파일 | 역할 |
-|---|---|
-| `loader.ts` | `loadAgentManifest()`, `loadFileIfExists()` — 핵심 로딩, TypeScript 인터페이스 정의 |
-| `skill-loader.ts` | `parseSkillMd()`, `loadAllSkills()`, `loadSkillMetadata()` — Agent Skills 표준 파싱 |
-| `schemas.ts` | JSON Schema 로딩, AJV 검증 |
-| `git-cache.ts` | `resolveRepo()` — git clone, 캐시(~/.cache/gitagent/), 브랜치/태그 지원 |
-| `skill-discovery.ts` | skillsmp 마켓플레이스 API 연동 |
-| `auth-provision.ts` | .env 기반 API 키 관리 |
-| `format.ts` | 터미널 출력 포맷팅(chalk) |
+| 파일                   | 역할                                                                              |
+|----------------------|---------------------------------------------------------------------------------|
+| `loader.ts`          | `loadAgentManifest()`, `loadFileIfExists()` — 핵심 로딩, TypeScript 인터페이스 정의        |
+| `skill-loader.ts`    | `parseSkillMd()`, `loadAllSkills()`, `loadSkillMetadata()` — Agent Skills 표준 파싱 |
+| `schemas.ts`         | JSON Schema 로딩, AJV 검증                                                          |
+| `git-cache.ts`       | `resolveRepo()` — git clone, 캐시(~/.cache/gitagent/), 브랜치/태그 지원                  |
+| `skill-discovery.ts` | skillsmp 마켓플레이스 API 연동                                                          |
+| `auth-provision.ts`  | .env 기반 API 키 관리                                                                |
+| `format.ts`          | 터미널 출력 포맷팅(chalk)                                                               |
 
 ### 4.3 `AgentManifest` 인터페이스 (`loader.ts`)
 
@@ -175,7 +176,8 @@ interface AgentManifest {
 }
 ```
 
-`ComplianceConfig`은 supervision, recordkeeping, model_risk, data_governance, communications, vendor_management, segregation_of_duties 7개 하위 섹션으로 구성됩니다.
+`ComplianceConfig`은 supervision, recordkeeping, model_risk, data_governance, communications, vendor_management,
+segregation_of_duties 7개 하위 섹션으로 구성됩니다.
 
 ---
 
@@ -185,11 +187,11 @@ interface AgentManifest {
 
 `src/commands/init.ts`에서 `minimal/standard/full` 템플릿을 생성합니다.
 
-| 템플릿 | 생성 파일 | 대상 |
-|---|---|---|
-| minimal | agent.yaml, SOUL.md | 개인 실험, 프로토타입 |
-| standard | + RULES.md, AGENTS.md, skills/, knowledge/, memory/ | 일반 개발팀 |
-| full | + DUTIES.md, compliance/, hooks/, config/, workflows/ | 규제 환경, 엔터프라이즈 |
+| 템플릿      | 생성 파일                                                 | 대상            |
+|----------|-------------------------------------------------------|---------------|
+| minimal  | agent.yaml, SOUL.md                                   | 개인 실험, 프로토타입  |
+| standard | + RULES.md, AGENTS.md, skills/, knowledge/, memory/   | 일반 개발팀        |
+| full     | + DUTIES.md, compliance/, hooks/, config/, workflows/ | 규제 환경, 엔터프라이즈 |
 
 템플릿이 곧 조직 성숙도 선택지 역할을 합니다.
 
@@ -253,30 +255,30 @@ CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지�
 
 1. `exportToSystemPrompt(agentDir)` → system prompt 빌드
 2. CLI 인수 구성:
-   - `--model`: manifest.model.preferred
-   - `--fallback-model`: manifest.model.fallback[0]
-   - `--max-turns`: manifest.runtime.max_turns
-   - `--permission-mode plan`: compliance.supervision.human_in_the_loop === 'always' 시
-   - `--allowedTools`: skills의 allowed-tools + tools/*.yaml 이름 수집
-   - `--agents`: agents/ 디렉토리의 서브에이전트 config (SOUL.md 포함)
-   - `--add-dir`: knowledge/, skills/ 디렉토리
-   - `--settings`: hooks/hooks.yaml → Claude Code hook 이벤트 매핑 (임시 JSON 파일)
-   - `--append-system-prompt`: 전체 프롬프트
+    - `--model`: manifest.model.preferred
+    - `--fallback-model`: manifest.model.fallback[0]
+    - `--max-turns`: manifest.runtime.max_turns
+    - `--permission-mode plan`: compliance.supervision.human_in_the_loop === 'always' 시
+    - `--allowedTools`: skills의 allowed-tools + tools/*.yaml 이름 수집
+    - `--agents`: agents/ 디렉토리의 서브에이전트 config (SOUL.md 포함)
+    - `--add-dir`: knowledge/, skills/ 디렉토리
+    - `--settings`: hooks/hooks.yaml → Claude Code hook 이벤트 매핑 (임시 JSON 파일)
+    - `--append-system-prompt`: 전체 프롬프트
 3. `resolveClaudeBinary()` → node_modules/.bin/claude가 아닌 실제 CLI 경로 탐색
 4. `spawnSync(claude, args)` → 대화형 세션 시작
 5. 임시 파일 cleanup
 
 **Hook 이벤트 매핑** (`buildHooksSettings()`):
 
-| GitAgent Event | Claude Code Event |
-|---|---|
-| `on_session_start` | `SessionStart` |
-| `pre_tool_use` | `PreToolUse` |
-| `post_tool_use` | `PostToolUse` |
-| `pre_response` | `UserPromptSubmit` |
-| `post_response` | `Stop` |
-| `on_error` | `PostToolUseFailure` |
-| `on_session_end` | `SessionEnd` |
+| GitAgent Event     | Claude Code Event    |
+|--------------------|----------------------|
+| `on_session_start` | `SessionStart`       |
+| `pre_tool_use`     | `PreToolUse`         |
+| `post_tool_use`    | `PostToolUse`        |
+| `pre_response`     | `UserPromptSubmit`   |
+| `post_response`    | `Stop`               |
+| `on_error`         | `PostToolUseFailure` |
+| `on_session_end`   | `SessionEnd`         |
 
 ### 5.5 `import` — 외부 포맷 변환
 
@@ -408,15 +410,15 @@ annotations:
 
 7가지 라이프사이클 이벤트를 지원합니다:
 
-| 이벤트 | 시점 | 주 용도 |
-|---|---|---|
-| `on_session_start` | 세션 시작 | 컴플라이언스 컨텍스트 로딩, 메모리 복원 |
-| `pre_tool_use` | 도구 호출 전 | 감사 로깅, 권한 검증 |
-| `post_tool_use` | 도구 호출 후 | 출력 검증, PII 확인 |
-| `pre_response` | 응답 생성 전 | 커뮤니케이션 컴플라이언스 체크 |
-| `post_response` | 응답 전송 후 | 감사 기록 |
-| `on_error` | 에러 발생 | 감독자 에스컬레이션 |
-| `on_session_end` | 세션 종료 | 메모리 업데이트, 감사 마무리 |
+| 이벤트                | 시점      | 주 용도                   |
+|--------------------|---------|------------------------|
+| `on_session_start` | 세션 시작   | 컴플라이언스 컨텍스트 로딩, 메모리 복원 |
+| `pre_tool_use`     | 도구 호출 전 | 감사 로깅, 권한 검증           |
+| `post_tool_use`    | 도구 호출 후 | 출력 검증, PII 확인          |
+| `pre_response`     | 응답 생성 전 | 커뮤니케이션 컴플라이언스 체크       |
+| `post_response`    | 응답 전송 후 | 감사 기록                  |
+| `on_error`         | 에러 발생   | 감독자 에스컬레이션             |
+| `on_session_end`   | 세션 종료   | 메모리 업데이트, 감사 마무리       |
 
 ### 9.2 I/O 프로토콜
 
@@ -464,24 +466,24 @@ update_triggers:
 
 ### 11.1 Risk Tier 기반 요구사항
 
-| Tier | 추가 요구사항 |
-|---|---|
-| low | 없음 |
-| standard | 권고 사항만 |
-| high | human_in_the_loop 필수, audit_logging 필수, quarterly 이상 검증 |
-| critical | high와 동일 + compliance/ 디렉토리 권고 |
+| Tier     | 추가 요구사항                                                 |
+|----------|---------------------------------------------------------|
+| low      | 없음                                                      |
+| standard | 권고 사항만                                                  |
+| high     | human_in_the_loop 필수, audit_logging 필수, quarterly 이상 검증 |
+| critical | high와 동일 + compliance/ 디렉토리 권고                          |
 
 ### 11.2 프레임워크별 규칙
 
-| Framework | 규칙 ID | 필수/권고 요구사항 |
-|---|---|---|
-| FINRA | 2210 | fair_balanced=true, no_misleading=true |
-| FINRA | 3110 | supervision 섹션 권고 |
-| FINRA | 4511 | recordkeeping 섹션 권고 |
+| Framework       | 규칙 ID   | 필수/권고 요구사항                                |
+|-----------------|---------|-------------------------------------------|
+| FINRA           | 2210    | fair_balanced=true, no_misleading=true    |
+| FINRA           | 3110    | supervision 섹션 권고                         |
+| FINRA           | 4511    | recordkeeping 섹션 권고                       |
 | Federal Reserve | SR 11-7 | model_risk 섹션 필수, ongoing_monitoring=true |
-| SEC | 17a-4 | audit_logging 권고 |
-| SEC | Reg S-P | pii_handling='allow' 시 경고 |
-| CFPB | - | bias_testing 권고 |
+| SEC             | 17a-4   | audit_logging 권고                          |
+| SEC             | Reg S-P | pii_handling='allow' 시 경고                 |
+| CFPB            | -       | bias_testing 권고                           |
 
 ### 11.3 Segregation of Duties (SOD)
 
@@ -500,100 +502,100 @@ update_triggers:
 
 ### 12.1 Export 어댑터 (13개)
 
-| Adapter | 출력 | Fidelity | 주 대상 |
-|---|---|---|---|
-| `system-prompt` | 플레인 텍스트 연결 | Complete | 모든 LLM |
-| `claude-code` | CLAUDE.md + 메타데이터 | High | Claude Code |
-| `openai` | Python SDK 코드 | Medium | OpenAI Agents SDK |
-| `crewai` | YAML config | Medium | CrewAI |
-| `gemini` | GEMINI.md + settings.json | Medium | Gemini CLI |
-| `cursor` | .cursor/rules/*.mdc | Medium | Cursor IDE |
-| `opencode` | Instructions + config | Medium | OpenCode |
-| `github` | Actions workflow YAML | Low | GitHub Actions |
-| `copilot` | Copilot instructions | Low | VS Code Copilot |
-| `lyzr` | Studio agent JSON | Low | Lyzr Studio |
-| `openclaw` | OpenClaw format | Low | OpenClaw |
-| `nanobot` | Nanobot manifest | Low | Nanobot |
-| `codex` | Codex format | Low | Codex |
+| Adapter         | 출력                        | Fidelity | 주 대상              |
+|-----------------|---------------------------|----------|-------------------|
+| `system-prompt` | 플레인 텍스트 연결                | Complete | 모든 LLM            |
+| `claude-code`   | CLAUDE.md + 메타데이터         | High     | Claude Code       |
+| `openai`        | Python SDK 코드             | Medium   | OpenAI Agents SDK |
+| `crewai`        | YAML config               | Medium   | CrewAI            |
+| `gemini`        | GEMINI.md + settings.json | Medium   | Gemini CLI        |
+| `cursor`        | .cursor/rules/*.mdc       | Medium   | Cursor IDE        |
+| `opencode`      | Instructions + config     | Medium   | OpenCode          |
+| `github`        | Actions workflow YAML     | Low      | GitHub Actions    |
+| `copilot`       | Copilot instructions      | Low      | VS Code Copilot   |
+| `lyzr`          | Studio agent JSON         | Low      | Lyzr Studio       |
+| `openclaw`      | OpenClaw format           | Low      | OpenClaw          |
+| `nanobot`       | Nanobot manifest          | Low      | Nanobot           |
+| `codex`         | Codex format              | Low      | Codex             |
 
 ### 12.2 Import 어댑터
 
-| Source | 변환 내용 |
-|---|---|
-| `claude` | Claude Code 설정 → SOUL.md, RULES.md, tools/ |
-| `cursor` | .cursor/rules/*.mdc → GitAgent 구조 |
-| `crewai` | CrewAI YAML → agent.yaml + 스킬 |
-| `opencode` | `AGENTS.md` + `opencode.json` → agent.yaml, SOUL.md, RULES.md |
-| `gemini` | `GEMINI.md` + `.gemini/settings.json` → agent.yaml, SOUL.md, RULES.md |
-| `codex` | `AGENTS.md` + `codex.json` → agent.yaml, SOUL.md, RULES.md |
+| Source     | 변환 내용                                                                 |
+|------------|-----------------------------------------------------------------------|
+| `claude`   | Claude Code 설정 → SOUL.md, RULES.md, tools/                            |
+| `cursor`   | .cursor/rules/*.mdc → GitAgent 구조                                     |
+| `crewai`   | CrewAI YAML → agent.yaml + 스킬                                         |
+| `opencode` | `AGENTS.md` + `opencode.json` → agent.yaml, SOUL.md, RULES.md         |
+| `gemini`   | `GEMINI.md` + `.gemini/settings.json` → agent.yaml, SOUL.md, RULES.md |
+| `codex`    | `AGENTS.md` + `codex.json` → agent.yaml, SOUL.md, RULES.md            |
 
 ### 12.3 Runner 어댑터
 
-| Adapter | 실행 방식 |
-|---|---|
-| `claude` | Claude Code CLI 생성(`spawnSync`), system prompt + 모든 플래그 |
-| `openai` | Python SDK 코드 생성, Agent + function tools |
-| `crewai` | CrewAI YAML 생성, agents + tasks |
-| `gemini` | GEMINI.md + settings.json 생성 |
-| `github` | GitHub Actions workflow 등록 |
-| `opencode` | OpenCode config 생성 |
-| `openclaw` | OpenClaw 포맷 출력 |
-| `nanobot` | Nanobot manifest 빌드 |
-| `lyzr` | Lyzr Studio agent 생성/업데이트 |
-| `git` | 프레임워크 자동 감지 후 적합한 runner 호출 |
-| `prompt` | system prompt만 stdout으로 출력 |
+| Adapter    | 실행 방식                                                   |
+|------------|---------------------------------------------------------|
+| `claude`   | Claude Code CLI 생성(`spawnSync`), system prompt + 모든 플래그 |
+| `openai`   | Python SDK 코드 생성, Agent + function tools                |
+| `crewai`   | CrewAI YAML 생성, agents + tasks                          |
+| `gemini`   | GEMINI.md + settings.json 생성                            |
+| `github`   | GitHub Actions workflow 등록                              |
+| `opencode` | OpenCode config 생성                                      |
+| `openclaw` | OpenClaw 포맷 출력                                          |
+| `nanobot`  | Nanobot manifest 빌드                                     |
+| `lyzr`     | Lyzr Studio agent 생성/업데이트                               |
+| `git`      | 프레임워크 자동 감지 후 적합한 runner 호출                             |
+| `prompt`   | system prompt만 stdout으로 출력                              |
 
 ---
 
 ## 13. Git-native 아키텍처 패턴 (13개)
 
-| # | 패턴 | 설명 |
-|---|---|---|
-| 1 | Human-in-the-Loop for RL | 에이전트가 브랜치+PR 생성 → 사람이 리뷰 후 merge |
-| 2 | Segregation of Duties | 역할 분리, 충돌 매트릭스, 단일 에이전트 통제 방지 |
-| 3 | Live Agent Memory | memory/ 폴더 (daily-log, key-decisions, context)가 세션 간 유지 |
-| 4 | Agent Versioning | 모든 변경이 git commit, 전체 undo 히스토리, 롤백 가능 |
-| 5 | Shared Context via Monorepo | 루트 레벨 리소스를 모든 에이전트가 공유 |
-| 6 | Branch-based Deployment | dev → staging → main 프로모션 파이프라인 |
-| 7 | Knowledge Tree | 계층적 엔티티 관계, 임베딩 지원(향후) |
-| 8 | Agent Forking & Remixing | 공개 에이전트 레포 fork → 도메인 커스텀 → 업스트림 PR |
-| 9 | CI/CD for Agents | `gitagent validate`를 GitHub Actions에서 실행, 나쁜 merge 차단 |
-| 10 | Agent Diff & Audit Trail | `git diff`로 정확한 변경 확인, `git blame`으로 작성자 추적 |
-| 11 | Tagged Releases | 안정 버전(v1.1.0) 태그, 프로덕션은 태그 고정 |
-| 12 | Secret Management | .env는 로컬(.gitignore), 에이전트 설정은 공유 가능 |
-| 13 | Agent Lifecycle with Hooks | bootstrap.md, teardown.md로 시작/종료 제어 |
+| #  | 패턴                          | 설명                                                      |
+|----|-----------------------------|---------------------------------------------------------|
+| 1  | Human-in-the-Loop for RL    | 에이전트가 브랜치+PR 생성 → 사람이 리뷰 후 merge                        |
+| 2  | Segregation of Duties       | 역할 분리, 충돌 매트릭스, 단일 에이전트 통제 방지                           |
+| 3  | Live Agent Memory           | memory/ 폴더 (daily-log, key-decisions, context)가 세션 간 유지 |
+| 4  | Agent Versioning            | 모든 변경이 git commit, 전체 undo 히스토리, 롤백 가능                  |
+| 5  | Shared Context via Monorepo | 루트 레벨 리소스를 모든 에이전트가 공유                                  |
+| 6  | Branch-based Deployment     | dev → staging → main 프로모션 파이프라인                         |
+| 7  | Knowledge Tree              | 계층적 엔티티 관계, 임베딩 지원(향후)                                  |
+| 8  | Agent Forking & Remixing    | 공개 에이전트 레포 fork → 도메인 커스텀 → 업스트림 PR                     |
+| 9  | CI/CD for Agents            | `gitagent validate`를 GitHub Actions에서 실행, 나쁜 merge 차단   |
+| 10 | Agent Diff & Audit Trail    | `git diff`로 정확한 변경 확인, `git blame`으로 작성자 추적             |
+| 11 | Tagged Releases             | 안정 버전(v1.1.0) 태그, 프로덕션은 태그 고정                           |
+| 12 | Secret Management           | .env는 로컬(.gitignore), 에이전트 설정은 공유 가능                    |
+| 13 | Agent Lifecycle with Hooks  | bootstrap.md, teardown.md로 시작/종료 제어                     |
 
 ---
 
 ## 14. JSON Schema 체계
 
-| Schema 파일 | 검증 대상 | 적용 시점 |
-|---|---|---|
-| `agent-yaml.schema.json` | agent.yaml 전체 | validate 명령 |
-| `skill.schema.json` | SKILL.md YAML frontmatter | validate + skill loader |
-| `tool.schema.json` | tools/*.yaml | validate 명령 |
-| `workflow.schema.json` | workflows/*.yaml | validate 명령 |
-| `hooks.schema.json` | hooks/hooks.yaml | validate 명령 |
-| `hook-io.schema.json` | hook stdin/stdout JSON | 런타임 |
-| `memory.schema.json` | memory/memory.yaml | validate 명령 |
-| `knowledge.schema.json` | knowledge/index.yaml | validate 명령 |
-| `config.schema.json` | config/*.yaml | validate 명령 |
-| `marketplace.schema.json` | 스킬 배포 매니페스트 | registry 명령 |
+| Schema 파일                 | 검증 대상                     | 적용 시점                   |
+|---------------------------|---------------------------|-------------------------|
+| `agent-yaml.schema.json`  | agent.yaml 전체             | validate 명령             |
+| `skill.schema.json`       | SKILL.md YAML frontmatter | validate + skill loader |
+| `tool.schema.json`        | tools/*.yaml              | validate 명령             |
+| `workflow.schema.json`    | workflows/*.yaml          | validate 명령             |
+| `hooks.schema.json`       | hooks/hooks.yaml          | validate 명령             |
+| `hook-io.schema.json`     | hook stdin/stdout JSON    | 런타임                     |
+| `memory.schema.json`      | memory/memory.yaml        | validate 명령             |
+| `knowledge.schema.json`   | knowledge/index.yaml      | validate 명령             |
+| `config.schema.json`      | config/*.yaml             | validate 명령             |
+| `marketplace.schema.json` | 스킬 배포 매니페스트               | registry 명령             |
 
 ---
 
 ## 15. 기술 스택
 
-| 구분 | 기술 |
-|---|---|
-| 언어/런타임 | TypeScript, Node.js (>=18) |
-| CLI 프레임워크 | commander v12 |
-| 스키마 검증 | ajv v8 + ajv-formats |
-| 데이터 포맷 | YAML (js-yaml v4), Markdown |
-| 터미널 출력 | chalk v5 |
-| 사용자 입력 | inquirer v9 |
-| 패키징 | npm (`@shreyaskapale/gitagent` v0.1.7) |
-| 테스트 | Node.js 내장 test runner |
+| 구분        | 기술                                     |
+|-----------|----------------------------------------|
+| 언어/런타임    | TypeScript, Node.js (>=18)             |
+| CLI 프레임워크 | commander v12                          |
+| 스키마 검증    | ajv v8 + ajv-formats                   |
+| 데이터 포맷    | YAML (js-yaml v4), Markdown            |
+| 터미널 출력    | chalk v5                               |
+| 사용자 입력    | inquirer v9                            |
+| 패키징       | npm (`@shreyaskapale/gitagent` v0.1.7) |
+| 테스트       | Node.js 내장 test runner                 |
 
 ---
 
