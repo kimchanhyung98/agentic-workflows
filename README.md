@@ -41,14 +41,11 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 |-----------------------------------------|-----------------------------------|-----------------------|
 | [auto-improve](/auto-improve/README.md) | AI가 자율적으로 코드를 수정·실험·측정하는 반복 루프 설계 | karpathy/autoresearch |
 
-### AI 워크플로우 패턴
+### 패턴 조합
 
-| 디렉토리                                                              | 설명                                                          | 주요 출처         |
-|-------------------------------------------------------------------|-------------------------------------------------------------|---------------|
-| [ai-workflow-constitution](/ai-workflow-constitution/README.md)    | AI 워크플로우 설계 원칙 (C1-C11), 아키텍처, 용어 정의                       | Production Pattern |
-| [analysis-pipeline](/analysis-pipeline/README.md)                 | 4-Layer 코드 분석 파이프라인, Writer/Judge 패턴, 점진적 재개               | Production Pattern |
-| [gated-workflow](/gated-workflow/README.md)                       | N-Phase 게이트 기반 워크플로우, Closed-Loop 의사결정, 위험 기반 라우팅          | Production Pattern |
-| [multi-agent-orchestration](/multi-agent-orchestration/README.md) | 5-Mode 다중 에이전트 오케스트레이션, Judge Rules, Synthesis 패턴           | Production Pattern |
+| 디렉토리                                                 | 설명                                                        | 주요 출처            |
+|------------------------------------------------------|-----------------------------------------------------------|------------------|
+| [pattern-composition](/pattern-composition/README.md) | base 패턴 조합 시 필요한 계약(Agent Card, Envelope, State)과 실패 분류 13종 | Production Audit |
 
 ### 자율 연구 자동화
 
