@@ -30,6 +30,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [gitagent](/gitagent/README.md)                   | Git-native 에이전트 표준/CLI, 스키마 검증, 어댑터 export/import, 컴플라이언스(SOD) 모델 | Open GitAgent     |
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                    | LangChain Skills  |
 | [openspace](/openspace/README.md)                 | Self-evolving skill 엔진, MCP 통합, 품질 모니터링 기반 자동 진화                  | HKUDS OpenSpace   |
+| [scion](/scion/README.md)                         | 컨테이너 격리 기반 멀티 에이전트 오케스트레이션, Hub/Broker 분산 실행, worktree 협업      | Google Scion      |
 | [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                        | Oh My OpenAgent   |
 | [opencode-worktree](/opencode-worktree/README.md) | AI 개발 세션용 격리된 git worktree 자동 관리                                  | OpenCode Worktree |
 | [ouroboros](/ouroboros/README.md)                 | Specification-first 에이전트 하네스, 인터뷰 기반 Seed 고정, 3단계 평가/진화 루프        | Q00 Ouroboros     |
