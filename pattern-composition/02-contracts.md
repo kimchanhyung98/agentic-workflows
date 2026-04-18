@@ -90,7 +90,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
     "severity": "blocking|degraded|advisory",
     "reason": "scope_divergence|missing_dependency|contract_conflict|unknown",
     "summary": "요구사항 범위가 설계 문서와 불일치합니다",
-    "recommended_action": "replan|user_decision|abort|continue"
+    "recommended_action": "replan|user_decision|abort|continue|escalate"
   },
   "meta": {                                  // 선택
     "format_version": 1
