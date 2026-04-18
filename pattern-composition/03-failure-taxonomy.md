@@ -159,7 +159,7 @@ Gate가 반복적으로 실패하거나, 재시도 예산이 정의되지 않았
 
 ### 유형 5: State Corruption (1건)
 
-[병렬 패턴](/design-pattern/03-parallel.md) + 공유 상태 파일. 두 프로세스가 동시에 같은 상태 파일을 쓰면 JSON이 중간에 잘리거나 섞입니다. 대표 사례: 분석 재개와 이벤트 핸들러가 동시에 `.analysis-state.json`을 갱신하여 파일이 손상되었습니다. 완화: 원자적 쓰기(임시 파일 작성 후 rename) + 경로별 잠금(threading.Lock).
+[병렬 패턴](/design-pattern/03-parallel.md) + 공유 상태 파일. 두 프로세스가 동시에 같은 상태 파일을 쓰면 JSON이 중간에 잘리거나 섞입니다. 대표 사례: 분석 재개와 이벤트 핸들러가 동시에 `.analysis-state.json`을 갱신하여 파일이 손상되었습니다. 완화: 원자적 쓰기(임시 파일 작성 후 rename) + 경로별 파일락(`fcntl.flock`, `filelock`, `portalocker` 등). 단일 프로세스 내 스레드만 다룬다면 `threading.Lock`으로 충분하지만, 멀티프로세스 환경에서는 파일락이 필요합니다.
 
 ### 유형 6: Invalid Transition (1건)
 

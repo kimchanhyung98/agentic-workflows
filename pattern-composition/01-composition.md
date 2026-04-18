@@ -28,10 +28,11 @@
 
 1. **Agent Card** — Phase별 입출력 계약, Gate 통과 조건, 재시도 예산을 JSON으로 정의 ([상세](/pattern-composition/02-contracts.md))
 2. **Result Envelope** — Worker가 정상 완료/이탈/실패 중 어느 상태인지 표준 스키마로 전달
-3. **Closed-Loop 판정** — severity와 reason 조합으로 continue/replan/abort/escalate를 자동 결정
-4. **전역 실행 제한** — 전체 Phase 실행 횟수 상한으로 무한 루프 방지
+3. **State Schema** — Gate 결과와 Phase 재시도 횟수를 외부화하여 세션 재개와 Provider 교체를 지원
+4. **Closed-Loop 판정** — severity와 reason 조합으로 continue/replan/abort/escalate를 자동 결정
+5. **전역 실행 제한** — 전체 Phase 실행 횟수 상한으로 무한 루프 방지
 
-이 중 1, 2는 base 패턴 문서에 정의되지 않은 계약입니다.
+이 중 1, 2, 3은 base 패턴 문서에 정의되지 않은 계약입니다.
 
 ---
 

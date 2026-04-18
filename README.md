@@ -45,7 +45,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 
 | 디렉토리                                                 | 설명                                                        | 주요 출처            |
 |------------------------------------------------------|-----------------------------------------------------------|------------------|
-| [pattern-composition](/pattern-composition/README.md) | base 패턴 조합 시 필요한 계약(Agent Card, Envelope, State)과 실패 분류 13종 | Production Audit |
+| [pattern-composition](/pattern-composition/README.md) | base 패턴 조합 시 필요한 계약(Agent Card, Envelope, State)과 실패 분류 12종 | Production Audit |
 
 ### 자율 연구 자동화
 

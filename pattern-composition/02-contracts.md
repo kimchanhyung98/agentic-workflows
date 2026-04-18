@@ -76,7 +76,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 최소 스키마
 
-```json
+```jsonc
 {
   "status": "completed|escaped|failed",     // 필수. 세 값 중 하나
   "phase": "review",                         // 필수
@@ -169,7 +169,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 | 관계 | 설명 |
 |------|------|
 | Agent Card → State Schema | Gate 평가 결과를 State에 기록 |
-| Result Envelope → State Schema | Worker 상태(completed/escaped)를 State에 반영 |
+| Result Envelope → State Schema | Worker 상태(completed/escaped/failed)를 State에 반영 |
 | Agent Card → Result Envelope | `output.structured_result`가 Envelope의 `result` 스키마를 정의 |
 | State Schema → Agent Card | `phases[phase].retries`가 `gate.retry.max`와 비교됨 |
 
