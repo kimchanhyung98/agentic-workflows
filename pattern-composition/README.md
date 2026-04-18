@@ -11,9 +11,10 @@
 | 문서 | 내용 |
 |------|------|
 | [조합 다이어그램](/pattern-composition/00-diagram.md) | 기본 패턴 → 조합 패턴 매핑, 계약 인터페이스, 실패 유형 분포 |
-| [패턴 조합 사례](/pattern-composition/01-composition.md) | 3가지 조합 사례와 각 base 패턴의 역할, 조합으로 필요해지는 것 |
+| [패턴 조합 사례](/pattern-composition/01-composition.md) | 4가지 조합 사례와 각 base 패턴의 역할, 조합으로 필요해지는 것 |
 | [조합 계약](/pattern-composition/02-contracts.md) | Agent Card, Result Envelope, State Schema — base 패턴 문서에 없는 인터페이스 |
 | [실패 분류](/pattern-composition/03-failure-taxonomy.md) | 12개 실패 유형, 26건 실증 데이터, 방법론과 한계 |
+| [Provider Contract](/pattern-composition/04-provider-contract.md) | Host와 LLM 공급자 사이의 경계, Tier 구조, capability, 오류 분류 |
 
 ---
 

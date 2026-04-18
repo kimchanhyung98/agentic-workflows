@@ -175,6 +175,12 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ---
 
+## 관련 계약
+
+이 문서가 다루는 3가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
+
+---
+
 ## 참고 자료
 
 - [순차 패턴](/design-pattern/02-sequential.md) — Phase 연결의 base 패턴
