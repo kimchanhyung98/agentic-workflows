@@ -106,7 +106,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 |--------|--------|--------|
 | completed | 필수 (structured output) | null |
 | escaped | 선택 (부분 결과) | 필수 (severity + reason) |
-| failed | 선택 | 선택 |
+| failed | 선택 | null |
 
 ### 설계 근거
 
@@ -155,7 +155,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 설계 근거
 
-모든 상태를 파일 시스템에 JSON으로 외부화합니다. LLM 컨텍스트에 의존하지 않으므로 Provider 교체, 세션 재개, 감사 추적이 가능합니다. 원자적 쓰기(tmp → rename)로 동시성 문제를 완화합니다.
+모든 상태를 파일 시스템에 JSON으로 외부화합니다. LLM 컨텍스트에 의존하지 않으므로 Provider 교체, 세션 재개, 감사 추적이 가능합니다. 원자적 쓰기(tmp → rename)는 부분 쓰기/찢어진 파일을 방지하는 수준이며, writer 간 직렬화가 필요하면 별도 파일락(`fcntl.flock`, `filelock` 등)을 병행해야 합니다.
 
 ### 이 계약이 없으면 발생하는 실패
 
