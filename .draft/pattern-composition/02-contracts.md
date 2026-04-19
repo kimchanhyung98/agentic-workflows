@@ -7,6 +7,8 @@
 
 ## Agent Card — Phase 간 런타임 계약
 
+> **용어 주의**: 이 문서의 "Agent Card"는 Phase별 런타임 계약(입출력/Gate/재시도)을 의미하며, [A2A Protocol](https://a2a-protocol.org/latest/specification/)의 Agent Card(에이전트 발견용 메타데이터)와는 다른 개념입니다. 업계에서는 이 개념을 CrewAI의 "Task contract", LangGraph의 "Node schema(input_schema/output_schema)", 또는 일반적으로 "Step definition"으로 부릅니다.
+
 ### 문제
 
 [순차 패턴](/design-pattern/02-sequential.md)은 "에이전트 출력이 다음 에이전트의 입력"이라고 설명합니다. 그러나 실제 조합에서는 다음 질문에 답해야 합니다.
@@ -108,7 +110,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 설계 근거
 
-정상 경로(`completed`)와 비정상 경로(`escaped`, `failed`)를 하나의 스키마로 통합합니다. `escape` 필드의 `severity`와 `reason` 조합으로 자동 판정(continue/replan/abort/escalate)이 가능해집니다.
+정상 경로(`completed`)와 비정상 경로(`escaped`, `failed`)를 하나의 스키마로 통합합니다. `escape` 필드의 `severity`와 `reason` 조합으로 자동 판정(continue/replan/abort/escalate/user_decision)이 가능해집니다.
 
 ### 이 계약이 없으면 발생하는 실패
 
