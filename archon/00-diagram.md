@@ -4,12 +4,12 @@
 
 ```mermaid
 flowchart TD
-    U["사용자 / 트리거<br/>CLI · Web UI · Slack · Telegram · GitHub"] --> ADP
+    U["사용자 / 트리거<br/>CLI · Web · Slack · Telegram · GitHub<br/>(+ 커뮤니티: Discord · Gitea · GitLab)"] --> ADP
 
     subgraph ADP["Platform Adapters"]
-        A1["Web Adapter (SSE/REST)"]
+        A1["Web Adapter (SSE)"]
         A2["CLI Adapter"]
-        A3["Chat/Webhook Adapters"]
+        A3["Chat/Webhook Adapters<br/>Slack · Telegram · GitHub 등"]
     end
 
     ADP --> ORCH["Orchestrator<br/>메시지 라우팅 · 세션 관리 · 스트리밍"]
@@ -17,13 +17,13 @@ flowchart TD
     ORCH --> CMD["Command Handler<br/>.archon/commands/*.md"]
     ORCH --> WFE["Workflow Executor<br/>.archon/workflows/*.yaml DAG"]
 
-    WFE --> AI["AI Providers<br/>Claude / Codex"]
+    WFE --> AI["AI Providers<br/>Claude / Codex (확장 가능)"]
     WFE --> DET["Deterministic Nodes<br/>bash / approval / cancel"]
 
-    WFE --> ISO["Isolation Provider<br/>git worktree"]
-    ISO --> REPO["Target Repository Worktree"]
+    WFE --> ISO["Isolation Provider<br/>worktree (기본) · container/VM/remote"]
+    ISO --> REPO["Target Repository Worktree<br/>~/.archon/workspaces/&lt;owner&gt;/&lt;repo&gt;/worktrees/&lt;branch&gt;"]
 
-    ORCH --> DB["Persistence<br/>SQLite / PostgreSQL"]
+    ORCH --> DB["Persistence<br/>SQLite (기본) / PostgreSQL (선택)"]
 ```
 
 ## 2. 워크플로우 실행 플로우
@@ -56,10 +56,16 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    N["Workflow Node"] --> C["command: 파일 기반 프롬프트"]
+    N["Workflow Node<br/>(depends_on · when · trigger_rule · context)"] --> C["command: 파일 기반 프롬프트"]
     N --> P["prompt: 인라인 프롬프트"]
     N --> B["bash: 결정적 스크립트 실행"]
     N --> L["loop: 조건 충족까지 반복"]
     N --> A["approval: 인간 승인 게이트"]
     N --> X["cancel: 조기 종료"]
 ```
+
+공통 속성:
+- `depends_on`: 선행 노드 지정
+- `when`: 조건식 분기
+- `trigger_rule`: fan-in 조건 (예: `one_success`)
+- `context`: 세션 컨텍스트 전략 (예: `fresh`)
