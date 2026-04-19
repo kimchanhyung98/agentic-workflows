@@ -7,13 +7,15 @@
 - 런타임: **Bun + TypeScript**, 최신 릴리스 **Archon CLI v0.3.6** (2026-04-12)
 - 주요 특성: YAML DAG, worktree 격리, 멀티 플랫폼 어댑터, 스트리밍 기반 실행
 
-Archon은 "에이전트가 무엇을 할지"보다, **어떤 순서와 게이트로 실행할지**를 고정하는 데 초점을 둡니다. 즉흥 프롬프트를 반복하는 방식 대신, 팀이 합의한 워크플로우를 코드처럼 버전 관리하는 운영 모델입니다.
+Archon은 "에이전트가 무엇을 할지"보다, **어떤 순서와 게이트로 실행할지**를 고정하는 데 초점을 둡니다. 즉흥 프롬프트를 반복하는 방식 대신, 팀이 합의한 워크플로우를 코드처럼 버전 관리하는 운영
+모델입니다.
 
 ### 버전 전환 안내 (2026-04-07)
 
 Archon은 2026-04-07에 **전면 재작성**(v2)을 공지했습니다. 본 문서는 v2(Bun/TypeScript 기반 워크플로우 엔진)를 대상으로 합니다.
 
-- **v1 (Python 기반 task management + RAG)**: [`archive/v1-task-management-rag`](https://github.com/coleam00/Archon/tree/archive/v1-task-management-rag) 브랜치에 보존
+- **v1 (Python 기반 task management + RAG)**: [
+  `archive/v1-task-management-rag`](https://github.com/coleam00/Archon/tree/archive/v1-task-management-rag) 브랜치에 보존
 - **v2 (현재 main)**: YAML 워크플로우 엔진, 이 문서의 분석 대상
 
 ---
@@ -46,14 +48,14 @@ packages/                # 모노레포 워크스페이스 11개
 ### 구조적 특징
 
 1. **워크플로우 정의와 실행 엔진 분리**
-   - `.archon/workflows/*.yaml`는 "무엇을 어떤 순서로 할지"를 정의
-   - `packages/workflows`는 DAG 실행, 조건 분기, 루프, 트리거 룰을 처리
+    - `.archon/workflows/*.yaml`는 "무엇을 어떤 순서로 할지"를 정의
+    - `packages/workflows`는 DAG 실행, 조건 분기, 루프, 트리거 룰을 처리
 
 2. **어댑터/프로바이더 인터페이스 기반**
-   - 플랫폼(입력 채널)과 AI 런타임(Claude/Codex)을 각각 플러그인처럼 교체 가능
+    - 플랫폼(입력 채널)과 AI 런타임(Claude/Codex)을 각각 플러그인처럼 교체 가능
 
 3. **격리 계층 독립**
-   - `packages/isolation`으로 분리되어 프로바이더 교체(worktree/container/VM/remote)가 용이
+    - `packages/isolation`으로 분리되어 프로바이더 교체(worktree/container/VM/remote)가 용이
 
 ---
 
@@ -63,12 +65,12 @@ packages/                # 모노레포 워크스페이스 11개
 
 Archon의 목표는 모델 추론 품질 자체보다, **개발 프로세스의 재현성과 통제성**을 높이는 것입니다.
 
-| 문제 | 일반 에이전트 사용 | Archon 접근 |
-|---|---|---|
-| 실행 순서가 매번 달라짐 | 계획/검증/리뷰 누락 가능 | YAML DAG로 단계 고정 |
-| 병렬 작업 충돌 | 같은 브랜치/작업공간 경쟁 | worktree 격리 실행 |
-| 프로세스 표준화 어려움 | 개인 프롬프트 의존 | 워크플로우를 저장소에 커밋해 팀 표준화 |
-| 결과 추적 어려움 | 대화 로그 중심 | 워크플로우 이벤트/아티팩트 중심 추적 |
+| 문제            | 일반 에이전트 사용     | Archon 접근             |
+|---------------|----------------|-----------------------|
+| 실행 순서가 매번 달라짐 | 계획/검증/리뷰 누락 가능 | YAML DAG로 단계 고정       |
+| 병렬 작업 충돌      | 같은 브랜치/작업공간 경쟁 | worktree 격리 실행        |
+| 프로세스 표준화 어려움  | 개인 프롬프트 의존     | 워크플로우를 저장소에 커밋해 팀 표준화 |
+| 결과 추적 어려움     | 대화 로그 중심       | 워크플로우 이벤트/아티팩트 중심 추적  |
 
 ### 3.2 노드 조합 전략
 
@@ -90,11 +92,13 @@ Archon의 목표는 모델 추론 품질 자체보다, **개발 프로세스의 
 3. `implement-tasks`: 구현 (Opus 1M 모델 지정)
 4. `validate`: 검증
 5. `finalize-pr`: PR 정리
-6. `code-review-agent` / `error-handling-agent` / `test-coverage-agent` / `comment-quality-agent` / `docs-impact-agent`: 5개 병렬 리뷰
+6. `code-review-agent` / `error-handling-agent` / `test-coverage-agent` / `comment-quality-agent` / `docs-impact-agent`:
+   5개 병렬 리뷰
 7. `synthesize` (`trigger_rule: one_success`) → `implement-fixes`: 리뷰 합성 후 수정
 8. `workflow-summary`: 최종 보고
 
 특징:
+
 - **리뷰 병렬 fan-out + synthesize fan-in** 패턴
 - 각 노드는 `context: fresh`로 독립 세션 실행
 - 구현 뒤 검증, PR 뒤 리뷰를 분리해 운영 품질 확보
@@ -111,63 +115,66 @@ Archon의 목표는 모델 추론 품질 자체보다, **개발 프로세스의 
 6. 이슈 완료 리포트
 
 특징:
+
 - 이슈 유형에 따른 **조건 분기**
 - 리뷰 결과를 자동 수정 루프로 연결
 
 ### 4.3 번들 워크플로우 일람 (20개)
 
-| 워크플로우 | 용도 |
-|---|---|
-| `archon-idea-to-pr` | 아이디어/PRD → 계획 → 구현 → 검증 → PR → 리뷰 → 수정 |
-| `archon-plan-to-pr` | 기존 계획을 받아 PR까지 실행 |
-| `archon-feature-development` | 피처 단위 개발 라이프사이클 |
-| `archon-fix-github-issue` | 이슈 분류·조사 후 수정 → Draft PR |
-| `archon-create-issue` | 이슈 생성/정리 |
-| `archon-issue-review-full` | 이슈 리뷰 전체 루프 |
-| `archon-smart-pr-review` | 단일 에이전트 스마트 리뷰 |
-| `archon-comprehensive-pr-review` | 다중 에이전트 종합 리뷰 |
-| `archon-validate-pr` | PR 검증 |
-| `archon-resolve-conflicts` | 머지 컨플릭트 해소 |
-| `archon-refactor-safely` | 안전 리팩토링 |
-| `archon-architect` | 아키텍처 설계 지원 |
-| `archon-assist` | 범용 보조 |
-| `archon-adversarial-dev` | 적대적 리뷰·검증 |
-| `archon-interactive-prd` | 인터랙티브 PRD 작성 |
-| `archon-workflow-builder` | 워크플로우 자체 작성/개선 |
-| `archon-piv-loop` | Plan-Implement-Validate 루프 |
-| `archon-ralph-dag` | Ralph 패턴 DAG |
-| `archon-test-loop-dag` | 테스트 반복 루프 |
-| `archon-remotion-generate` | Remotion 기반 결과 렌더 |
+| 워크플로우                            | 용도                                     |
+|----------------------------------|----------------------------------------|
+| `archon-idea-to-pr`              | 아이디어/PRD → 계획 → 구현 → 검증 → PR → 리뷰 → 수정 |
+| `archon-plan-to-pr`              | 기존 계획을 받아 PR까지 실행                      |
+| `archon-feature-development`     | 피처 단위 개발 라이프사이클                        |
+| `archon-fix-github-issue`        | 이슈 분류·조사 후 수정 → Draft PR               |
+| `archon-create-issue`            | 이슈 생성/정리                               |
+| `archon-issue-review-full`       | 이슈 리뷰 전체 루프                            |
+| `archon-smart-pr-review`         | 단일 에이전트 스마트 리뷰                         |
+| `archon-comprehensive-pr-review` | 다중 에이전트 종합 리뷰                          |
+| `archon-validate-pr`             | PR 검증                                  |
+| `archon-resolve-conflicts`       | 머지 컨플릭트 해소                             |
+| `archon-refactor-safely`         | 안전 리팩토링                                |
+| `archon-architect`               | 아키텍처 설계 지원                             |
+| `archon-assist`                  | 범용 보조                                  |
+| `archon-adversarial-dev`         | 적대적 리뷰·검증                              |
+| `archon-interactive-prd`         | 인터랙티브 PRD 작성                           |
+| `archon-workflow-builder`        | 워크플로우 자체 작성/개선                         |
+| `archon-piv-loop`                | Plan-Implement-Validate 루프             |
+| `archon-ralph-dag`               | Ralph 패턴 DAG                           |
+| `archon-test-loop-dag`           | 테스트 반복 루프                              |
+| `archon-remotion-generate`       | Remotion 기반 결과 렌더                      |
 
 ---
 
 ## 5. 운영/보안 관점 체크포인트
 
 1. **권한 모델**
-   - Archon은 자동 실행 목적상 강한 권한으로 동작하므로, 배포 환경의 접근 제어가 필수
-   - 플랫폼별 허용 사용자(whitelist) 설정 권장
+    - Archon은 자동 실행 목적상 강한 권한으로 동작하므로, 배포 환경의 접근 제어가 필수
+    - 플랫폼별 허용 사용자(whitelist) 설정 권장
 
 2. **격리 계층 선택**
-   - 기본은 git worktree (`~/.archon/workspaces/<owner>/<repo>/worktrees/<branch>/`)
-   - 민감 작업은 `container`/`VM`/`remote` 프로바이더로 확장 가능
-   - 병렬 워크플로우에서는 `--no-worktree`보다 기본 격리 전략이 안전
+    - 기본은 git worktree (`~/.archon/workspaces/<owner>/<repo>/worktrees/<branch>/`)
+    - 민감 작업은 `container`/`VM`/`remote` 프로바이더로 확장 가능
+    - 병렬 워크플로우에서는 `--no-worktree`보다 기본 격리 전략이 안전
 
 3. **환경변수 경계 관리**
-   - Archon 설정과 대상 저장소 `.env`를 분리해 의도치 않은 누출 방지
-   - 데이터는 기본 SQLite, PostgreSQL은 `docker compose --profile with-db` 또는 외부 DB(Supabase/Neon 등) 연결로 전환
+    - Archon 설정과 대상 저장소 `.env`를 분리해 의도치 않은 누출 방지
+    - 데이터는 기본 SQLite, PostgreSQL은 `docker compose --profile with-db` 또는 외부 DB(Supabase/Neon 등) 연결로 전환
 
 4. **워크플로우를 코드로 관리**
-   - `.archon/workflows`, `.archon/commands`를 저장소에 커밋해 팀 공통 실행 규약으로 유지
-   - 번들 20종 워크플로우는 프로젝트별로 덮어쓰기 가능
+    - `.archon/workflows`, `.archon/commands`를 저장소에 커밋해 팀 공통 실행 규약으로 유지
+    - 번들 20종 워크플로우는 프로젝트별로 덮어쓰기 가능
 
 ---
 
 ## 6. 런타임 및 배포
 
 - **런타임**: Bun + TypeScript, 모노레포 (`bun install`)
-- **배포 경로**: 공식 `curl https://archon.diy/install | bash`, `brew install coleam00/archon/archon`, Docker (`ghcr.io/coleam00/archon:latest`), 플랫폼별 바이너리(`archon-darwin-arm64` 등)
+- **배포 경로**: 공식 `curl https://archon.diy/install | bash`, `brew install coleam00/archon/archon`, Docker (
+  `ghcr.io/coleam00/archon:latest`), 플랫폼별 바이너리(`archon-darwin-arm64` 등)
 - **컨테이너 실행**: `docker compose up -d` (SQLite 기본), `--profile with-db` (PostgreSQL), `--profile cloud` (Caddy TLS)
-- **스키마**: `migrations/000_combined.sql` ~ `019_*.sql`까지 증분 마이그레이션, 주요 테이블 7종 (codebases/conversations/sessions/isolation_environments/workflow_runs/workflow_events/messages)
+- **스키마**: `migrations/000_combined.sql` ~ `019_*.sql`까지 증분 마이그레이션, 주요 테이블 7종 (
+  codebases/conversations/sessions/isolation_environments/workflow_runs/workflow_events/messages)
 
 ---
 

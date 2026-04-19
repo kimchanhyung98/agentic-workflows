@@ -65,6 +65,7 @@ flowchart LR
 ```
 
 공통 속성:
+
 - `depends_on`: 선행 노드 지정
 - `when`: 조건식 분기
 - `trigger_rule`: fan-in 조건 (예: `one_success`)
