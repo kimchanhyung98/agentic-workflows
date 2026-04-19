@@ -41,6 +41,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | 디렉토리                                    | 설명                                | 주요 출처                 |
 |-----------------------------------------|-----------------------------------|-----------------------|
 | [auto-improve](/auto-improve/README.md) | AI가 자율적으로 코드를 수정·실험·측정하는 반복 루프 설계 | karpathy/autoresearch |
+| [hyperagents](/hyperagents/README.md)   | Meta HyperAgents의 자기개선 에이전트 루프 구조/코드 플로우 분석 | Meta HyperAgents      |
 
 ### 자율 연구 자동화
 
