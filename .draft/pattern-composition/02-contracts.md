@@ -61,8 +61,8 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 이 계약이 없으면 발생하는 실패
 
-- **Infinite/Unbounded**: 재시도 예산이 정의되지 않아 무한 반복 ([실패 분류 유형 4](/pattern-composition/03-failure-taxonomy.md))
-- **Ghost Decision**: Gate 실패 후 라우팅이 없어 단계가 정체 ([실패 분류 유형 3](/pattern-composition/03-failure-taxonomy.md))
+- **Infinite/Unbounded**: 재시도 예산이 정의되지 않아 무한 반복 ([실패 분류 유형 4](/.draft/pattern-composition/03-failure-taxonomy.md))
+- **Ghost Decision**: Gate 실패 후 라우팅이 없어 단계가 정체 ([실패 분류 유형 3](/.draft/pattern-composition/03-failure-taxonomy.md))
 
 ---
 
@@ -114,7 +114,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 이 계약이 없으면 발생하는 실패
 
-- **Silent Data Loss**: Worker가 이탈했지만 reason/evidence가 무시됨 ([실패 분류 유형 2](/pattern-composition/03-failure-taxonomy.md))
+- **Silent Data Loss**: Worker가 이탈했지만 reason/evidence가 무시됨 ([실패 분류 유형 2](/.draft/pattern-composition/03-failure-taxonomy.md))
 - **Ghost Decision**: 이탈이 발생했으나 기록되지 않아 후속 Phase가 잘못된 전제로 진행
 
 ---
@@ -159,8 +159,8 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 이 계약이 없으면 발생하는 실패
 
-- **State Corruption**: 동시 쓰기로 JSON 손상 ([실패 분류 유형 5](/pattern-composition/03-failure-taxonomy.md))
-- **Stale State Reuse**: 파일 변경 후 이전 상태로 재개 ([실패 분류 유형 1](/pattern-composition/03-failure-taxonomy.md))
+- **State Corruption**: 동시 쓰기로 JSON 손상 ([실패 분류 유형 5](/.draft/pattern-composition/03-failure-taxonomy.md))
+- **Stale State Reuse**: 파일 변경 후 이전 상태로 재개 ([실패 분류 유형 1](/.draft/pattern-composition/03-failure-taxonomy.md))
 
 ---
 
@@ -179,7 +179,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ## 관련 계약
 
-이 문서가 다루는 3가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
+이 문서가 다루는 3가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
 
 ---
 
@@ -188,4 +188,4 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 - [순차 패턴](/design-pattern/02-sequential.md) — Phase 연결의 base 패턴
 - [검토-비평 패턴](/design-pattern/05-review-critique.md) — Gate 평가의 base 패턴
 - [반복 개선 패턴](/design-pattern/06-iterative-refinement.md) — 재시도/재계획의 base 패턴
-- [실패 분류](/pattern-composition/03-failure-taxonomy.md) — 계약 부재로 발생하는 실패
+- [실패 분류](/.draft/pattern-composition/03-failure-taxonomy.md) — 계약 부재로 발생하는 실패

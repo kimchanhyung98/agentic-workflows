@@ -26,7 +26,7 @@
 
 ### 조합으로 필요해진 것
 
-1. **Agent Card** — Phase별 입출력 계약, Gate 통과 조건, 재시도 예산을 JSON으로 정의 ([상세](/pattern-composition/02-contracts.md))
+1. **Agent Card** — Phase별 입출력 계약, Gate 통과 조건, 재시도 예산을 JSON으로 정의 ([상세](/.draft/pattern-composition/02-contracts.md))
 2. **Result Envelope** — Worker가 정상 완료/이탈/실패 중 어느 상태인지 표준 스키마로 전달
 3. **State Schema** — Gate 결과와 Phase 재시도 횟수를 외부화하여 세션 재개와 Provider 교체를 지원
 4. **Closed-Loop 판정** — severity와 reason 조합으로 continue/replan/abort/escalate를 자동 결정
@@ -116,7 +116,7 @@
 3. **Write Scope 격리** — 각 워커는 정해진 경로에만 쓸 수 있습니다. Writer는 산출물을, Reviewer는 토론 파일만. 이로 인해 Reviewer가 산출물을 직접 고쳐 추적성이 사라지는 문제를 원천 차단합니다.
 4. **턴 예산** — 전체 루프에 최대 턴 수(예: 3회) 상한. 종료 조건은 결정론적으로 파싱(`findings` 배열에 CRITICAL 0건 등)하여 Leader의 판단 오류가 무한 루프를 만들지 않게 합니다.
 
-base 패턴 문서는 워커 간 통신 매체나 쓰기 범위 격리를 다루지 않으므로, 1~3은 조합으로 필요해진 규약입니다.
+base 패턴 문서는 워커 간 통신 매체, 쓰기 범위 격리, 턴 예산 같은 운영 규칙을 다루지 않으므로, 1~4는 조합으로 필요해진 규약입니다.
 
 ---
 
@@ -134,5 +134,5 @@ base 패턴 문서는 워커 간 통신 매체나 쓰기 범위 격리를 다루
 ## 참고 자료
 
 - [에이전틱 AI 시스템 설계 패턴](/design-pattern/README.md) — base 패턴 정의
-- [조합 계약 상세](/pattern-composition/02-contracts.md) — Agent Card, Result Envelope, State Schema
-- [실패 분류](/pattern-composition/03-failure-taxonomy.md) — 조합에서 발생한 실패 유형
+- [조합 계약 상세](/.draft/pattern-composition/02-contracts.md) — Agent Card, Result Envelope, State Schema
+- [실패 분류](/.draft/pattern-composition/03-failure-taxonomy.md) — 조합에서 발생한 실패 유형

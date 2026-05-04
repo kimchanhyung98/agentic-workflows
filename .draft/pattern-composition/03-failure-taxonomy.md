@@ -208,5 +208,5 @@ State Schema 관련 실패가 가장 많습니다(7건, 27%). 파이프라인 �
 ## 참고 자료
 
 - [에이전틱 AI 시스템 설계 패턴](/design-pattern/README.md) — base 패턴 정의
-- [조합 계약](/pattern-composition/02-contracts.md) — 실패 완화에 사용된 계약
-- [패턴 조합 사례](/pattern-composition/01-composition.md) — 실패가 발생한 조합 구조
+- [조합 계약](/.draft/pattern-composition/02-contracts.md) — 실패 완화에 사용된 계약
+- [패턴 조합 사례](/.draft/pattern-composition/01-composition.md) — 실패가 발생한 조합 구조

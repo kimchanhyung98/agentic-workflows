@@ -73,7 +73,8 @@ class Provider(Protocol):
 계약:
 
 - `prompt`는 UTF-8 텍스트. provider는 이를 LLM에 그대로 전달합니다. 공급자 특유의 role 마커(`<thinking>`, `system/user` 분리 등)는 host 프롬프트에 넣지 않습니다.
-- `timeout_sec`은 provider 측 wall-clock 상한. 초과 시 예외를 던지지 않고 `returncode != 0`과 표준화된 오류 메시지로 반환합니다.
+- `timeout_sec`은 provider 측 wall-clock 상한. 초과 시 예외를 던지지 않고 `returncode != 0`을 반환하며, `stderr`는 `provider_timeout:` prefix로 시작해야 합니다.
+- `add_dirs`는 optional input입니다. host는 provider가 `ADD_DIR` capability를 선언한 경우에만 전달해야 하며, 미지원 provider에 비어 있지 않은 `add_dirs`를 전달하면 provider는 `provider_bad_input:` prefix로 거부합니다.
 - 함수는 **동기**. 스트리밍/비동기는 Tier 1에서 제공합니다.
 
 `ProviderResult`는 최소한 다음을 포함합니다.
@@ -134,8 +135,10 @@ Tier 외에 provider는 **선택 기능**을 capability로 선언합니다. host
 |-------|:---------:|----------------|
 | 분석 Stage 1 (파일별) | 0 | `ADD_DIR` |
 | 설계 (plan) | 0 | `THINKING` |
-| 구현 (impl) | 0, 선호 2 | `TOOL_LOOP`, `ADD_DIR` |
-| 대화 세션 | 1, 선호 `SESSION` | — |
+| 구현 (impl) | 0 | `TOOL_LOOP`, `ADD_DIR` |
+| 대화 세션 | 1 | `SESSION` |
+
+`TOOL_LOOP`는 Tier 2 capability이므로, 구현 Phase는 Tier 0 provider로도 시작할 수 있지만 가능하면 Tier 2 provider를 우선 선택합니다.
 
 ---
 
@@ -147,12 +150,12 @@ stderr는 prefix로 오류 유형을 표현하는 것이 권장됩니다. host�
 |--------|------|----------|
 | `provider_auth:` | 인증 실패 | 재시도 금지, 사용자 설정 안내 |
 | `provider_timeout:` | timeout 초과 | fallback chain 이동 |
-| `provider_rate_limit:` | rate limit | 지수 백오프 재시도 |
+| `provider_rate_limit:` | rate limit | 지수 백오프 재시도 — 최대 1회 |
 | `provider_unavailable:` | 서비스/네트워크 장애 | fallback chain 이동 |
 | `provider_bad_input:` | prompt가 너무 크거나 형식 오류 | host가 prompt 재작성/절단 |
 | `provider_tool_error:` | tool loop 중 오류 | Tier 2에서 의미 있음 |
 
-**Host 재시도 책임**: provider는 자체 재시도를 하지 않습니다. 유일한 예외는 rate limit 1회 지수 백오프(사용자 경험 유지용). 그 외 모든 재시도는 host가 결정하며, 재시도 횟수를 [State Schema](/pattern-composition/02-contracts.md)에 기록해 무한 루프를 방지합니다.
+**Host 재시도 책임**: provider는 자체 재시도를 하지 않습니다. host는 `provider_rate_limit:`에 한해 최대 1회 지수 백오프 재시도를 허용할 수 있습니다. 그 외 모든 재시도는 host가 결정하며, 재시도 횟수를 [State Schema](/.draft/pattern-composition/02-contracts.md)에 기록해 무한 루프를 방지합니다.
 
 ---
 
@@ -173,8 +176,8 @@ stderr는 prefix로 오류 유형을 표현하는 것이 권장됩니다. host�
 
 ## 이 계약이 없으면 발생하는 실패
 
-- **Over-provisioning**: capability 선언이 없으면 host가 모든 Phase에 가장 강한 provider를 할당하게 됩니다 ([실패 분류 유형 10](/pattern-composition/03-failure-taxonomy.md))
-- **Vague Error**: 오류 prefix가 표준화되지 않으면 host가 인증 실패와 timeout을 구분하지 못해 부적절한 재시도를 반복합니다 ([실패 분류 유형 12](/pattern-composition/03-failure-taxonomy.md))
+- **Over-provisioning**: capability 선언이 없으면 host가 모든 Phase에 가장 강한 provider를 할당하게 됩니다 ([실패 분류 유형 10](/.draft/pattern-composition/03-failure-taxonomy.md))
+- **Vague Error**: 오류 prefix가 표준화되지 않으면 host가 인증 실패와 timeout을 구분하지 못해 부적절한 재시도를 반복합니다 ([실패 분류 유형 12](/.draft/pattern-composition/03-failure-taxonomy.md))
 - **공급자 락인**: Phase 로직이 특정 공급자의 네이티브 기능을 전제하면 교체 시 Phase 코드를 수정해야 합니다. 계약은 이 커플링을 방지합니다
 
 ---
@@ -183,14 +186,14 @@ stderr는 prefix로 오류 유형을 표현하는 것이 권장됩니다. host�
 
 | 관계 | 설명 |
 |------|------|
-| [Agent Card](/pattern-composition/02-contracts.md) → Provider Contract | Agent Card의 `provider` 필드가 이 계약의 capability 요구를 선언 |
-| Provider Contract → [Result Envelope](/pattern-composition/02-contracts.md) | provider의 `stdout`은 Envelope의 `result` 또는 `escape` 본문으로 host가 파싱 |
-| Provider Contract → [State Schema](/pattern-composition/02-contracts.md) | provider 재시도 횟수와 fallback 경로가 State의 `history`에 기록 |
+| [Agent Card](/.draft/pattern-composition/02-contracts.md) → Provider Contract | Agent Card의 `provider` 필드가 이 계약의 capability 요구를 선언 |
+| Provider Contract → [Result Envelope](/.draft/pattern-composition/02-contracts.md) | provider의 `stdout`은 Envelope의 `result` 또는 `escape` 본문으로 host가 파싱 |
+| Provider Contract → [State Schema](/.draft/pattern-composition/02-contracts.md) | provider 재시도 횟수와 fallback 경로가 State의 `history`에 기록 |
 
 ---
 
 ## 참고 자료
 
-- [조합 계약 — Agent Card, Result Envelope, State Schema](/pattern-composition/02-contracts.md)
-- [실패 분류](/pattern-composition/03-failure-taxonomy.md)
+- [조합 계약 — Agent Card, Result Envelope, State Schema](/.draft/pattern-composition/02-contracts.md)
+- [실패 분류](/.draft/pattern-composition/03-failure-taxonomy.md)
 - [코디네이터 패턴](/design-pattern/07-coordinator.md) — base 패턴
