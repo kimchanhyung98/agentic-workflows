@@ -125,7 +125,7 @@ base 패턴 문서는 워커 간 통신 매체, 쓰기 범위 격리, 턴 예산
 | 속성 | 게이트 워크플로우 | 분석 파이프라인 | 멀티에이전트 Judge | 에이전트 팀 Blackboard |
 |------|-----------------|---------------|------------------|----------------------|
 | base 패턴 수 | 4 | 3 | 3 | 4 |
-| 추가 계약 수 | 3 (Agent Card, Envelope, State) | 2 (Writer/Judge, State) | 2 (Judge Rules, Escalation) | 3 (Layer 분리, Blackboard, Write Scope) |
+| 추가 계약 수 | 3 (Agent Card, Envelope, State) | 2 (Writer/Judge, State) | 2 (Judge Rules, Escalation) | 4 (Layer 분리, Blackboard, Write Scope, Turn Budget) |
 | 발견된 실패 유형 | 10 | 8 | 9 | 4 |
 | 핵심 추가 요소 | Closed-Loop 자동 판정 | 관찰/판단 분리 | 결정론적 Judge | 3-레이어 책임 분리 |
 
