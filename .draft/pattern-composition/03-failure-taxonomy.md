@@ -8,7 +8,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 출처 | 단일 프로덕션 시스템 (3개 파이프라인: 분석, 워크플로우, 멀티에이전트) |
+| 출처 | 단일 프로덕션 시스템 (4개 파이프라인: 분석, 워크플로우, 멀티에이전트, Blackboard) |
 | 구현 | Python CLI, 26개 소스 파일, 약 5,700줄 |
 | 방법 | spec ↔ 구현 대조 감사, 상태 머신 전이 분석, 동시성 경합 검토 |
 | 원시 관찰 | 86건 (코드 경로별 개별 이슈) |
@@ -208,5 +208,5 @@ State Schema 관련 실패가 가장 많습니다(7건, 27%). 파이프라인 �
 ## 참고 자료
 
 - [에이전틱 AI 시스템 설계 패턴](/design-pattern/README.md) — base 패턴 정의
-- [조합 계약](/pattern-composition/02-contracts.md) — 실패 완화에 사용된 계약
-- [패턴 조합 사례](/pattern-composition/01-composition.md) — 실패가 발생한 조합 구조
+- [조합 계약](/.draft/pattern-composition/02-contracts.md) — 실패 완화에 사용된 계약
+- [패턴 조합 사례](/.draft/pattern-composition/01-composition.md) — 실패가 발생한 조합 구조

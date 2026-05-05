@@ -23,6 +23,7 @@ flowchart TD
         GW["게이트 워크플로우"]
         AP["분석 파이프라인"]
         MAJ["멀티에이전트 Judge"]
+        TB["에이전트 팀 Blackboard"]
     end
 
     SEQ --> GW
@@ -38,6 +39,11 @@ flowchart TD
     COORD --> MAJ
     CUST --> MAJ
 
+    PAR --> TB
+    HIER --> TB
+    COORD --> TB
+    REV --> TB
+
     style Base fill:#e8f4f8,stroke:#2196F3
     style Composed fill:#fff3e0,stroke:#FF9800
 ```
@@ -46,7 +52,7 @@ flowchart TD
 
 ## 계약이 연결하는 인터페이스
 
-조합된 패턴 사이를 연결하는 3가지 런타임 계약입니다.
+조합된 패턴 사이를 연결하는 4가지 런타임 계약입니다. 아래 다이어그램은 Phase 간 계약 3가지를 보여주고, Host-공급자 경계 계약(Provider Contract)은 별도로 다룹니다.
 
 ```mermaid
 graph TB
@@ -74,6 +80,7 @@ graph TB
 | Agent Card | Phase의 입출력, Gate 조건, 재시도 예산 정의 | Phase 간 전이 실패, 재시도 무한 반복 |
 | Result Envelope | 정상/비정상 결과를 하나의 스키마로 전달 | 비정상 경로 데이터 유실 |
 | State Schema | 파이프라인 진행 상태를 LLM 외부에 기록 | 상태 손상, Provider 교체 시 상태 유지 어려움 |
+| [Provider Contract](/.draft/pattern-composition/04-provider-contract.md) | Host와 LLM 공급자의 경계, Tier/capability/오류 분류 표준화 | 공급자 락인, 부적절한 재시도, Over-provisioning |
 
 ---
 
@@ -103,5 +110,6 @@ graph TB
 ## 참고 자료
 
 - [에이전틱 AI 시스템 설계 패턴](/design-pattern/README.md)
-- [조합 계약 상세](/pattern-composition/02-contracts.md)
-- [실패 분류 상세](/pattern-composition/03-failure-taxonomy.md)
+- [조합 계약 상세](/.draft/pattern-composition/02-contracts.md)
+- [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)
+- [실패 분류 상세](/.draft/pattern-composition/03-failure-taxonomy.md)

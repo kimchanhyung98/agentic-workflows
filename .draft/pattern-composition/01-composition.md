@@ -1,6 +1,6 @@
 # 패턴 조합 사례
 
-개별 패턴을 결합하여 더 큰 시스템을 구성한 3가지 사례입니다.
+개별 패턴을 결합하여 더 큰 시스템을 구성한 4가지 사례입니다.
 각 사례는 단일 프로덕션 시스템에서 일반화한 것이며, base 패턴은 이 레포의 [설계 패턴](/design-pattern/README.md) 문서를 참조합니다.
 
 ---
@@ -26,7 +26,7 @@
 
 ### 조합으로 필요해진 것
 
-1. **Agent Card** — Phase별 입출력 계약, Gate 통과 조건, 재시도 예산을 JSON으로 정의 ([상세](/pattern-composition/02-contracts.md))
+1. **Agent Card** — Phase별 입출력 계약, Gate 통과 조건, 재시도 예산을 JSON으로 정의 ([상세](/.draft/pattern-composition/02-contracts.md))
 2. **Result Envelope** — Worker가 정상 완료/이탈/실패 중 어느 상태인지 표준 스키마로 전달
 3. **State Schema** — Gate 결과와 Phase 재시도 횟수를 외부화하여 세션 재개와 Provider 교체를 지원
 4. **Closed-Loop 판정** — severity와 reason 조합으로 continue/replan/abort/escalate를 자동 결정
@@ -90,19 +90,49 @@
 
 ---
 
+## 사례 4: 에이전트 팀 Blackboard
+
+여러 에이전트가 같은 Phase 내에서 협업해야 할 때 사용한 조합입니다. 직접 통신 대신 공유 작업 공간(Blackboard)을 통해 간접 통신하며, 결정론적 제어와 AI 판단을 3개 레이어로 분리합니다.
+
+### 구성 패턴과 역할
+
+| base 패턴 | 역할 |
+|-----------|------|
+| [병렬 패턴](/design-pattern/03-parallel.md) | 독립 관점이 필요한 Phase(예: 테스트)에서 워커를 병렬 실행 |
+| [계층적 분해 패턴](/design-pattern/08-hierarchical.md) | 제어 → 판단 → 실행을 3개 레이어로 분해 (Python → Leader → Worker) |
+| [코디네이터 패턴](/design-pattern/07-coordinator.md) | Leader가 워커를 배정하고 Stop/Go를 결정 |
+| [검토-비평 패턴](/design-pattern/05-review-critique.md) | 순차 Phase(예: 설계)에서 Writer-Reviewer 턴 루프 |
+
+### 개별 패턴만으로 부족한 것
+
+- **병렬 패턴**은 독립 실행을 다루지만, 워커끼리 어떻게 중간 결과를 공유하는지 정의하지 않습니다. 메시지를 직접 주고받으면 워커가 다른 워커의 내부 포맷에 결합됩니다.
+- **계층적 분해 패턴**은 분해 구조만 설명합니다. "무엇을 코드로 결정하고 무엇을 LLM이 판단하는가"의 경계는 정의하지 않습니다.
+- **검토-비평 패턴**은 생성-비평 사이클을 설명하지만, 워커가 상대 워커의 artifact를 수정하는 것을 막지 않습니다. Reviewer가 Writer의 산출물을 직접 고치면 추적성이 사라집니다.
+
+### 조합으로 필요해진 것
+
+1. **3-레이어 책임 분리** — 턴 순서·종료 조건·상태 저장·타임아웃은 결정론적 코드에, 업무 분석·워커 배정·Stop/Go는 Leader AI에, 탐색·생성·검증은 Worker AI에 배정. 경계 규칙: Gate 평가를 Leader에 맡기지 않고, 상태 전이를 Worker에 맡기지 않습니다.
+2. **Blackboard 간접 통신** — 워커는 공유 파일 시스템(`board/` 산출물 디렉토리, `discussion/` 턴별 대화 디렉토리)을 통해서만 통신합니다. 상대 워커의 포맷이나 실행 상태에 의존하지 않습니다.
+3. **Write Scope 격리** — 각 워커는 정해진 경로에만 쓸 수 있습니다. Writer는 산출물을, Reviewer는 토론 파일만. 이로 인해 Reviewer가 산출물을 직접 고쳐 추적성이 사라지는 문제를 원천 차단합니다.
+4. **턴 예산** — 전체 루프에 최대 턴 수(예: 3회) 상한. 종료 조건은 결정론적으로 파싱(`findings` 배열에 CRITICAL 0건 등)하여 Leader의 판단 오류가 무한 루프를 만들지 않게 합니다.
+
+base 패턴 문서는 워커 간 통신 매체, 쓰기 범위 격리, 턴 예산 같은 운영 규칙을 다루지 않으므로, 1~4는 조합으로 필요해진 규약입니다.
+
+---
+
 ## 조합 패턴 비교
 
-| 속성 | 게이트 워크플로우 | 분석 파이프라인 | 멀티에이전트 Judge |
-|------|-----------------|---------------|------------------|
-| base 패턴 수 | 4 | 3 | 3 |
-| 추가 계약 수 | 3 (Agent Card, Envelope, State) | 2 (Writer/Judge, State) | 2 (Judge Rules, Escalation) |
-| 발견된 실패 유형 | 10 | 8 | 9 |
-| 핵심 추가 요소 | Closed-Loop 자동 판정 | 관찰/판단 분리 | 결정론적 Judge |
+| 속성 | 게이트 워크플로우 | 분석 파이프라인 | 멀티에이전트 Judge | 에이전트 팀 Blackboard |
+|------|-----------------|---------------|------------------|----------------------|
+| base 패턴 수 | 4 | 3 | 3 | 4 |
+| 추가 계약 수 | 3 (Agent Card, Envelope, State) | 2 (Writer/Judge, State) | 2 (Judge Rules, Escalation) | 4 (Layer 분리, Blackboard, Write Scope, Turn Budget) |
+| 발견된 실패 유형 | 10 | 8 | 9 | 4 |
+| 핵심 추가 요소 | Closed-Loop 자동 판정 | 관찰/판단 분리 | 결정론적 Judge | 3-레이어 책임 분리 |
 
 ---
 
 ## 참고 자료
 
 - [에이전틱 AI 시스템 설계 패턴](/design-pattern/README.md) — base 패턴 정의
-- [조합 계약 상세](/pattern-composition/02-contracts.md) — Agent Card, Result Envelope, State Schema
-- [실패 분류](/pattern-composition/03-failure-taxonomy.md) — 조합에서 발생한 실패 유형
+- [조합 계약 상세](/.draft/pattern-composition/02-contracts.md) — Agent Card, Result Envelope, State Schema
+- [실패 분류](/.draft/pattern-composition/03-failure-taxonomy.md) — 조합에서 발생한 실패 유형
