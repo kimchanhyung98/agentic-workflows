@@ -205,9 +205,9 @@ State Schema 관련 실패가 가장 많습니다(7건, 27%). 파이프라인 �
 
 ---
 
-## 부록: 보조 관측 — 외부 시스템 운영 데이터 (4건)
+## 부록: 보조 관측 — 외부 시스템 운영 데이터 (6건)
 
-위 26건은 단일 시스템에서 도출되었습니다. 동일 패턴 조합이 다른 시스템에서 어떻게 다른 실패로 나타나는지 확인하기 위해, 별도 시스템(`ai-workflow-tools`, awf-cli + cmux-agent 모노레포, 2026-04~05 dispatch 시리즈 PR #25–#31)에서 관찰된 4건을 부록으로 정리합니다. 본 corpus(26건)에는 포함하지 않습니다.
+위 26건은 단일 시스템에서 도출되었습니다. 동일 패턴 조합이 다른 시스템에서 어떻게 다른 실패로 나타나는지 확인하기 위해, 별도 시스템(`ai-workflow-tools`, awf-cli + cmux-agent 모노레포, 2026-04~05 dispatch/operations/readiness 시리즈 PR #25–#39)에서 관찰된 6건을 부록으로 정리합니다. 본 corpus(26건)에는 포함하지 않습니다.
 
 ### 유형 13: Async Warmup Race (1건, 보조)
 
@@ -225,10 +225,19 @@ State Schema 관련 실패가 가장 많습니다(7건, 27%). 파이프라인 �
 
 다중 패키지 모노레포 + 직접 import. 두 패키지가 서로 다른 floor (예: Python 버전 또는 라이브러리 의존성) 를 선언하는데 한쪽이 다른 쪽을 직접 import 하면, 한 패키지가 다른 패키지의 floor 를 silently 강제 상승시켜 사용자 환경 호환성을 깹니다. CI 가 양쪽 floor 의 max 위에서 돌면 통과하므로 감지가 늦어집니다. 대표 사례: awf-cli `requires-python = ">=3.9"` 가 cmux-agent `>=3.11` 을 직접 import 하면 awf-cli 의 floor 가 사실상 3.11 로 상승했지만 명시는 3.9 로 남았습니다. 완화: 통합 경계를 import 가 아닌 외부 surface (CLI subprocess, on-disk format, 명시적 API endpoint) 로 잡기. 출처: ai-workflow-tools `_cmux_bridge.py` (stdlib `sqlite3` + filesystem + `cmux-agent` CLI subprocess), ADR `2026-05-09-stdlib-only-cmux-bridge`.
 
+### 유형 17: First-Run Ambiguity (1건, 보조)
+
+에이전트용 CLI + 다중 자동화 surface. 기능은 존재하지만 처음 설치한 사용자가 "지금 이 repo에서 무엇을 안전하게 실행할 수 있는가"를 알기 위해 `doctor`, `scan`, `skills list`, workflow 상태, operations 상태를 따로 조합해야 하면, 사용자는 5분 안에 실제 가치를 보기 어렵습니다. 자연어 onboarding 문서는 이 문제를 완전히 해결하지 못합니다. 대표 사례: awf가 분석, workflow, operations wiki 기능을 갖고 있었지만 첫 진입점이 흩어져 있어 Claude/Codex가 중간에 사용해도 구조화된 안전 순서를 보장하지 못했습니다. 완화: read-only `awf ready`가 repo readiness를 하나의 automation-level report와 recommended next commands로 합성. 출처: ai-workflow-tools PR #37, ADR `2026-05-09-awf-ready-as-first-repo-automation-check`.
+
+### 유형 18: Preflight Bypass Drift (1건, 보조)
+
+외부 entrypoint gate + 직접 CLI 실행. Claude/Codex runner가 preflight를 수행하더라도, 실제 mutating/provider-backed CLI 명령이 내부에서 같은 gate를 확인하지 않으면 사용자가 wrapper를 우회해 상태 전이를 실행할 수 있습니다. 이 경우 "자동화는 gate를 통과해야 한다"는 시스템 invariant가 호출 경로마다 달라집니다. 대표 사례: PR #38은 `awf ready --gate`를 Claude/Codex entrypoint에 연결했지만, 직접 `awf analyze`, `awf wf next`, `awf wiki compile` 호출은 별도였습니다. 완화: PR #39에서 provider-backed/mutating 명령이 내부적으로 같은 ready gate를 기본 확인하고, read-only/dry-run 경로와 `--no-ready-gate` escape hatch를 명시적으로 분리. 출처: ai-workflow-tools PR #38/#39, ADR `2026-05-09-deterministic-ready-preflight-gates`, ADR `2026-05-09-command-internal-ready-gate-enforcement`.
+
 ### 부록의 시사점
 
-- 13~16번은 모두 **시스템 경계를 넘나드는 상호작용**에서 나타났습니다. 단일 프로세스 내 패턴 조합과는 다른 실패 모드 군이 존재함을 시사합니다.
-- 본 corpus 26건은 단일 프로세스 내 조합에 치우쳐 있어, 외부 인프라가 개입하는 시스템에서 추가 관측이 필요합니다.
+- 13~18번은 모두 **시스템 경계를 넘나드는 상호작용**에서 나타났습니다. 단일 프로세스 내 패턴 조합과는 다른 실패 모드 군이 존재함을 시사합니다.
+- 17~18번은 사용자의 첫 실행 경험과 agent entrypoint가 같은 readiness contract를 공유해야 함을 보여줍니다. 자연어 안내만으로는 provider 호출, workflow 상태 전이, operations write의 순서를 강제할 수 없습니다.
+- 본 corpus 26건은 단일 프로세스 내 조합에 치우쳐 있어, 외부 인프라와 CLI entrypoint가 개입하는 시스템에서 추가 관측이 필요합니다.
 
 ---
 

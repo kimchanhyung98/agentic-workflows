@@ -189,7 +189,7 @@ PR #32는 deterministic compiler로 4개 operations page를 생성합니다.
 | `dispatch-performance.md` | `dispatch_complete` |
 | `dual-strategy-promotions.md` | `dual_strategy_engaged` |
 
-`analysis_complete`는 단일 `total_seconds` metric만으로는 narrative 가치가 낮아 제외했습니다. 이 결정은 topic registry가 모든 event를 무조건 page로 만들 필요는 없다는 예시입니다.
+`analysis_complete`는 PR #36 이후 `source_file_count`, `bundle_line_count`, `bundle_token_estimate`, `output_file_count`를 추가로 갖지만, 여전히 단일 실행 telemetry입니다. 충분한 event volume과 threshold가 정해지기 전까지는 compile topic으로 승격하지 않았습니다. 이 결정은 topic registry가 모든 event를 무조건 page로 만들 필요는 없다는 예시입니다.
 
 ### Schema
 
@@ -223,6 +223,18 @@ confidence: low
 - lint가 `event_window`, `event_count`, `metric_method` 누락을 검사
 - schema migration 기록을 ADR과 연결
 
+### 후속 확장: ready-gated operations writes
+
+PR #37~#39는 Operations Wiki를 단순한 compile artifact가 아니라 repo automation surface의 일부로 다루기 시작한 사례입니다.
+
+첫 단계는 `awf ready`입니다. 이 명령은 config, provider, skill, heuristic scan, workflow, operations 상태를 read-only로 모아 repo가 지금 어떤 자동화 수준에 있는지 보고합니다. 사용자는 `doctor`, `scan`, `skills list`, `wf status`, `wiki init`을 따로 조합하지 않고 한 번의 check로 다음 안전 명령을 확인합니다.
+
+두 번째 단계는 `awf ready --gate`입니다. gate는 `inspect`, `analysis`, `workflow-init`, `workflow-run`, `operations` 같은 intent별로 `allow`, `dry_run_only`, `block` 결정을 JSON에 담고, `allow`가 아니면 non-zero exit로 Claude/Codex entrypoint를 멈춥니다. 자연어 지침에 "먼저 확인하세요"라고 쓰는 대신, host runner와 skill이 같은 결정론적 contract를 호출합니다.
+
+세 번째 단계는 command-internal enforcement입니다. `awf wiki decision`, `awf wiki regenerate-index`, non-dry-run `awf wiki compile`은 기본적으로 operations gate를 내부에서 다시 확인합니다. 반대로 `wiki init`, `log`, `events`, `lint`, `compile --dry-run` 같은 조회/검사 경로는 막지 않습니다. `--no-ready-gate`는 상위 wrapper가 같은 gate를 이미 수행했을 때만 쓰는 명시적 escape hatch입니다.
+
+이 후속 확장은 Operations Wiki 패턴의 중요한 경계를 보여줍니다. wiki write는 지식 축적 surface이므로, "에이전트가 읽는 memory"를 갱신하기 전에 repo가 operations write를 받아도 되는지 결정론적으로 판정해야 합니다. 첫 사용자의 5분 경험도 같은 원칙을 따릅니다. 설명서를 읽게 하기보다 read-only readiness report와 machine-enforced gate가 다음 행동을 결정합니다.
+
 ---
 
 ## 적용 체크리스트
@@ -242,4 +254,8 @@ confidence: low
 - [Karpathy: LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 - [LLM Wiki reference app](https://llmwiki.app/)
 - [ai-workflow-tools PR #32: `awf wiki compile`](https://github.com/coldplay126/ai-workflow-tools/pull/32)
+- [ai-workflow-tools PR #36: `analysis_complete` metrics](https://github.com/coldplay126/ai-workflow-tools/pull/36)
+- [ai-workflow-tools PR #37: `awf ready`](https://github.com/coldplay126/ai-workflow-tools/pull/37)
+- [ai-workflow-tools PR #38: deterministic ready gates](https://github.com/coldplay126/ai-workflow-tools/pull/38)
+- [ai-workflow-tools PR #39: command-internal ready gates](https://github.com/coldplay126/ai-workflow-tools/pull/39)
 - [패턴 조합](/.draft/pattern-composition/README.md)

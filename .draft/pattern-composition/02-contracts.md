@@ -164,6 +164,67 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ---
 
+## Readiness Gate — 실행 전 자동화 판정 계약
+
+### 문제
+
+에이전트용 CLI나 skill은 "먼저 상태를 확인하라"는 자연어 지침만으로는 충분히 안전하지 않습니다. 실제 조합에서는 다음 질문에 답해야 합니다.
+
+- 이 repo에서 지금 provider-backed 분석을 실행해도 되는가?
+- workflow를 새로 만들거나 다음 phase로 진행해도 되는가?
+- operations wiki 같은 장기 기억 surface를 갱신해도 되는가?
+- Claude/Codex entrypoint가 preflight를 했더라도, 사용자가 직접 CLI 명령을 실행하면 같은 stop condition이 적용되는가?
+
+### 최소 스키마
+
+```jsonc
+{
+  "gate": "analysis",                     // inspect|analysis|workflow-init|workflow-run|operations
+  "decision": "allow",                    // allow|dry_run_only|block
+  "automation_level": "L2_analysis",
+  "reasons": [
+    {
+      "code": "workflow_state_missing",
+      "severity": "block",
+      "message": ".workflow/state.json is missing"
+    }
+  ],
+  "recommended_commands": [
+    "awf ready --repo-root .",
+    "awf wf init <concept> --repo-root ."
+  ]
+}
+```
+
+### 설계 근거
+
+Readiness Gate는 repo-level 상태를 먼저 구조화한 뒤 intent별 실행 가능성을 판정합니다. `allow`는 그대로 진행, `dry_run_only`는 조회/시뮬레이션만 허용, `block`은 상태 전이를 중단합니다.
+
+계약은 두 겹으로 적용됩니다.
+
+- **External preflight**: Claude Code skill, Codex runner, `AGENTS.md` snippet 같은 entrypoint가 실행 전에 `ready --gate`를 호출하고 exit code를 따릅니다.
+- **Command-internal enforcement**: 실제로 상태를 바꾸거나 provider를 호출하는 CLI 명령이 같은 gate를 내부에서 다시 확인합니다.
+
+두 겹을 분리하는 이유는 UX와 안전 경계가 다르기 때문입니다. External preflight는 사용자에게 다음 안전 명령을 빨리 보여주고, command-internal enforcement는 사용자가 wrapper를 우회해도 같은 invariant를 보존합니다. 조회성 명령(`status`, `log`, `lint`, `--dry-run`, `--check`)은 gate로 막지 않아야 첫 5분 탐색이 가능해집니다.
+
+### 이 계약이 없으면 발생하는 실패
+
+- **Ghost Decision**: readiness report를 읽었지만 자연어 판단으로 provider 실행이 계속됨 ([실패 분류 유형 3](/.draft/pattern-composition/03-failure-taxonomy.md))
+- **Contract Drift**: wrapper는 gate를 적용하지만 직접 CLI 명령은 gate 없이 상태를 변경함
+- **Stale State Reuse**: workflow state나 operations profile이 없는 repo에서 이전 세션 전제를 재사용해 진행
+
+### 관찰된 사례
+
+`ai-workflow-tools`는 PR #37~#39에서 같은 계약을 단계적으로 적용했습니다.
+
+- PR #37: `awf ready`를 read-only repo readiness report로 추가. config/provider/skill/scan/workflow/operations 상태와 추천 명령을 한 보고서로 묶음.
+- PR #38: `awf ready --gate inspect|analysis|workflow-init|workflow-run|operations --json`을 deterministic preflight로 추가. Claude/Codex entrypoint가 `allow|dry_run_only|block`과 exit code를 따름.
+- PR #39: `awf analyze`, `awf wf init`, `awf wf next`, `awf wiki decision`, `awf wiki regenerate-index`, non-dry-run `awf wiki compile`이 내부에서 같은 gate를 기본 실행. read-only/dry-run 경로는 유지하고 `--no-ready-gate`를 명시적 escape hatch로 둠.
+
+이 사례는 "처음 쓰는 사용자가 설명서를 읽고 순서를 맞춘다"는 가정을 제거하고, 구조화된 readiness model과 결정론적 gate가 실행 순서를 강제하는 방식입니다.
+
+---
+
 ## Prior Threading — Step 간 결과 전달 방식
 
 ### 문제
@@ -248,7 +309,7 @@ for step in steps:
 
 ## 계약 간 관계
 
-4가지 계약은 독립적이 아니라 상호 참조합니다.
+5가지 계약은 독립적이 아니라 상호 참조합니다.
 
 | 관계 | 설명 |
 |------|------|
@@ -256,6 +317,8 @@ for step in steps:
 | Result Envelope → State Schema | Worker 상태(completed/escaped/failed)를 State에 반영 |
 | Agent Card → Result Envelope | `output.structured_result`가 Envelope의 `result` 스키마를 정의 |
 | State Schema → Agent Card | `phases[phase].retries`가 `gate.retry.max`와 비교됨 |
+| Readiness Gate → Agent Card | intent별 실행 가능성이 phase/gate 실행 전에 평가됨 |
+| Readiness Gate → State Schema | workflow state 존재 여부와 operations profile 상태가 gate decision 입력이 됨 |
 | Prior Threading (A) → Result Envelope | factory가 받는 `prior_results` 항목이 Envelope 스키마를 따름 |
 | Prior Threading (B) → State Schema | blackboard `reads`/`writes` path가 State에 기록됨 (recovery에서 재사용) |
 | Prior Threading → Agent Card | step의 input/output 정의가 어느 form을 가정하는지 spec에 명시되어야 함 |
@@ -264,7 +327,7 @@ for step in steps:
 
 ## 관련 계약
 
-이 문서가 다루는 4가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
+이 문서가 다루는 5가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
 
 ---
 
