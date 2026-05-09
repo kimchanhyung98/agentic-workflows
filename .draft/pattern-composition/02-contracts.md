@@ -164,9 +164,91 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ---
 
+## Prior Threading — Step 간 결과 전달 방식
+
+### 문제
+
+[순차 패턴](/design-pattern/02-sequential.md)은 "에이전트 출력이 다음 에이전트의 입력"이라고 설명합니다. 그러나 Step N의 결과가 Step N+1로 *어떻게* 전달되는지는 미정입니다.
+
+- 같은 role이 같은 산출물을 여러 step에 걸쳐 정제한다면, prior 결과는 함수 인자로 받아야 하는가, 아니면 외부 store에서 다시 읽어야 하는가?
+- 다른 role들이 결과를 공유한다면, 누가 어디에 쓰고 누가 어디서 읽는지를 어떤 형태로 선언하는가?
+- 재시도/재개 시 prior 결과를 다시 만들지, 아니면 보존된 것을 재사용할지 결정 가능한가?
+
+### 최소 스키마 — 두 형태
+
+**Form A — Direct Factory Threading**: chain 안에서 prior 결과를 다음 step의 spec 빌더로 직접 전달합니다. 같은 role이 한 산출물을 점진적으로 정제하는 chain에 자연스럽습니다.
+
+```python
+class StepFactory(Protocol):
+    """prior_results를 받아 다음 Step의 spec을 빌드하는 순수 함수."""
+    def __call__(self, prior_results: list[ResultEnvelope]) -> StepSpec: ...
+
+@dataclass
+class ChainedStep:
+    role: str
+    factory: StepFactory
+
+# Caller (chain runner)는 prior 결과를 누적해 다음 factory에 주입
+results: list[ResultEnvelope] = []
+for step in steps:
+    spec = step.factory(prior_results=results)
+    results.append(run_one(spec))
+```
+
+- prior 결과는 in-memory `list[ResultEnvelope]` (즉 Result Envelope 계약과 직결).
+- factory는 부수효과 없는 pure builder. 외부 store 쓰기/읽기 없음.
+- 같은 role이 여러 step에 등장하면 동일 worker를 재사용해 단말 컨텍스트가 누적되도록 구현 가능.
+
+**Form B — Blackboard Threading**: step들이 공유 artifact store(파일/DB/메모리)에서 prior 결과를 읽고 자기 결과를 씁니다. 다른 role들이 DAG로 협업할 때 자연스럽습니다.
+
+```jsonc
+// Step 1
+{
+  "step": {"role": "review", "n": 1},
+  "reads":  ["artifacts/spec.md"],
+  "writes": ["artifacts/review-1.md"]
+}
+// Step 2 — review-1을 보고 verify를 수행
+{
+  "step": {"role": "verify", "n": 2},
+  "reads":  ["artifacts/spec.md", "artifacts/review-1.md"],
+  "writes": ["artifacts/verify-1.md"]
+}
+```
+
+- prior 결과는 store의 path로 참조. step은 path 계약만 알면 동작.
+- writer/reader가 다른 role이어도 path로 분리되므로 loose coupling.
+- 재시도/재개 시 store에 남은 partial state 재사용 가능 (Form A는 in-memory 누적이라 재실행 필요).
+
+### 설계 근거
+
+선택은 chain의 형상이 결정합니다.
+
+- **Linear chain of same-role refinement** — Form A. prior 결과가 데이터로 주입되므로 결정론적이고 외부 store 불필요. Worker 재사용 최적화 (단말 컨텍스트 누적)가 가능합니다.
+- **DAG with multiple roles** — Form B. role 간 결합이 path 계약 한 겹뿐이라 한쪽 role을 갈아끼워도 다른 step들이 영향받지 않습니다. Audit/recovery에 유리합니다.
+
+한 시스템에서 두 형태가 공존할 수 있고, 자주 그렇습니다. 핵심은 **하나의 step이 어느 form을 가정하는지가 spec에 명시되어야** 한다는 것입니다 — 그래야 caller(chain runner / pipeline)가 적절한 threading 경로를 선택할 수 있습니다.
+
+### 이 계약이 없으면 발생하는 실패
+
+- **Silent Data Loss**: Form A 의도였는데 caller가 prior 결과를 factory에 안 넘기면, step은 "처음 실행"처럼 동작 ([실패 분류 유형 2](/.draft/pattern-composition/03-failure-taxonomy.md))
+- **Stale State Reuse**: Form B 의도였는데 step이 store path를 잘못 읽으면, 이전 사이클의 산출물로 진행 ([실패 분류 유형 1](/.draft/pattern-composition/03-failure-taxonomy.md))
+- **Contract Drift**: 같은 step의 caller마다 form을 다르게 가정하면, 한 caller에서는 동작하던 step이 다른 caller에서는 prior 결과를 못 받습니다.
+
+### 관찰된 사례
+
+이 두 form은 단일 시스템에서 공존하는 사례가 있습니다 (`ai-workflow-tools`, dispatch series).
+
+- **Form A — `MultiAgentDispatch.run_chained(steps)`** (PR #27, [ADR](https://github.com/coldplay126/ai-workflow-tools/blob/main/.awf-operations/wiki/decisions/2026-05-09-run-chained-option-a.md)): critical mode (codex precision → sonnet impact → primary judgment)는 같은 산출물을 단계적으로 정제. `ChainedStep(role, factory)`의 factory가 `prior_results`를 받아 다음 spec을 lazy build. cmux backend는 같은 role의 worker를 chain 전체에 pin해 단말 컨텍스트가 자연스럽게 누적되도록 구현.
+- **Form B — `team_runner` + 공유 blackboard** (PR #31, [ADR](https://github.com/coldplay126/ai-workflow-tools/blob/main/.awf-operations/wiki/decisions/2026-05-09-team-runner-dispatch-not-run-chained.md)): team mode는 각기 다른 role(`happy_path` / `adversarial` 등)이 공유 blackboard에 결과를 누적. 각 worker의 prompt builder가 blackboard에서 prior 결과를 읽음. **`run_chained`를 쓰지 않는 이유**가 ADR로 기록됨 — distinct roles라 cmux pinning 이득이 없고, blackboard 부수효과를 factory에 넣는 것은 "pure builder" 가정 위반.
+
+같은 시스템이 두 form을 상황에 따라 선택한다는 점이 핵심 evidence입니다.
+
+---
+
 ## 계약 간 관계
 
-3가지 계약은 독립적이 아니라 상호 참조합니다.
+4가지 계약은 독립적이 아니라 상호 참조합니다.
 
 | 관계 | 설명 |
 |------|------|
@@ -174,12 +256,15 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 | Result Envelope → State Schema | Worker 상태(completed/escaped/failed)를 State에 반영 |
 | Agent Card → Result Envelope | `output.structured_result`가 Envelope의 `result` 스키마를 정의 |
 | State Schema → Agent Card | `phases[phase].retries`가 `gate.retry.max`와 비교됨 |
+| Prior Threading (A) → Result Envelope | factory가 받는 `prior_results` 항목이 Envelope 스키마를 따름 |
+| Prior Threading (B) → State Schema | blackboard `reads`/`writes` path가 State에 기록됨 (recovery에서 재사용) |
+| Prior Threading → Agent Card | step의 input/output 정의가 어느 form을 가정하는지 spec에 명시되어야 함 |
 
 ---
 
 ## 관련 계약
 
-이 문서가 다루는 3가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
+이 문서가 다루는 4가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
 
 ---
 
