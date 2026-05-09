@@ -30,6 +30,7 @@ jobs:
           fi
 
       - name: Validate semantic PR title
+        id: semantic-title
         if: steps.bot-check.outputs.is_bot != 'true'
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
@@ -37,14 +38,21 @@ jobs:
         run: |
           set -euo pipefail
 
-          IFS=',' read -ra labels <<< "$PR_LABELS"
-          for label in "${labels[@]}"; do
-            if [[ "$label" == "bot" || "$label" == "ignore-semantic-pull-request" ]]; then
-              echo "Skipping semantic PR title validation because label '$label' is present."
-              exit 0
-            fi
-          done
+          fail() {
+            local message="$1"
+            echo "error_message=$message" >> "$GITHUB_OUTPUT"
+            echo "$message"
+            exit 1
+          }
 
+          label_csv=",$PR_LABELS,"
+          if [[ "$label_csv" == *",bot,"* || "$label_csv" == *",ignore-semantic-pull-request,"* ]]; then
+            echo "Skipping semantic PR title validation because an ignore label is present."
+            exit 0
+          fi
+
+          # WIP blocking is handled by the existing WIP check or draft PR state.
+          # This validator stays read-only and does not create pending statuses.
           allowed_types='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)$'
           header_pattern='^([a-z]+)(\(([^)]+)\))?(!)?: ([a-z].*)$'
 
@@ -52,20 +60,28 @@ jobs:
             echo "Invalid PR title: $PR_TITLE"
             echo "Expected: type(scope): subject or type: subject"
             echo "The subject must start with a lowercase character."
-            exit 1
+            fail "Invalid PR title format"
           fi
 
           type="${BASH_REMATCH[1]}"
           scope="${BASH_REMATCH[3]:-}"
+          subject="${BASH_REMATCH[5]}"
 
           if [[ ! "$type" =~ $allowed_types ]]; then
             echo "Invalid PR title type: $type"
             echo "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
-            exit 1
+            fail "Invalid PR title type: $type"
           fi
 
           if [[ "$scope" =~ [A-Z] ]]; then
             echo "Invalid PR title scope: $scope"
             echo "Scope must not contain uppercase characters."
-            exit 1
+            fail "Invalid PR title scope: $scope"
           fi
+
+          {
+            echo "type=$type"
+            echo "scope=$scope"
+            echo "subject=$subject"
+            echo "error_message="
+          } >> "$GITHUB_OUTPUT"
