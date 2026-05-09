@@ -205,6 +205,33 @@ State Schema 관련 실패가 가장 많습니다(7건, 27%). 파이프라인 �
 
 ---
 
+## 부록: 보조 관측 — 외부 시스템 운영 데이터 (4건)
+
+위 26건은 단일 시스템에서 도출되었습니다. 동일 패턴 조합이 다른 시스템에서 어떻게 다른 실패로 나타나는지 확인하기 위해, 별도 시스템(`ai-workflow-tools`, awf-cli + cmux-agent 모노레포, 2026-04~05 dispatch 시리즈 PR #25–#31)에서 관찰된 4건을 부록으로 정리합니다. 본 corpus(26건)에는 포함하지 않습니다.
+
+### 유형 13: Async Warmup Race (1건, 보조)
+
+[코디네이터 패턴](/design-pattern/07-coordinator.md) + 외부 워커 인프라. 워커 인프라(예: 별도 터미널 + AI CLI)가 처음 활성화될 때 부팅 비용(약 10–30초)을 지불하지만, per-call timeout 만 정의되어 있으면 첫 호출이 일관되게 시간 부족으로 실패합니다. 대표 사례: 첫 cmux dispatch 호출이 30초 워밍업으로 끝나고 두 번째부터는 정상 동작했습니다. 완화: 첫 호출에 warmup grace 가산(awf 의 `_CMUX_WARMUP_GRACE_SEC = 30`), 또는 워커 라이프사이클을 reusable 로 두어 같은 run 안에서 워밍업 비용을 1회만 지불. 출처: ai-workflow-tools PR #26, ADR `2026-05-09-cmux-dispatch-lifecycle-reusable-default`.
+
+### 유형 14: Contract Drift Within Factory (1건, 보조)
+
+[순차 패턴](/design-pattern/02-sequential.md) + lazy spec building. factory-pattern dispatch 에서 factory 가 호출 시점에 자유롭게 spec 을 만들 수 있다면, factory 가 선언한 role 과 반환 spec 의 role 이 일치한다는 보장이 없습니다. 대표 사례: `ChainedStep(role="x")` 의 factory 가 실수로 `role="y"` 인 spec 을 반환해 dispatch 의 결과 라우팅이 어긋났고, 디버그 trace 가 LLM 응답까지 갔다 돌아오는 시간을 낭비했습니다. 완화: dispatch 측에서 step.role 과 spec.role 의 일치를 검증하고 불일치 시 즉시 actionable error 발생. 출처: ai-workflow-tools `MultiAgentDispatch.run_chained` (PR #27).
+
+### 유형 15: Phantom Sidecar (1건, 보조)
+
+[코디네이터 패턴](/design-pattern/07-coordinator.md) + 명시적 사이드카 의존. 외부 broker/watcher daemon 이 필요하지만 사용자가 띄우지 않은 상태에서 dispatch 가 실행되면, 메시지 artifact 는 정상 작성되지만 라우팅이 발생하지 않아 timeout 으로만 실패합니다. 사용자는 dispatch 호출 자체만 보고 broker 미구동을 의심하기 어렵습니다. 대표 사례: cmux-agent watch 가 백그라운드에 없는데 awf cross 가 cmux 백엔드를 선택해 outbox 에 dispatch artifact 만 누적시켰습니다. 완화: pre-dispatch readiness check (사이드카 heartbeat / active run 존재 검증 / doctor 출력에서 broker 상태 노출). 출처: ai-workflow-tools `cmux_dispatch_available(cwd)`, `awf doctor` 의 dispatch 섹션.
+
+### 유형 16: Boundary Drift (1건, 보조)
+
+다중 패키지 모노레포 + 직접 import. 두 패키지가 서로 다른 floor (예: Python 버전 또는 라이브러리 의존성) 를 선언하는데 한쪽이 다른 쪽을 직접 import 하면, 한 패키지가 다른 패키지의 floor 를 silently 강제 상승시켜 사용자 환경 호환성을 깹니다. CI 가 양쪽 floor 의 max 위에서 돌면 통과하므로 감지가 늦어집니다. 대표 사례: awf-cli `requires-python = ">=3.9"` 가 cmux-agent `>=3.11` 을 직접 import 하면 awf-cli 의 floor 가 사실상 3.11 로 상승했지만 명시는 3.9 로 남았습니다. 완화: 통합 경계를 import 가 아닌 외부 surface (CLI subprocess, on-disk format, 명시적 API endpoint) 로 잡기. 출처: ai-workflow-tools `_cmux_bridge.py` (stdlib `sqlite3` + filesystem + `cmux-agent` CLI subprocess), ADR `2026-05-09-stdlib-only-cmux-bridge`.
+
+### 부록의 시사점
+
+- 13~16번은 모두 **외부 인프라/사이드카에 의존하는 코디네이터 조합**에서 나타났습니다. 단일 프로세스 내 패턴 조합과는 다른 실패 모드 군이 존재함을 시사합니다.
+- 본 corpus 26건은 단일 프로세스 내 조합에 치우쳐 있어, 외부 인프라가 개입하는 시스템에서 추가 관측이 필요합니다.
+
+---
+
 ## 참고 자료
 
 - [에이전틱 AI 시스템 설계 패턴](/design-pattern/README.md) — base 패턴 정의
