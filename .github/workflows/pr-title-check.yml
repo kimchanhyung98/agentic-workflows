@@ -11,7 +11,6 @@ on:
 
 permissions:
   pull-requests: read
-  statuses: write
 
 jobs:
   main:
@@ -30,29 +29,43 @@ jobs:
             echo "is_bot=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: amannn/action-semantic-pull-request@v6
+      - name: Validate semantic PR title
         if: steps.bot-check.outputs.is_bot != 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # Scope is optional (allows both `type: title` and `type(scope): title`)
-          requireScope: false
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -euo pipefail
 
-          # Disallow uppercase scopes
-          disallowScopes: |
-            [A-Z]+
+          IFS=',' read -ra labels <<< "$PR_LABELS"
+          for label in "${labels[@]}"; do
+            if [[ "$label" == "bot" || "$label" == "ignore-semantic-pull-request" ]]; then
+              echo "Skipping semantic PR title validation because label '$label' is present."
+              exit 0
+            fi
+          done
 
-          # Work in progress PR support
-          wip: true
+          allowed_types='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)$'
+          header_pattern='^([a-z]+)(\(([^)]+)\))?(!)?: ([a-z].*)$'
 
-          # Skip validation for PRs with these labels
-          ignoreLabels: |
-            bot
-            ignore-semantic-pull-request
+          if [[ ! "$PR_TITLE" =~ $header_pattern ]]; then
+            echo "Invalid PR title: $PR_TITLE"
+            echo "Expected: type(scope): subject or type: subject"
+            echo "The subject must start with a lowercase character."
+            exit 1
+          fi
 
-          # Ensure the subject doesn't start with an uppercase character
-          subjectPattern: ^[a-z].*$
-          subjectPatternError: |
-            The subject "{subject}" found in the pull request title "{title}"
-            didn't match the configured pattern. Please ensure that the subject
-            starts with a lowercase character.
+          type="${BASH_REMATCH[1]}"
+          scope="${BASH_REMATCH[3]:-}"
+
+          if [[ ! "$type" =~ $allowed_types ]]; then
+            echo "Invalid PR title type: $type"
+            echo "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+            exit 1
+          fi
+
+          if [[ "$scope" =~ [A-Z] ]]; then
+            echo "Invalid PR title scope: $scope"
+            echo "Scope must not contain uppercase characters."
+            exit 1
+          fi
