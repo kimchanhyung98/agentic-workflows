@@ -16,6 +16,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 
 | 디렉토리                                              | 설명                                               | 분석 대상                 |
 |---------------------------------------------------|--------------------------------------------------|-----------------------|
+| [bun-rust](/bun-rust/README.md)                   | Zig→Rust 대규모 포팅, AI 샤딩, 컴파일·테스트 오류 작업 큐         | Bun                   |
 | [stripe-minions](/stripe-minions/README.md)       | One-Shot E2E 코딩 에이전트, 6레이어 아키텍처, Devbox 격리       | Stripe Minions        |
 | [coinbase-cloudbot](/coinbase-cloudbot/README.md) | Slack 네이티브 백그라운드 에이전트, MCP 통합, AI 에코시스템          | Coinbase Cloudbot     |
 | [open-swe](/open-swe/README.md)                   | LangGraph 기반 자율 SWE 에이전트, 5계층 아키텍처, 샌드박스         | LangChain Open SWE    |
