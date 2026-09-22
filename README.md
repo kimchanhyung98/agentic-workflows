@@ -30,6 +30,7 @@ AI 에이전트 시스템의 설계 패턴, 워크플로우, 프로덕션 사례
 | [aperant](/aperant/README.md)                     | Electron 기반 자율 멀티에이전트 코딩 앱, 다단계 오케스트레이션, 멀티 프로바이더, worktree 격리    | Aperant           |
 | [archon](/archon/README.md)                       | YAML DAG 기반 AI 코딩 하네스, worktree 격리, 멀티 플랫폼 오케스트레이션                      | Archon            |
 | [gitagent](/gitagent/README.md)                   | Git-native 에이전트 표준/CLI, 스키마 검증, 어댑터 export/import, 컴플라이언스(SOD) 모델 | Open GitAgent     |
+| [jev](/jev/README.md)                           | 판단 API·확률 해석·유사 도구 비교·실제 실행 결과 분석                              | TypeSafe Jev      |
 | [langchain](/langchain/README.md)                 | Skill 기반 코딩 에이전트 성능 향상, 평가 방법론                                    | LangChain Skills  |
 | [openspace](/openspace/README.md)                 | Self-evolving skill 엔진, MCP 통합, 품질 모니터링 기반 자동 진화                  | HKUDS OpenSpace   |
 | [oh-my-openagent](/oh-my-openagent/README.md)     | 카테고리 기반 멀티 모델 오케스트레이션 플러그인                                        | Oh My OpenAgent   |
