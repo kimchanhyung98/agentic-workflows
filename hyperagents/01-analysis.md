@@ -8,9 +8,9 @@
 - 라이선스: **CC BY-NC-SA 4.0** (비상업·공유조건부 변경허락)
 - 논문: "Hyperagents" (Zhang et al., [arXiv 2603.19461](https://arxiv.org/abs/2603.19461), 2026-03-19)
 
-HyperAgents는 **task agent와 meta agent를 하나의 편집 가능한 프로그램**으로 통합해, 에이전트가 자신의 메타 개선 절차 자체를 수정하도록 만듭니다. 구체 시스템 이름은 **DGM-H (
-DGM-Hyperagents)** 이며, Darwin Gödel Machine (Zhang et al., [arXiv 2505.22954](https://arxiv.org/abs/2505.22954))의
-self-referential 확장입니다.
+HyperAgents는 **task agent와 meta agent를 하나의 편집 가능한 프로그램**으로 통합해, 에이전트가 자신의 메타 개선 절차 자체를 수정하도록 만듦. 구체 시스템 이름은 **DGM-H (
+DGM-Hyperagents)**이며, Darwin Gödel Machine (Zhang et al., [arXiv 2505.22954](https://arxiv.org/abs/2505.22954))의
+self-referential 확장임.
 
 ### DGM과의 차이
 
@@ -75,7 +75,7 @@ utils/                     # 공통 유틸
 
 1. **단일 루프 오케스트레이터**: `generate_loop.py`가 세대 생성·격리·평가·아카이브를 모두 조율.
 2. **tool-using chat loop**: `MetaAgent.forward`는 `chat_with_agent(instruction, model, tools_available='all')`로 LLM + 도구
-   루프를 돌려 `model_patch.diff`를 만든다.
+   루프를 돌려 `model_patch.diff`를 만듦.
 3. **격리 계층 명시적**: Docker 컨테이너에서 조상 patch 체인을 순차 적용해 재현성 확보.
 4. **아카이브 기반 탐색**: 단일 최신이 아닌 계보 전체가 부모 후보이며, `select_parent` / `select_next_parent`로 전략 교체 가능.
 5. **도메인 서브패키지화**: 각 `domains/<domain>/`에 자체 `harness.py`·`report.py` — `utils/domain_utils`가 동적 로딩.
@@ -86,7 +86,7 @@ utils/                     # 공통 유틸
 
 ### 3.1 목적
 
-HyperAgents는 단일 태스크 성능보다, **"개선하는 방법"을 개선**하는 자기참조 루프를 실험하기 위한 코드베이스입니다.
+HyperAgents는 단일 태스크 성능보다, **"개선하는 방법"을 개선**하는 자기참조 루프를 실험하기 위한 코드베이스임.
 
 | 문제       | DGM 접근  | HyperAgents 접근        |
 |----------|---------|-----------------------|
@@ -165,9 +165,9 @@ HyperAgents는 단일 태스크 성능보다, **"개선하는 방법"을 개선*
 - **연구용 프레임워크**: 자기참조·자기개선 루프 실험 환경. 실서비스용 에이전트 런타임이 아님.
 - **평가 인프라 재사용 가치**: 도메인 서브패키지 + staged/full eval + archive 시각화 구조는 다른 진화적 탐색 실험에도 이식 가능.
 - **DGM 비교군 기본 내장**: baseline을 동일 리포에서 돌려 정량 비교가 쉬움.
-- **확장 포인트**: 새로운 도메인은 `domains/<name>/` 에 `harness.py`·`report.py` 쌍을 두고 `utils/domain_utils` 규약에 맞추면 루프에 합류.
+- **확장 포인트**: 새로운 도메인은 `domains/<name>/`에 `harness.py`·`report.py` 쌍을 두고 `utils/domain_utils` 규약에 맞추면 루프에 합류.
 
-요약하면 HyperAgents는 에이전트 앱이 아니라, **"에이전트 개선 방법을 에이전트가 편집하게 만드는" 연구용 진화 루프**입니다.
+요약하면 HyperAgents는 에이전트 앱이 아니라, **"에이전트 개선 방법을 에이전트가 편집하게 만드는" 연구용 진화 루프**임.
 
 ---
 
@@ -178,4 +178,4 @@ HyperAgents는 단일 태스크 성능보다, **"개선하는 방법"을 개선*
 - [arXiv — Darwin Gödel Machine (2505.22954)](https://arxiv.org/abs/2505.22954)
 - [HuggingFace Papers — Hyperagents](https://huggingface.co/papers/2603.19461)
 - [VentureBeat — "Meta researchers introduce hyperagents"](https://venturebeat.com/orchestration/meta-researchers-introduce-hyperagents-to-unlock-self-improving-ai-for-non-coding-tasks)
-- [Jenny Zhang 저자 X 쓰레드](https://x.com/jennyzhangzt/status/2036099940456206759)
+- [Jenny Zhang 저자 X 스레드](https://x.com/jennyzhangzt/status/2036099940456206759)

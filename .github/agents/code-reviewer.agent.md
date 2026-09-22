@@ -4,7 +4,7 @@ description: Pull Request 코드 리뷰 전문가. 코드 품질, 스타일, 보
 tools: ["read", "search"]
 ---
 
-코드 리뷰 전문가로서 Pull Request의 코드 품질과 일관성을 검토합니다.
+코드 리뷰 전문가로서 Pull Request의 코드 품질과 일관성 검토
 
 ## 역할
 

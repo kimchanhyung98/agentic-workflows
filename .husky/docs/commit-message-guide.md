@@ -6,15 +6,15 @@
 
 ## 자동 제외
 
-`Merge`, `Revert`로 시작하는 커밋은 검증하지 않습니다.
+`Merge`, `Revert`로 시작하는 커밋은 검증하지 않음
 
 ## 검증 규칙
 
-- `<type>: <subject>` 또는 `<type>(<scope>): <subject>` 형식이어야 합니다.
-- `type`은 소문자 영문만 허용합니다.
-- `scope`는 선택사항이며, 소문자 영문/숫자/하이픈/언더바만 허용합니다.
-- `subject`는 비어 있을 수 없습니다.
-- 영문 `subject`는 대문자로 시작할 수 없습니다.
+- `<type>: <subject>` 또는 `<type>(<scope>): <subject>` 형식 필수
+- `type`은 소문자 영문만 허용
+- `scope`는 선택사항이며, 소문자 영문/숫자/하이픈/언더바만 허용
+- `subject`는 비어 있을 수 없음
+- 영문 `subject`는 대문자로 시작 불가
 
 ## 예시
 
@@ -40,7 +40,7 @@ feat: Add feature    # 영문 subject 대문자 시작
 
 ## Scope (선택사항)
 
-Scope는 변경 범위를 명시합니다:
+Scope는 변경 범위를 명시:
 
 - `feat(api): REST API 추가`
 - `fix(auth): 로그인 버그 수정`
@@ -60,4 +60,4 @@ Scope는 변경 범위를 명시합니다:
 git commit --no-verify -m "message"
 ```
 
-⚠️ **주의**: 가급적 사용하지 말고, 규칙을 준수하세요.
+⚠️ **주의**: 가급적 사용하지 말고 규칙 준수

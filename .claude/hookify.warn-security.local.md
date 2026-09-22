@@ -11,9 +11,9 @@ conditions:
 
 ⚠️ **Debug code or hardcoded secret detected**
 
-커밋 전 확인이 필요한 패턴이 감지되었습니다:
+커밋 전 확인이 필요한 패턴이 감지되었음:
 
 - 디버그 코드: `console.log`, `debugger`, `var_dump`, `dd`, `print_r`
 - 하드코딩된 시크릿: `api_key`, `password`, `token` 등
 
-감지된 파일 경로와 라인 번호를 사용자에게 알려주세요. 의도된 코드일 수 있으므로 직접 제거하지 마세요.
+감지된 파일 경로와 라인 번호를 사용자에게 알림. 의도된 코드일 수 있으므로 직접 제거 금지

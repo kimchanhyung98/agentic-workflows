@@ -7,7 +7,7 @@
 - 핵심 기반: LangGraph 런타임 + Deep Agents harness (`create_deep_agent`)
 - 주요 목표: Slack/Linear/GitHub에서 `@openswe` 호출 → 격리된 샌드박스에서 코드 수정 → Draft PR 생성까지 파이프라인화
 
-Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서, 조직별 외부 시스템 연동과 결정적 안전장치를 얹는 구조다.
+Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서, 조직별 외부 시스템 연동과 결정적 안전장치를 얹는 구조임.
 
 ### 기술 스택
 
@@ -40,7 +40,7 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 ```
 
 - `agent.server:get_agent`: LangGraph 플랫폼이 런을 실행할 때 호출하는 에이전트 팩토리
-- `agent.webapp:app`: FastAPI 앱으로 웹훅 엔드포인트 제공 (직접 `get_agent()` 호출 안함)
+- `agent.webapp:app`: FastAPI 앱으로 웹훅 엔드포인트 제공 (직접 `get_agent()` 호출 안 함)
 - `make dev`: `langgraph dev`
 - `make run`: `uvicorn agent.webapp:app --reload --port 8000`
 
@@ -48,11 +48,11 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 
 ## 2. 아키텍처 계층
 
-시스템은 5개 계층으로 구성되며, 의존 방향은 상위 → 하위로 단방향이다.
+시스템은 5개 계층으로 구성되며, 의존 방향은 상위 → 하위로 단방향임.
 
 ### 2.1 Ingress 계층 — `webapp.py`
 
-외부 webhook payload를 받아 내부 실행 문맥으로 변환하는 진입점이다.
+외부 webhook payload를 받아 내부 실행 문맥으로 변환하는 진입점임.
 
 | 엔드포인트                   | 트리거 조건                                 | 처리 함수                                                    |
 |-------------------------|----------------------------------------|----------------------------------------------------------|
@@ -68,12 +68,12 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 - 결정론적 thread ID 생성
 - `runs.create()` 또는 `store.put_item()` 호출 (직접 에이전트를 실행하지 않음)
 
-중요한 점은 `webapp.py`가 저장소를 직접 수정하거나 `get_agent()`를 직접 호출하지 않는다는 것이다. 실제 저장소 조작은 LangGraph Runtime이 `server.py:get_agent`를
-호출한 뒤 샌드박스 안에서만 일어난다.
+중요한 점은 `webapp.py`가 저장소를 직접 수정하거나 `get_agent()`를 직접 호출하지 않는다는 것임. 실제 저장소 조작은 LangGraph Runtime이 `server.py:get_agent`를
+호출한 뒤 샌드박스 안에서만 일어남.
 
 ### 2.2 Thread 조율 계층 — LangGraph
 
-작업의 지속 상태를 관리하는 계층이다.
+작업의 지속 상태를 관리하는 계층임.
 
 | 상태                                                                                                            | 저장 위치                       | 수명      | 용도                         |
 |---------------------------------------------------------------------------------------------------------------|-----------------------------|---------|----------------------------|
@@ -93,7 +93,7 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 
 ### 2.3 Agent Runtime 계층 — `server.py`, `prompt.py`, `middleware/`
 
-`get_agent(config)` 함수가 핵심 진입점이다. LangGraph 플랫폼이 런을 실행할 때 이 함수를 호출한다.
+`get_agent(config)` 함수가 핵심 진입점임. LangGraph 플랫폼이 런을 실행할 때 이 함수를 호출함.
 
 **처리 순서:**
 
@@ -122,7 +122,7 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 | `linear_comment`     | Linear 이슈에 코멘트 작성                     | Linear GraphQL API |
 | `slack_thread_reply` | Slack 스레드에 답변 작성                      | Slack API          |
 
-이 커스텀 도구에 Deep Agents 내장 도구(파일, 셸, 계획, 서브에이전트)가 합쳐져 실제 작업 루프를 구성한다.
+이 커스텀 도구에 Deep Agents 내장 도구(파일, 셸, 계획, 서브에이전트)가 합쳐져 실제 작업 루프를 구성함.
 
 #### 미들웨어 (4종)
 
@@ -133,7 +133,7 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 | `ensure_no_empty_msg`              | `@after_model`    | 도구 호출 없는 빈 응답에 `no_op` 주입하여 조기 종료 방지                                                            |
 | `open_pr_if_needed`                | `@after_agent`    | `commit_and_open_pr` 관련 payload를 메시지에서 찾은 경우에만 후처리를 시도. 이미 `success` 필드가 있거나 도구 호출 기록이 없으면 skip |
 
-미들웨어는 비결정적 LLM 루프 주위에 결정적 제어를 추가하는 설계다. "모델이 잘하면 좋고, 못해도 시스템이 망가지지 않게" 만드는 실무형 접근이다.
+미들웨어는 비결정적 LLM 루프 주위에 결정적 제어를 추가하는 설계임. "모델이 잘하면 좋고, 못해도 시스템이 망가지지 않게" 만드는 실무형 접근임.
 
 #### 샌드박스 백엔드
 
@@ -145,7 +145,7 @@ Open SWE의 핵심은 Deep Agents의 범용 코딩 루프를 재사용하면서,
 | Runloop   | 대체 sandbox provider |
 | Local     | 로컬 셸 (개발 전용)        |
 
-설계 원칙: **경계 밖 권한 최소화, 경계 안 실행 자유도 최대화**. 스레드 단위로 샌드박스를 재사용해 후속 지시를 같은 작업 문맥에서 처리한다.
+설계 원칙: **경계 밖 권한 최소화, 경계 안 실행 자유도 최대화**. 스레드 단위로 샌드박스를 재사용해 후속 지시를 같은 작업 문맥에서 처리함.
 
 ### 2.5 External Systems 계층
 
@@ -157,7 +157,7 @@ GitHub API, Slack API, Linear GraphQL API, LangSmith, sandbox provider 등 외�
 
 ### 3.1 공통 실행 흐름
 
-모든 source는 세부 사항은 다르지만 같은 큰 흐름으로 수렴한다.
+모든 source는 세부 사항은 다르지만 같은 큰 흐름으로 수렴함.
 
 1. **웹훅 수신**: `webapp.py`가 외부 이벤트를 수신
 2. **요청 검증**: source별 서명 검증과 이벤트 유형 필터링
@@ -192,7 +192,7 @@ GitHub API, Slack API, Linear GraphQL API, LangSmith, sandbox provider 등 외�
 - **트리거 조건**: issue 본문 또는 comment에 `@openswe`/`@open-swe`가 있을 때만 처리
 - **thread 분기**: 기존 thread가 없으면 전체 이슈 컨텍스트 프롬프트, 있으면 후속 코멘트/업데이트 프롬프트
 - **보안**: `GITHUB_USER_EMAIL_MAP`에 없는 작성자의 코멘트 본문은
-  `<dangerous-external-untrusted-users-comment>` 태그로 래핑되어 프롬프트 인젝션 위험을 낮춘다
+  `<dangerous-external-untrusted-users-comment>` 태그로 래핑되어 프롬프트 인젝션 위험을 낮춤
 
 #### GitHub PR 코멘트
 
@@ -222,28 +222,28 @@ GitHub API, Slack API, Linear GraphQL API, LangSmith, sandbox provider 등 외�
 
 ### 3.5 인증 데이터 흐름
 
-**GitHub 소스만 thread 토큰 캐시를 먼저 조회한다.**
+**GitHub 소스만 thread 토큰 캐시를 먼저 조회함.**
 
-- `source == "github"`일 때만 `get_github_token_from_thread(thread_id)`로 기존 `github_token_encrypted`를 먼저 복호화해 재사용한다.
+- `source == "github"`일 때만 `get_github_token_from_thread(thread_id)`로 기존 `github_token_encrypted`를 먼저 복호화해 재사용함.
 - 캐시가 없으면 `github_login`을 `GITHUB_USER_EMAIL_MAP`으로 이메일에 매핑한 뒤, 그 이메일로 LangSmith 기반 GitHub OAuth 토큰을 해결하고 다시 thread
-  metadata에 저장한다.
+  metadata에 저장함.
 
-**Slack/Linear는 매번 이메일 기반 인증 경로를 탄다.**
+**Slack/Linear는 매번 이메일 기반 인증 경로를 탐.**
 
-- Slack/Linear run은 `configurable.user_email`을 사용해 `save_encrypted_token_from_email(...)`를 호출한다.
-- 성공 시 새 `github_token_encrypted`가 thread metadata에 저장되지만, 다음 Slack/Linear run이 시작될 때 이 값을 먼저 재사용하는 cache-first 흐름은 아니다.
-- bot-token-only mode에서는 소스와 무관하게 GitHub App installation token을 발급해 thread metadata에 저장한다.
+- Slack/Linear run은 `configurable.user_email`을 사용해 `save_encrypted_token_from_email(...)`를 호출함.
+- 성공 시 새 `github_token_encrypted`가 thread metadata에 저장되지만, 다음 Slack/Linear run이 시작될 때 이 값을 먼저 재사용하는 cache-first 흐름은 아님.
+- bot-token-only mode에서는 소스와 무관하게 GitHub App installation token을 발급해 thread metadata에 저장함.
 
-**인증 실패 응답은 source별로 다르다.**
+**인증 실패 응답은 source별로 다름.**
 
-- Slack/Linear는 `leave_failure_comment()`가 채널/이슈에 실패 안내를 남긴다.
-- GitHub-triggered run은 토큰이 없으면 댓글을 남길 수 없어, 이메일 매핑 누락이나 OAuth 실패 같은 경로에서 로그만 남기고 사용자에게 가시적인 댓글을 남기지 않을 수 있다.
+- Slack/Linear는 `leave_failure_comment()`가 채널/이슈에 실패 안내를 남김.
+- GitHub-triggered run은 토큰이 없으면 댓글을 남길 수 없어, 이메일 매핑 누락이나 OAuth 실패 같은 경로에서 로그만 남기고 사용자에게 가시적인 댓글을 남기지 않을 수 있음.
 
 ---
 
 ## 4. Deep Agents 결합 방식
 
-Open SWE는 독자 에이전트 루프를 구현하지 않고, Deep Agents의 `create_deep_agent`에 모델/도구/미들웨어/백엔드를 주입하는 방식이다.
+Open SWE는 독자 에이전트 루프를 구현하지 않고, Deep Agents의 `create_deep_agent`에 모델/도구/미들웨어/백엔드를 주입하는 방식임.
 
 ### 4.1 에이전트 조립
 
@@ -266,7 +266,7 @@ Open SWE가 Deep Agents 위에 추가하는 것:
 
 ### 4.3 LangGraph 런타임 계승
 
-Deep Agents가 LangGraph 기반이므로 스트리밍, 체크포인트, Thread 지속성, Store, LangSmith 트레이싱 등 런타임 기능을 그대로 활용한다.
+Deep Agents가 LangGraph 기반이므로 스트리밍, 체크포인트, Thread 지속성, Store, LangSmith 트레이싱 등 런타임 기능을 그대로 활용함.
 
 ---
 
@@ -407,7 +407,7 @@ open-swe/
 
 ### 장점
 
-1. **빠른 내부 도입**: 트리거-샌드박스-PR 루프가 이미 연결되어 있어 조직 내부 코딩 에이전트를 빠르게 구축할 수 있다
+1. **빠른 내부 도입**: 트리거-샌드박스-PR 루프가 이미 연결되어 있어 조직 내부 코딩 에이전트를 빠르게 구축할 수 있음
 2. **안전한 실행 경계**: 샌드박스 격리, 조직 허용목록, SSRF 보호, 프롬프트 인젝션 방지 등 다층 보안
 3. **작업 연속성**: thread를 기준으로 sandbox와 인증 상태를 재사용하며, 실행 중 후속 메시지 주입 가능
 4. **구성 가능한 기반**: 샌드박스/모델/도구/트리거/미들웨어를 교체할 수 있는 플러그 구조

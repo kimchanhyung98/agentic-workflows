@@ -1,6 +1,6 @@
 # Agentic Workflow
 
-Agentic AI의 핵심 개념과 워크플로우 패턴을 체계적으로 정리한 문서입니다.
+Agentic AI의 핵심 개념과 워크플로우 패턴을 체계적으로 정리한 문서임.
 
 ---
 
@@ -17,7 +17,7 @@ Agentic AI의 핵심 개념과 워크플로우 패턴을 체계적으로 정리�
 
 ## Agentic Workflow 개요
 
-Agentic Workflow는 AI 에이전트가 단순한 프롬프트-응답 방식을 넘어, **자율적으로 계획을 수립하고, 도구를 활용하며, 반복적으로 결과를 개선**하는 작업 흐름입니다.
+Agentic Workflow는 AI 에이전트가 단순한 프롬프트-응답 방식을 넘어, **자율적으로 계획을 수립하고, 도구를 활용하며, 반복적으로 결과를 개선**하는 작업 흐름임.
 
 ```mermaid
 flowchart TD

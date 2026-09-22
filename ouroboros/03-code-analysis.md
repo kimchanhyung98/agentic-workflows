@@ -1,6 +1,6 @@
 # Ouroboros 코드 심층 분석
 
-> 6개 전문 에이전트(아키텍트, 통합 전문가, 리서처, 평가 전문가, UX 전문가, 요구사항 분석가)의 병렬 분석을 종합한 문서입니다.
+> 6개 전문 에이전트(아키텍트, 통합 전문가, 리서처, 평가 전문가, UX 전문가, 요구사항 분석가)의 병렬 분석을 종합한 문서임.
 
 ---
 
@@ -31,7 +31,7 @@
 | 최신 릴리스 | v0.27.0 (2026-04-01) |
 | 소스 파일 | 622개 |
 
-Ouroboros는 "뱀이 자신의 꼬리를 먹는" 신화에서 이름을 딴 **자기 진화형 AI 워크플로우 엔진**입니다. 단순히 코드를 생성하는 시스템이 아니라, 인터뷰를 통해 요구사항을 정제하고, 실행하고, 평가하고, 그 결과를 다음 세대의 입력으로 되돌리는 **폐쇄 진화 루프**를 구현합니다.
+Ouroboros는 "뱀이 자신의 꼬리를 먹는" 신화에서 이름을 딴 **자기 진화형 AI 워크플로우 엔진**임. 단순히 코드를 생성하는 시스템이 아니라, 인터뷰를 통해 요구사항을 정제하고, 실행하고, 평가하고, 그 결과를 다음 세대의 입력으로 되돌리는 **폐쇄 진화 루프**를 구현함.
 
 ### 1.1 핵심 설계 원칙
 
@@ -58,7 +58,7 @@ Ouroboros는 "뱀이 자신의 꼬리를 먹는" 신화에서 이름을 딴 **�
 
 ### 2.1 Result 타입 (`core/types.py`)
 
-Rust의 `Result` 타입을 Python 3.12 제네릭으로 구현. 시스템 전체에서 예외 대신 사용합니다.
+Rust의 `Result` 타입을 Python 3.12 제네릭으로 구현. 시스템 전체에서 예외 대신 사용함.
 
 ```text
 Result[T, E]
@@ -71,7 +71,7 @@ Result[T, E]
 
 ### 2.2 Seed 모델 (`core/seed.py`)
 
-`Pydantic BaseModel(frozen=True)`로 구현된 불변 워크플로우 사양서입니다.
+`Pydantic BaseModel(frozen=True)`로 구현된 불변 워크플로우 사양서임.
 
 ```text
 Seed (frozen=True)
@@ -98,7 +98,7 @@ Seed (frozen=True)
 
 ### 2.3 AC 트리 (`core/ac_tree.py`)
 
-수락 기준(Acceptance Criteria)의 계층적 분해를 관리하는 자료 구조입니다.
+수락 기준(Acceptance Criteria)의 계층적 분해를 관리하는 자료 구조임.
 
 ```text
 ACNode (frozen dataclass)           ACTree (mutable dataclass)
@@ -115,11 +115,11 @@ ACNode (frozen dataclass)           ACTree (mutable dataclass)
 └── execution_id: str | None
 ```
 
-`ACNode`는 불변 dataclass로, 상태 변경은 `with_status()`, `with_atomic()` 등의 메서드가 새 인스턴스를 반환합니다.
+`ACNode`는 불변 dataclass로, 상태 변경은 `with_status()`, `with_atomic()` 등의 메서드가 새 인스턴스를 반환함.
 
 ### 2.4 계보 추적 (`core/lineage.py`)
 
-진화 루프에서 각 세대의 기록을 추적합니다.
+진화 루프에서 각 세대의 기록을 추적함.
 
 ```text
 OntologyLineage (frozen Pydantic)
@@ -139,7 +139,7 @@ OntologyDelta
 └── similarity: float  # 가중 유사도 (0.5*이름 + 0.3*타입 + 0.2*정확 일치)
 ```
 
-`OntologyLineage`는 직접 저장되지 않고, 항상 `LineageProjector`에 의해 이벤트 재생으로 재구성됩니다.
+`OntologyLineage`는 직접 저장되지 않고, 항상 `LineageProjector`에 의해 이벤트 재생으로 재구성됨.
 
 ### 2.5 이벤트 소싱 (`events/base.py`, `persistence/`)
 
@@ -220,7 +220,7 @@ SeedGenerator.generate()
 
 #### PM 인터뷰 (`bigbang/pm_interview.py`)
 
-`PMInterviewEngine`은 `InterviewEngine`을 **컴포지션** 패턴으로 감싸 PM 레이어를 추가합니다.
+`PMInterviewEngine`은 `InterviewEngine`을 **컴포지션** 패턴으로 감싸 PM 레이어를 추가함.
 
 질문 분류기 (`bigbang/question_classifier.py`)가 3가지로 분류:
 
@@ -275,7 +275,7 @@ complexity_score =
 | 0.4~0.7 | STANDARD | 10x | claude-sonnet |
 | ≥ 0.7 | FRONTIER | 30x | claude-opus |
 
-`PALRouter`는 완전히 무상태(stateless)이며, 동일 입력이면 동일한 복잡도 점수와 티어 판정이 나온다. 다만 같은 티어 내 개별 모델은 부하 분산을 위해 `random.choice()`로 선택되므로, 최종 모델 선택까지 완전히 결정적이지는 않다.
+`PALRouter`는 완전히 무상태(stateless)이며, 동일 입력이면 동일한 복잡도 점수와 티어 판정이 나옴. 다만 같은 티어 내 개별 모델은 부하 분산을 위해 `random.choice()`로 선택되므로, 최종 모델 선택까지 완전히 결정적이지는 않음.
 
 #### 에스컬레이션 & 다운그레이드
 
@@ -445,7 +445,7 @@ EvolutionaryLoop.run(initial_seed)
 
 #### WonderEngine (`evolution/wonder.py`)
 
-소크라테스식 질문법으로 아직 검증되지 않은 가정을 탐색합니다.
+소크라테스식 질문법으로 아직 검증되지 않은 가정을 탐색함.
 
 - **SCOPE GUARD**: 시드 목표 범위 밖 질문 생성 차단
 - 불완전한 온톨로지는 정상 → 그 자체가 갭이 아님
@@ -802,7 +802,7 @@ SuperLightTUI 프레임워크, Rose Pine 테마, 동일 SQLite DB 공유:
 
 | 도구 | 접근 방식 | 차별점 |
 |------|-----------|--------|
-| Devin | 자율 AI 엔진니어 | 자체 실행 환경 내장, 상용 서비스 |
+| Devin | 자율 AI 엔지니어 | 자체 실행 환경 내장, 상용 서비스 |
 | OpenHands | 오픈소스 AI 에이전트 | Docker 샌드박스, 범용 코딩 |
 | SWE-agent | 학술 연구 기반 | GitHub 이슈 해결 특화, 벤치마크 중심 |
 | Aider | 채팅 기반 코딩 | 가벼움, git 통합, 단일 파일 편집 |

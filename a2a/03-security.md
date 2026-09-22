@@ -1,12 +1,12 @@
 # A2A 보안 분석
 
-> A2A 프로토콜 v1.0의 보안 위협 모델, 인증/인가 메커니즘, 엔터프라이즈 보안 권장사항을 정리한 문서입니다.
+> A2A 프로토콜 v1.0의 보안 위협 모델, 인증/인가 메커니즘, 엔터프라이즈 보안 권장사항을 정리한 문서임.
 
 ---
 
 ## 1. 위협 모델
 
-A2A 프로토콜의 보안 위협은 LLM 기반 에이전트 간 통신의 고유한 특성에서 비롯됩니다. 기존 API 보안과 달리, **모든 클라이언트가 고도로 자동화된 행위자**라는 점이 핵심 차이입니다.
+A2A 프로토콜의 보안 위협은 LLM 기반 에이전트 간 통신의 고유한 특성에서 비롯됨. 기존 API 보안과 달리, **모든 클라이언트가 고도로 자동화된 행위자**라는 점이 핵심 차이임.
 
 ### 1.1 핵심 위협 벡터
 
@@ -41,7 +41,7 @@ A2A 프로토콜의 보안 위협은 LLM 기반 에이전트 간 통신의 고�
 
 ### 2.1 Agent Card 서명
 
-v1.0에서 JSON Canonicalization(RFC 8785) + JWS(RFC 7515) 기반 서명을 표준으로 지원합니다. 정규화된 JSON에 서명하여 일관된 검증이 가능합니다.
+v1.0에서 JSON Canonicalization(RFC 8785) + JWS(RFC 7515) 기반 서명을 표준으로 지원함. 정규화된 JSON에 서명하여 일관된 검증이 가능함.
 
 ```json
 {
@@ -54,7 +54,7 @@ v1.0에서 JSON Canonicalization(RFC 8785) + JWS(RFC 7515) 기반 서명을 표�
 
 ### 2.2 Agent Card 인터페이스
 
-v1.0에서 Agent Card는 단일 `url` 필드 대신 `supportedInterfaces[]` 배열로 여러 전송 프로토콜(HTTP, gRPC 등)을 선언할 수 있습니다.
+v1.0에서 Agent Card는 단일 `url` 필드 대신 `supportedInterfaces[]` 배열로 여러 전송 프로토콜(HTTP, gRPC 등)을 선언할 수 있음.
 
 ```json
 {
@@ -95,8 +95,8 @@ v1.0에서 Agent Card는 단일 `url` 필드 대신 `supportedInterfaces[]` 배�
 
 ### 3.2 OAuth 2.0 보안 고려사항
 
-v1.0에서 보안 강화를 위해 **Implicit Grant**와 **Resource Owner Password Credentials** 플로우가 **제거**되었습니다. 대신 Device Code 플로우(RFC
-8628)와 PKCE(Proof Key for Code Exchange) 지원이 추가되었습니다.
+v1.0에서 보안 강화를 위해 **Implicit Grant**와 **Resource Owner Password Credentials** 플로우가 **제거**되었음. 대신 Device Code 플로우(RFC
+8628)와 PKCE(Proof Key for Code Exchange) 지원이 추가되었음.
 
 | 항목         | 위험                   | 완화 방안                        |
 |------------|----------------------|------------------------------|
@@ -119,7 +119,7 @@ Client → Agent: SendMessage (인증 정보 포함)
 Agent → Client: TaskStatus { state: "TASK_STATE_WORKING" } → { state: "TASK_STATE_COMPLETED" }
 ```
 
-> v1.0에서 TaskStatus의 state 값은 `TASK_STATE_` 접두사를 사용하는 표준화된 enum으로 변경되었습니다 (예: `TASK_STATE_AUTH_REQUIRED`,
+> v1.0에서 TaskStatus의 state 값은 `TASK_STATE_` 접두사를 사용하는 표준화된 enum으로 변경되었음 (예: `TASK_STATE_AUTH_REQUIRED`,
 `TASK_STATE_WORKING`, `TASK_STATE_COMPLETED`).
 
 ---
@@ -152,7 +152,7 @@ JSON-RPC 2.0 사용에 따른 보안 고려사항:
 
 ### 4.4 표준화된 에러 처리
 
-v1.0에서 `google.rpc.Status`를 채택하여 에러 응답 형식이 표준화되었습니다. 이를 통해 에이전트 간 일관된 에러 전파와 디버깅이 가능합니다.
+v1.0에서 `google.rpc.Status`를 채택하여 에러 응답 형식이 표준화되었음. 이를 통해 에이전트 간 일관된 에러 전파와 디버깅이 가능함.
 
 ```json
 {
@@ -166,7 +166,7 @@ v1.0에서 `google.rpc.Status`를 채택하여 에러 응답 형식이 표준화
 
 ## 5. 멀티테넌시 지원
 
-v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 네이티브로 지원합니다. 이를 통해 단일 에이전트 인스턴스가 여러 테넌트의 요청을 안전하게 처리할 수 있습니다.
+v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 네이티브로 지원함. 이를 통해 단일 에이전트 인스턴스가 여러 테넌트의 요청을 안전하게 처리할 수 있음.
 
 ```json
 {
@@ -193,7 +193,7 @@ v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 �
 
 ### 6.1 데이터 최소 제공 원칙
 
-에이전트 간 통신 시 필요 최소한의 데이터만 전송합니다.
+에이전트 간 통신 시 필요 최소한의 데이터만 전송함.
 
 ```text
 ✅ 작업 수행에 필요한 최소 정보
@@ -230,7 +230,7 @@ v1.0에서 모든 요청에 `tenant` 필드가 포함되어 멀티테넌시를 �
 
 ## 7. 프롬프트 인젝션 방어
 
-A2A 환경에서 프롬프트 인젝션은 특히 위험합니다. 하나의 에이전트가 다른 에이전트에게 악의적 지시를 포함한 메시지를 전달할 수 있기 때문입니다.
+A2A 환경에서 프롬프트 인젝션은 특히 위험함. 하나의 에이전트가 다른 에이전트에게 악의적 지시를 포함한 메시지를 전달할 수 있기 때문임.
 
 ### 7.1 방어 전략
 
@@ -244,9 +244,9 @@ A2A 환경에서 프롬프트 인젝션은 특히 위험합니다. 하나의 에
 
 ### 7.2 Confused Deputy 문제
 
-LLM 기반 에이전트는 "혼동 대리인(Confused Deputy)" 공격에 취약합니다. 에이전트가 자신의 권한을 이용해 공격자의 요청을 수행할 수 있습니다.
+LLM 기반 에이전트는 "혼동 대리인(Confused Deputy)" 공격에 취약함. 에이전트가 자신의 권한을 이용해 공격자의 요청을 수행할 수 있음.
 
-**완화 방안**: 능력 기반 접근 제어(Capability-Based Access Control) 도입. 리소스 자체가 접근 제어를 판단하도록 설계합니다.
+**완화 방안**: 능력 기반 접근 제어(Capability-Based Access Control) 도입. 리소스 자체가 접근 제어를 판단하도록 설계함.
 
 ---
 

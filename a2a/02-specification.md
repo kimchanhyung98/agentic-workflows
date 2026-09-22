@@ -1,7 +1,7 @@
 # A2A 프로토콜 스펙 상세
 
-> A2A 프로토콜 v1.0 기준, 핵심 스키마와 타입 정의를 정리한 문서입니다.
-> 정규 규범 소스는 `spec/a2a.proto` (Protocol Buffers)이며, JSON 표현은 생성 산출물입니다.
+> A2A 프로토콜 v1.0 기준, 핵심 스키마와 타입 정의를 정리한 문서임.
+> 정규 규범 소스는 `spec/a2a.proto` (Protocol Buffers)이며, JSON 표현은 생성 산출물임.
 
 ---
 
@@ -28,7 +28,7 @@
 
 ## 2. Agent Card 스키마
 
-Agent Card는 에이전트의 공개 메타데이터 문서로, `/.well-known/agent-card.json` 경로에 게시됩니다.
+Agent Card는 에이전트의 공개 메타데이터 문서로, `/.well-known/agent-card.json` 경로에 게시됨.
 
 ### 2.1 전체 구조
 
@@ -116,7 +116,7 @@ v0.3 대비 주요 변경사항:
 
 ### 2.5 AgentCardSignature
 
-RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘입니다.
+RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘임.
 
 ```json
 {
@@ -194,7 +194,7 @@ RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘입니다.
 
 ### 3.2 SendMessage
 
-동기 메시지 송신. 짧거나 즉시 완료 가능한 작업에 적합합니다.
+동기 메시지 송신. 짧거나 즉시 완료 가능한 작업에 적합함.
 
 **요청 (SendMessageRequest)**:
 
@@ -221,11 +221,11 @@ RFC 7515(JWS) 기반의 Agent Card 무결성 검증 메커니즘입니다.
 }
 ```
 
-**응답**: `Task` 또는 `Message` 객체를 반환합니다.
+**응답**: `Task` 또는 `Message` 객체를 반환함.
 
 ### 3.3 SendStreamingMessage
 
-SSE 기반 스트리밍 호출. 장기 실행 또는 진행 가시성이 중요한 시나리오에 적합합니다.
+SSE 기반 스트리밍 호출. 장기 실행 또는 진행 가시성이 중요한 시나리오에 적합함.
 
 **요청**: `SendMessage`와 동일한 파라미터
 
@@ -263,7 +263,7 @@ SSE 기반 스트리밍 호출. 장기 실행 또는 진행 가시성이 중요�
 }
 ```
 
-v1.0에서 새로 추가된 메서드이며, `pageSize`/`pageToken`/`nextPageToken` 기반 페이지네이션을 사용합니다.
+v1.0에서 새로 추가된 메서드이며, `pageSize`/`pageToken`/`nextPageToken` 기반 페이지네이션을 사용함.
 
 ### 3.6 CancelTask
 
@@ -295,7 +295,7 @@ v1.0에서 새로 추가된 메서드이며, `pageSize`/`pageToken`/`nextPageTok
 
 - `historyLength`: unset(전체), 0(없음), >0(최대 N개)
 - `returnImmediately`: `true`면 Task 생성 직후 즉시 반환 (비동기 패턴)
-- 모든 요청 메시지에 `tenant` 필드를 포함하여 멀티 테넌시를 네이티브로 지원합니다.
+- 모든 요청 메시지에 `tenant` 필드를 포함하여 멀티 테넌시를 네이티브로 지원함.
 
 ---
 
@@ -303,7 +303,7 @@ v1.0에서 새로 추가된 메서드이며, `pageSize`/`pageToken`/`nextPageTok
 
 ### 4.1 TaskState 열거형
 
-v1.0에서 모든 열거형 값은 SCREAMING_SNAKE_CASE로 변경되었습니다.
+v1.0에서 모든 열거형 값은 SCREAMING_SNAKE_CASE로 변경되었음.
 
 | 상태                          | 코드 | 설명       | 유형  |
 |-----------------------------|----|----------|-----|
@@ -359,7 +359,7 @@ v1.0에서 모든 열거형 값은 SCREAMING_SNAKE_CASE로 변경되었습니다
 }
 ```
 
-타임스탬프는 `TaskStatus.timestamp`를 통해 추적되며, Task의 생성/수정 시점은 status 이력으로 확인합니다.
+타임스탬프는 `TaskStatus.timestamp`를 통해 추적되며, Task의 생성/수정 시점은 status 이력으로 확인함.
 
 ---
 
@@ -382,9 +382,9 @@ v1.0에서 모든 열거형 값은 SCREAMING_SNAKE_CASE로 변경되었습니다
 
 ### 5.2 Part (멤버 기반 판별)
 
-Part는 Message와 Artifact를 구성하는 최소 콘텐츠 단위입니다.
+Part는 Message와 Artifact를 구성하는 최소 콘텐츠 단위임.
 
-v1.0에서는 `kind` 필드가 제거되고, 멤버 기반 판별(member-based discrimination)로 전환되었습니다. 어떤 필드가 존재하느냐에 따라 Part 유형이 결정됩니다.
+v1.0에서는 `kind` 필드가 제거되고, 멤버 기반 판별(member-based discrimination)로 전환되었음. 어떤 필드가 존재하느냐에 따라 Part 유형이 결정됨.
 
 ```json
 // 텍스트 Part (text 필드 존재)
@@ -419,7 +419,7 @@ v0.3 대비 주요 변경사항:
 
 ### 5.3 Artifact
 
-Task 수행 결과로 생성되는 산출물입니다.
+Task 수행 결과로 생성되는 산출물임.
 
 ```json
 {
@@ -440,7 +440,7 @@ Task 수행 결과로 생성되는 산출물입니다.
 
 ### 6.1 StreamResponse (래퍼)
 
-스트리밍 응답은 `oneof payload` 패턴을 사용합니다. v1.0에서는 `kind` 필드 대신 어떤 멤버가 존재하는지로 이벤트 유형을 판별합니다.
+스트리밍 응답은 `oneof payload` 패턴을 사용함. v1.0에서는 `kind` 필드 대신 어떤 멤버가 존재하는지로 이벤트 유형을 판별함.
 
 ```json
 // Task 전체 상태 (task 멤버 존재)
@@ -456,7 +456,7 @@ Task 수행 결과로 생성되는 산출물입니다.
 { "artifactUpdate": { "taskId": "...", "contextId": "...", "artifact": {...}, "append": false, "lastChunk": true } }
 ```
 
-v0.3에서는 `{"kind": "taskStatusUpdate", ...}` 형태였으나, v1.0에서는 `{"statusUpdate": {...}}` 형태로 변경되었습니다.
+v0.3에서는 `{"kind": "taskStatusUpdate", ...}` 형태였으나, v1.0에서는 `{"statusUpdate": {...}}` 형태로 변경되었음.
 
 ### 6.2 스트리밍 동작 규칙
 
@@ -481,8 +481,8 @@ v0.3에서는 `{"kind": "taskStatusUpdate", ...}` 형태였으나, v1.0에서는
 
 ### 7.2 OAuth2SecurityScheme 예시
 
-v1.0에서 Implicit, Password 플로우가 제거되고, Device Code 플로우(RFC 8628)가 추가되었습니다. Authorization Code 플로우에는 PKCE 지원(
-`pkceRequired`)이 추가되었습니다.
+v1.0에서 Implicit, Password 플로우가 제거되고, Device Code 플로우(RFC 8628)가 추가되었음. Authorization Code 플로우에는 PKCE 지원(
+`pkceRequired`)이 추가되었음.
 
 ```json
 {
@@ -534,7 +534,7 @@ Task 실행 중 추가 인증이 필요한 경우의 흐름:
 
 ## 8. 에러 처리
 
-v1.0에서는 `google.rpc.Status`와 `ErrorInfo`를 채택하여 에러 처리가 표준화되었습니다.
+v1.0에서는 `google.rpc.Status`와 `ErrorInfo`를 채택하여 에러 처리가 표준화되었음.
 
 ### 8.1 A2A 에러 코드
 
@@ -563,7 +563,7 @@ v1.0에서는 `google.rpc.Status`와 `ErrorInfo`를 채택하여 에러 처리�
 
 ### 8.3 에러 응답 구조
 
-v1.0에서는 `google.rpc.Status` 형식을 따르며, `details` 배열에 `ErrorInfo`를 포함합니다.
+v1.0에서는 `google.rpc.Status` 형식을 따르며, `details` 배열에 `ErrorInfo`를 포함함.
 
 ```json
 {
@@ -597,7 +597,7 @@ v1.0에서는 `google.rpc.Status` 형식을 따르며, `details` 배열에 `Erro
 
 ### 9.2 전송 선택
 
-Agent Card의 `supportedInterfaces`에서 정적으로 선언하며, 동적 협상은 정의하지 않습니다.
+Agent Card의 `supportedInterfaces`에서 정적으로 선언하며, 동적 협상은 정의하지 않음.
 
 ```json
 {
@@ -616,7 +616,7 @@ Agent Card의 `supportedInterfaces`에서 정적으로 선언하며, 동적 협�
 
 ### 9.3 버전 협상
 
-`A2A-Version` HTTP 헤더로 프로토콜 버전을 전달합니다.
+`A2A-Version` HTTP 헤더로 프로토콜 버전을 전달함.
 
 ---
 

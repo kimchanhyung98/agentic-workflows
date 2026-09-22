@@ -7,7 +7,7 @@
 - 런타임 요구사항: Python >= 3.12
 - 핵심 방향: **Specification-first AI workflow harness**
 
-Ouroboros는 "프롬프트를 바로 코드로 변환"하는 접근 대신, 인터뷰를 통해 요구를 명세화하고 고정된 Seed를 기준으로 실행/평가/진화를 반복하는 하네스입니다. Claude Code와 Codex CLI를 동일 인터페이스로 감싸 실행하는 런타임 추상화가 특징입니다.
+Ouroboros는 "프롬프트를 바로 코드로 변환"하는 접근 대신, 인터뷰를 통해 요구를 명세화하고 고정된 Seed를 기준으로 실행/평가/진화를 반복하는 하네스임. Claude Code와 Codex CLI를 동일 인터페이스로 감싸 실행하는 런타임 추상화가 특징임.
 
 ---
 
@@ -15,7 +15,7 @@ Ouroboros는 "프롬프트를 바로 코드로 변환"하는 접근 대신, 인�
 
 ### 2.1 하네스 목적
 
-하네스의 목표는 모델 성능 자체를 올리는 것이 아니라, **입력 명확도와 실행 검증성**을 제어하는 것입니다.
+하네스의 목표는 모델 성능 자체를 올리는 것이 아니라, **입력 명확도와 실행 검증성**을 제어하는 것임.
 
 | 문제 | 일반 에이전트 워크플로우 | Ouroboros 하네스 |
 |---|---|---|
@@ -71,7 +71,7 @@ src/ouroboros/
   - `ClaudeAgentAdapter` (Claude Code 세션 기반)
   - `CodexCliRuntime` (Codex CLI 세션/NDJSON 기반)
 
-핵심은 런타임 차이를 어댑터 경계에서 흡수하고, 상위 오케스트레이터는 동일한 `AgentMessage`/`RuntimeHandle` 추상으로 다루는 점입니다.
+핵심은 런타임 차이를 어댑터 경계에서 흡수하고, 상위 오케스트레이터는 동일한 `AgentMessage`/`RuntimeHandle` 추상으로 다루는 점임.
 
 ### 3.2 persistence/observability 계층
 
@@ -80,16 +80,16 @@ src/ouroboros/
 - drift 측정(목표/제약/온톨로지 축)
 - retrospective 자동 생성
 
-이 설계는 장기/반복 실행에서 디버깅 가능성과 감사 추적성을 강화합니다.
+이 설계는 장기/반복 실행에서 디버깅 가능성과 감사 추적성을 강화함.
 
 ### 3.3 MCP 계층
 
-Ouroboros는 MCP를 양방향으로 사용합니다.
+Ouroboros는 MCP를 양방향으로 사용함.
 
 - **Server mode**: Ouroboros 기능을 MCP 툴로 외부 클라이언트에 노출
 - **Client mode**: 외부 MCP 서버 도구를 실행에 병합해 활용
 
-즉, 단순한 "도구 소비자"가 아니라 도구 플랫폼/허브 역할도 수행합니다.
+즉, 단순한 "도구 소비자"가 아니라 도구 플랫폼/허브 역할도 수행함.
 
 ---
 
@@ -102,7 +102,7 @@ Ouroboros는 MCP를 양방향으로 사용합니다.
 3. ambiguity score 계산 (`<= 0.2` 통과 시 Seed 생성)
 4. Seed immutable 고정
 
-Seed에는 goal, constraints, acceptance criteria, ontology schema, exit conditions가 포함되며, 이후 실행의 기준점(헌법) 역할을 합니다.
+Seed에는 goal, constraints, acceptance criteria, ontology schema, exit conditions가 포함되며, 이후 실행의 기준점(헌법) 역할을 함.
 
 ### 4.2 Seed → Execution
 
@@ -127,7 +127,7 @@ Seed에는 goal, constraints, acceptance criteria, ontology schema, exit conditi
 
 ### 4.4 Evolution loop
 
-평가 결과를 다음 세대 입력으로 반영하며 ontology similarity가 기준(예: 0.95 이상)에 도달하면 수렴으로 종료합니다. `ralph`는 이 과정을 세션 경계를 넘어 지속 실행하도록 설계되었습니다.
+평가 결과를 다음 세대 입력으로 반영하며 ontology similarity가 기준(예: 0.95 이상)에 도달하면 수렴으로 종료함. `ralph`는 이 과정을 세션 경계를 넘어 지속 실행하도록 설계되었음.
 
 ---
 
@@ -174,9 +174,9 @@ Seed에는 goal, constraints, acceptance criteria, ontology schema, exit conditi
 
 ## 7. 적용 인사이트
 
-- **팀 표준화 관점**: "좋은 프롬프트 작성 능력" 의존도를 낮추고, 인터뷰/Seed를 통해 요구 정의를 팀 자산화할 수 있습니다.
-- **거버넌스 관점**: event sourcing과 단계 게이트를 결합해 품질/감사 추적 요구가 있는 환경에 적합합니다.
-- **실무 적용 순서**: 인터뷰-Seed-Mechanical gate까지 우선 도입하고, 이후 consensus/evolution을 점진 확장하는 방식이 리스크가 낮습니다.
+- **팀 표준화 관점**: "좋은 프롬프트 작성 능력" 의존도를 낮추고, 인터뷰/Seed를 통해 요구 정의를 팀 자산화할 수 있음.
+- **거버넌스 관점**: event sourcing과 단계 게이트를 결합해 품질/감사 추적 요구가 있는 환경에 적합함.
+- **실무 적용 순서**: 인터뷰-Seed-Mechanical gate까지 우선 도입하고, 이후 consensus/evolution을 점진 확장하는 방식이 리스크가 낮음.
 
 ---
 

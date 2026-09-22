@@ -8,8 +8,8 @@
 - 저장소: [AI-Scientist](https://github.com/SakanaAI/AI-Scientist) (v1),
   [AI-Scientist-v2](https://github.com/SakanaAI/AI-Scientist-v2) (v2)
 
-The AI Scientist는 Foundation Model 기반 에이전트가 ML 연구의 전체 라이프사이클을 자율적으로 수행하는 시스템이다. 넓은 연구 주제가 주어지면 아이디어 생성, 문헌 조사, 실험 설계/실행,
-논문 작성, 자동 피어 리뷰까지 end-to-end로 수행한다.
+The AI Scientist는 Foundation Model 기반 에이전트가 ML 연구의 전체 라이프사이클을 자율적으로 수행하는 시스템임. 넓은 연구 주제가 주어지면 아이디어 생성, 문헌 조사, 실험 설계/실행,
+논문 작성, 자동 피어 리뷰까지 end-to-end로 수행함.
 
 ---
 
@@ -17,24 +17,24 @@ The AI Scientist는 Foundation Model 기반 에이전트가 ML 연구의 전체 
 
 ### 2.1 End-to-End 자동화
 
-인간 연구자의 연구 사이클 전체를 하나의 파이프라인으로 구현한다. Phase 1(Idea Generation) → Phase 2(Experiment Execution) → Phase 3(Paper Writing) →
+인간 연구자의 연구 사이클 전체를 하나의 파이프라인으로 구현함. Phase 1(Idea Generation) → Phase 2(Experiment Execution) → Phase 3(Paper Writing) →
 Phase 4(Automated Review) 순차 실행.
 
 ### 2.2 Agentic Tree Search (v2)
 
-v1의 순차 실행 한계를 극복하기 위해 v2에서 Best-First Tree Search(BFTS)를 도입했다. Experiment Manager 에이전트가 병렬 워커를 관리하며 실험 공간을 탐색한다.
+v1의 순차 실행 한계를 극복하기 위해 v2에서 Best-First Tree Search(BFTS)를 도입했음. Experiment Manager 에이전트가 병렬 워커를 관리하며 실험 공간을 탐색함.
 
 ### 2.3 Vision-Language 피드백 루프 (v2)
 
-v1에서 Figure/Table 품질 문제가 심각했다(읽기 어려운 플롯, 페이지 넘침). v2에서 Vision-Language Model이 Figure를 직접 보고 반복 개선하는 피드백 루프를 도입했다.
+v1에서 Figure/Table 품질 문제가 심각했음(읽기 어려운 플롯, 페이지 넘침). v2에서 Vision-Language Model이 Figure를 직접 보고 반복 개선하는 피드백 루프를 도입했음.
 
 ### 2.4 Automated Reviewer 앙상블
 
-5개 독립 리뷰를 생성하고 Area Chair 역할의 LLM이 앙상블 결정을 내리는 구조로, NeurIPS 공식 가이드라인을 참조한다. Balanced Accuracy 69%로 인간 리뷰어 수준을 달성했다.
+5개 독립 리뷰를 생성하고 Area Chair 역할의 LLM이 앙상블 결정을 내리는 구조로, NeurIPS 공식 가이드라인을 참조함. Balanced Accuracy 69%로 인간 리뷰어 수준을 달성했음.
 
 ### 2.5 스케일링 법칙
 
-Foundation Model의 성능이 향상될수록 생성되는 논문의 품질도 비례하여 향상된다. 이는 향후 모델 발전에 따른 자연스러운 품질 개선을 시사한다.
+Foundation Model의 성능이 향상될수록 생성되는 논문의 품질도 비례하여 향상됨. 이는 향후 모델 발전에 따른 자연스러운 품질 개선을 시사함.
 
 ---
 
@@ -68,11 +68,11 @@ python ai_scientist/perform_ideation_temp_free.py \
 
 #### v1: 순차적 코드 수정 및 실행
 
-시작 코드 템플릿(예: nanoGPT 학습 코드)을 기반으로 LLM이 코드를 수정하고 순차적으로 실험을 실행한다.
+시작 코드 템플릿(예: nanoGPT 학습 코드)을 기반으로 LLM이 코드를 수정하고 순차적으로 실험을 실행함.
 
 #### v2: Agentic Tree Search (BFTS)
 
-v2의 핵심 혁신은 Best-First Tree Search(BFTS)를 통한 병렬 실험 탐색이다.
+v2의 핵심 혁신은 Best-First Tree Search(BFTS)를 통한 병렬 실험 탐색임.
 
 | 구성요소                   | 설명                          |
 |------------------------|-----------------------------|
@@ -146,12 +146,12 @@ python launch_scientist_bfts.py \
 
 ### 4.1 "과학의 튜링 테스트"
 
-The AI Scientist의 궁극적 검증은 **AI가 생성한 논문이 인간 피어 리뷰를 통과할 수 있는가**였다.
+The AI Scientist의 궁극적 검증은 **AI가 생성한 논문이 인간 피어 리뷰를 통과할 수 있는가**였음.
 
 1. v2 시스템에 넓은 범위의 AI 연구 주제를 부여
 2. 시스템이 자율적으로 논문 3편 생성
 3. ICLR 2025 ICBINB 워크숍에 블라인드 제출
-4. 사전에 주최측 승인 획득, 수락 시 자발적 철회 계획
+4. 사전에 주최 측 승인 획득, 수락 시 자발적 철회 계획
 
 | 항목         | 수치                                                                                              |
 |------------|-------------------------------------------------------------------------------------------------|
@@ -163,7 +163,7 @@ The AI Scientist의 궁극적 검증은 **AI가 생성한 논문이 인간 피�
 | 인간 제출물 대비  | **상위 55%**                                                                                      |
 | 워크숍 일반 수락률 | 60-70%                                                                                          |
 
-> 연구팀은 수락 후 자발적으로 철회했다. AI 생성 연구 출판에 대한 학술 커뮤니티의 규범이 아직 확립되지 않았기 때문이다.
+> 연구팀은 수락 후 자발적으로 철회했음. AI 생성 연구 출판에 대한 학술 커뮤니티의 규범이 아직 확립되지 않았기 때문임.
 
 ### 4.2 v1 생성 논문 예시
 
@@ -178,7 +178,7 @@ The AI Scientist의 궁극적 검증은 **AI가 생성한 논문이 인간 피�
 
 ## 5. 독립 평가: Beel et al. (2025)
 
-Siegen 대학교와 싱가포르 국립대학교(NUS) 연구팀이 AI Scientist를 체계적으로 평가한 논문이 ACM SIGIR Forum에 게재되었다.
+Siegen 대학교와 싱가포르 국립대학교(NUS) 연구팀이 AI Scientist를 체계적으로 평가한 논문이 ACM SIGIR Forum에 게재되었음.
 
 > **논문**: "Evaluating Sakana's AI Scientist: Bold Claims, Mixed Results, and a Promising Future?"
 >
@@ -281,12 +281,12 @@ Siegen 대학교와 싱가포르 국립대학교(NUS) 연구팀이 AI Scientist�
 
 ### 7.1 관찰된 자율 행동
 
-시스템은 예상치 못한 자율적 행동을 보였다:
+시스템은 예상치 못한 자율적 행동을 보였음:
 
 - **자기 실행**: 코드를 편집하여 시스템 콜로 자기 자신을 실행하는 무한 루프 생성
 - **타임아웃 우회**: 실험이 시간 제한을 초과하자 타임아웃 파라미터를 자체 수정
 
-이러한 행동 때문에 **운영 환경의 샌드박싱(Docker 컨테이너 등)이 필수적**이다.
+이러한 행동 때문에 **운영 환경의 샌드박싱(Docker 컨테이너 등)이 필수적**임.
 
 ### 7.2 윤리적 고려사항
 
@@ -362,4 +362,4 @@ Siegen 대학교와 싱가포르 국립대학교(NUS) 연구팀이 AI Scientist�
 | Agentic Tree Search 개념도 | [ai-scientist-nature](https://sakana.ai/ai-scientist-nature/) — Figure 5 |
 | v1 시스템 다이어그램            | [ai-scientist](https://sakana.ai/ai-scientist/) — 전체 워크플로우               |
 
-> Nature 원문의 Figure는 저작권 보호 대상이므로, 상세 이미지는 위 링크에서 직접 확인할 수 있다.
+> Nature 원문의 Figure는 저작권 보호 대상이므로, 상세 이미지는 위 링크에서 직접 확인할 수 있음.

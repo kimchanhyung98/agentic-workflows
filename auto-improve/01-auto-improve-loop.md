@@ -3,10 +3,10 @@
 ## 개요
 
 Auto Improve Loop는 [karpathy/autoresearch](https://github.com/karpathy/autoresearch)에서 차용한 핵심 아이디어로,
-**사람이 목표와 운영 규칙을 정의하면 AI 에이전트가 자율적으로 실험-측정-판단을 반복**하는 자기 개선 루프이다.
+**사람이 목표와 운영 규칙을 정의하면 AI 에이전트가 자율적으로 실험-측정-판단을 반복**하는 자기 개선 루프임.
 
 기존의 에이전트 루프(ReAct, Plan-Execute 등)가 단일 작업 완료에 집중한다면,
-Auto Improve Loop는 **동일 시스템의 반복적 개선**에 초점을 맞춘다.
+Auto Improve Loop는 **동일 시스템의 반복적 개선**에 초점을 맞춤.
 
 ## 핵심 구조
 
@@ -45,7 +45,7 @@ graph TD
 
 ### 2. 고정된 평가 기준
 
-모든 실험은 **동일한 조건과 지표**로 비교해야 한다.
+모든 실험은 **동일한 조건과 지표**로 비교해야 함.
 
 - **고정 시간 예산**: 모든 실험은 동일한 시간(예: 5분) 동안 실행
 - **단일 평가 지표**: 하나의 명확한 수치(예: `val_bpb`, Validation Bits Per Byte — 낮을수록 좋음)로 성과 비교
@@ -60,7 +60,7 @@ graph TD
 
 ### 3. 안전한 롤백 메커니즘
 
-Git을 활용하여 실패한 실험을 안전하게 되돌린다.
+Git을 활용하여 실패한 실험을 안전하게 되돌림.
 
 ```mermaid
 gitGraph
@@ -70,12 +70,12 @@ gitGraph
     commit id: "실험 D: 배치 크기 조정 → ✅ 개선, 유지"
 ```
 
-> **참고**: 실제로는 실험 C의 commit이 `git reset --hard HEAD~1`으로 제거되어 history에 남지 않는다.
-> 브랜치는 **개선된 실험만 남기며 전진**하는 것이 핵심이다.
+> **참고**: 실제로는 실험 C의 commit이 `git reset --hard HEAD~1`으로 제거되어 history에 남지 않음.
+> 브랜치는 **개선된 실험만 남기며 전진**하는 것이 핵심임.
 
 ### 4. 실험 로그 관리
 
-모든 실험 결과를 구조화된 형식으로 기록한다.
+모든 실험 결과를 구조화된 형식으로 기록함.
 
 ```text
 commit   val_bpb    memory_gb  status   description
@@ -113,7 +113,7 @@ flowchart TD
 
 ## 적용 범위 확장
 
-autoresearch는 LLM 학습 최적화에 특화되어 있지만, Auto Improve Loop 패턴은 다양한 영역에 적용 가능하다.
+autoresearch는 LLM 학습 최적화에 특화되어 있지만, Auto Improve Loop 패턴은 다양한 영역에 적용 가능함.
 
 | 적용 영역    | 수정 대상                 | 평가 지표             | 참고            |
 |----------|-----------------------|-------------------|---------------|

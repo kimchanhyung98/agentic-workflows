@@ -2,10 +2,10 @@
 
 ## 개요
 
-LangSmith CLI는 [LangSmith](https://smith.langchain.com/) 플랫폼의 기능을 **터미널에서 직접 사용**할 수 있게 하는 명령줄 도구이다.
-LangSmith Skills와 결합하면, 코딩 에이전트가 터미널을 벗어나지 않고 트레이스 조회, 데이터셋 생성, 평가 실행을 수행할 수 있다.
+LangSmith CLI는 [LangSmith](https://smith.langchain.com/) 플랫폼의 기능을 **터미널에서 직접 사용**할 수 있게 하는 명령줄 도구임.
+LangSmith Skills와 결합하면, 코딩 에이전트가 터미널을 벗어나지 않고 트레이스 조회, 데이터셋 생성, 평가 실행을 수행할 수 있음.
 
-> **핵심 아이디어**: 코딩 에이전트가 LangSmith CLI와 Skills를 활용하여 에이전트 엔지니어링 라이프사이클을 터미널에서 완결한다.
+> **핵심 아이디어**: 코딩 에이전트가 LangSmith CLI와 Skills를 활용하여 에이전트 엔지니어링 라이프사이클을 터미널에서 완결함.
 
 ---
 
@@ -19,7 +19,7 @@ curl -sSL https://raw.githubusercontent.com/langchain-ai/langsmith-cli/main/scri
 
 ### 주요 명령어
 
-LangSmith CLI는 `langsmith` 명령으로 실행하며, 주요 기능은 다음과 같다:
+LangSmith CLI는 `langsmith` 명령으로 실행하며, 주요 기능은 다음과 같음:
 
 | 명령어 예시                                                      | 설명            |
 |-------------------------------------------------------------|---------------|
@@ -53,7 +53,7 @@ sequenceDiagram
 
 ## LangSmith Skills
 
-LangSmith Skills는 코딩 에이전트가 LangSmith의 트레이싱, 데이터셋, 평가 기능을 활용할 수 있도록 하는 전문 지침 모음이다.
+LangSmith Skills는 코딩 에이전트가 LangSmith의 트레이싱, 데이터셋, 평가 기능을 활용할 수 있도록 하는 전문 지침 모음임.
 
 ### 사용 가능한 Skills
 
@@ -87,7 +87,7 @@ cd langsmith-skills
 
 ## CLI + Skills 통합 워크플로
 
-LangSmith CLI와 Skills를 결합하면 에이전트 개발 라이프사이클 전체를 터미널에서 관리할 수 있다.
+LangSmith CLI와 Skills를 결합하면 에이전트 개발 라이프사이클 전체를 터미널에서 관리할 수 있음.
 
 ```mermaid
 flowchart LR
@@ -103,7 +103,7 @@ flowchart LR
 
 #### 1. 트레이스 기반 디버깅
 
-코딩 에이전트가 `langsmith-trace` Skill의 지침에 따라 트레이스를 조회하고 분석한다:
+코딩 에이전트가 `langsmith-trace` Skill의 지침에 따라 트레이스를 조회하고 분석함:
 
 ```bash
 # 최근 실행 조회
@@ -115,7 +115,7 @@ langsmith run get <run-id>
 
 #### 2. 데이터셋 생성
 
-`langsmith-dataset` Skill의 지침에 따라 트레이스에서 평가 데이터셋을 생성한다:
+`langsmith-dataset` Skill의 지침에 따라 트레이스에서 평가 데이터셋을 생성함:
 
 ```bash
 # 트레이스에서 데이터셋 생성을 위한 실행 목록 조회
@@ -124,7 +124,7 @@ langsmith trace list --project my-agent --limit 50
 
 #### 3. 평가 실행 및 분석
 
-`langsmith-evaluator` Skill의 지침에 따라 커스텀 평가자를 생성하고 평가를 실행한다:
+`langsmith-evaluator` Skill의 지침에 따라 커스텀 평가자를 생성하고 평가를 실행함:
 
 ```bash
 # 평가 실험 결과 조회

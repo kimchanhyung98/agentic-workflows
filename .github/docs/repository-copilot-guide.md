@@ -2,7 +2,7 @@
 
 ## MCP 서버 설정
 
-레포지토리에서 Copilot, Coding agent의 MCP (Model Context Protocol) 서버 설정입니다.
+레포지토리에서 Copilot, Coding agent의 MCP (Model Context Protocol) 서버 설정
 
 | 서버                      | 용도          | 설명                     |
 |-------------------------|-------------|------------------------|

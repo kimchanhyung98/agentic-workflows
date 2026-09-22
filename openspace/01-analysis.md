@@ -28,7 +28,7 @@
 
 ## 1. 개요
 
-OpenSpace는 "에이전트가 작업을 수행한 뒤, 그 실행 경험 자체를 다음 작업에 반영하도록 구조화"한 **자기 진화형 에이전트 런타임**이다.
+OpenSpace는 "에이전트가 작업을 수행한 뒤, 그 실행 경험 자체를 다음 작업에 반영하도록 구조화"한 **자기 진화형 에이전트 런타임**임.
 
 ### 핵심 문제 정의
 
@@ -134,7 +134,7 @@ LLMClient  GroundingClient  SkillEngine
 4. `_initialize_openspace()`: `OpenSpace` 인스턴스 생성/초기화
 5. 단일 쿼리 모드(`--query`) 또는 대화형 모드 진입
 
-`UIManager`가 라이브 디스플레이와 로그 억제를 관리하며, 실시간 시각화 중에는 로그 레벨을 `CRITICAL`로 올려 터미널 출력 충돌을 방지한다.
+`UIManager`가 라이브 디스플레이와 로그 억제를 관리하며, 실시간 시각화 중에는 로그 레벨을 `CRITICAL`로 올려 터미널 출력 충돌을 방지함.
 
 ### 3.2 MCP 서버 (`openspace/mcp_server.py`)
 
@@ -153,7 +153,7 @@ FastMCP 기반, stdio(기본) / SSE 두 가지 전송 모드 지원.
 | `fix_skill`     | 스킬 수동 수정 (FIX만)    | skill_dir, direction                            |
 | `upload_skill`  | 스킬 클라우드 업로드        | skill_dir, visibility, tags                     |
 
-`_MCPSafeStdout`: text 출력을 stderr로, binary(`.buffer`)를 실제 stdout으로 라우팅. stdio 전송 시 JSON-RPC 메시지 오염을 방지한다.
+`_MCPSafeStdout`: text 출력을 stderr로, binary(`.buffer`)를 실제 stdout으로 라우팅. stdio 전송 시 JSON-RPC 메시지 오염을 방지함.
 
 ### 3.3 Dashboard 서버 (`openspace/dashboard_server.py`)
 
@@ -161,7 +161,7 @@ FastMCP 기반, stdio(기본) / SSE 두 가지 전송 모드 지원.
 엔트리포인트: openspace-dashboard = "openspace.dashboard_server:main" (포트 7788)
 ```
 
-Flask REST API로 프론트엔드에 스킬 목록/상세/계보 그래프, 워크플로우 타임라인, 6단계 파이프라인 시각화를 제공한다.
+Flask REST API로 프론트엔드에 스킬 목록/상세/계보 그래프, 워크플로우 타임라인, 6단계 파이프라인 시각화를 제공함.
 
 ---
 
@@ -222,7 +222,7 @@ Phase 2: Tool-Fallback (Phase 1 실패 시)
   └── 결과 반환
 ```
 
-Phase 1 실패 시 워크스페이스에서 스킬 실행으로 생성된 파일을 삭제하고 Phase 2에 풀 이터레이션 예산을 부여하여, 실패한 스킬의 중간 산물이 Phase 2를 오염시키는 것을 방지한다.
+Phase 1 실패 시 워크스페이스에서 스킬 실행으로 생성된 파일을 삭제하고 Phase 2에 풀 이터레이션 예산을 부여하여, 실패한 스킬의 중간 산물이 Phase 2를 오염시키는 것을 방지함.
 
 ---
 
@@ -230,7 +230,7 @@ Phase 1 실패 시 워크스페이스에서 스킬 실행으로 생성된 파일
 
 ### 5.1 LLMClient (`llm/client.py`)
 
-litellm 래퍼로 단일 라운드 LLM 호출 + 도구 실행을 처리한다.
+litellm 래퍼로 단일 라운드 LLM 호출 + 도구 실행을 처리함.
 
 **지원 모델**: litellm을 통해 모든 주요 제공자 (OpenRouter, Anthropic, OpenAI, MiniMax 등). 게이트웨이 제공자 자동 접두사 (`openrouter/`,
 `aihubmix/`).
@@ -293,12 +293,12 @@ Anthropic Computer Use 통합 (`AnthropicGUIClient`):
 - 스크린샷 리사이징: 실제 해상도 → `display_size`(기본 1024x768) 축소
 - `only_n_most_recent_images`로 히스토리 이미지 수 제한 (25MB 제한 자동 감소)
 - Thinking 모드: `budget_tokens=2048`
-- 백업 API 키 폴오버 (`ANTHROPIC_API_KEY_BACKUP`)
+- 백업 API 키 페일오버 (`ANTHROPIC_API_KEY_BACKUP`)
 - 재시도: 최대 10회, 25MB 초과 시 이미지 수 자동 절반 감소
 
 ### 6.4 MCP Backend
 
-가장 복잡한 백엔드. 다중 MCP 서버를 관리하며 4종 커넥터를 제공한다.
+가장 복잡한 백엔드. 다중 MCP 서버를 관리하며 4종 커넥터를 제공함.
 
 **HttpConnector 전송 협상 (3단계 폴백)**:
 
@@ -307,13 +307,13 @@ Anthropic Computer Use 통합 (`AnthropicGUIClient`):
 3. 모두 실패 시 **JSON-RPC HTTP** 최종 폴백
 
 **도구 캐시 2계층**: 원본 캐시 (`mcp_tool_cache.json`) + 정제 캐시 (`mcp_tool_cache_sanitized.json`). Claude API 호환을 위한
-`_sanitize_mcp_schema()`가 비표준 필드를 제거한다.
+`_sanitize_mcp_schema()`가 비표준 필드를 제거함.
 
 **의존성 설치 관리** (`MCPInstallerManager`): npx/uvx/pip 자동 탐지 + 사용자 확인 + 실패 캐시
 
 ### 6.5 Web Backend
 
-OpenRouter API를 통해 Perplexity AI의 `sonar-deep-research` 모델로 심층 웹 조사를 수행하고 LLM으로 400~600단어 요약을 생성한다.
+OpenRouter API를 통해 Perplexity AI의 `sonar-deep-research` 모델로 심층 웹 조사를 수행하고 LLM으로 400~600단어 요약을 생성함.
 
 ### 6.6 Transport Layer
 

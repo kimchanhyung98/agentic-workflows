@@ -4,7 +4,7 @@
 
 ## 기본 패턴 → 조합 패턴 매핑
 
-어떤 base 패턴이 결합되어 조합 패턴을 형성하는지 보여줍니다.
+어떤 base 패턴이 결합되어 조합 패턴을 형성하는지 보여줌.
 
 ```mermaid
 flowchart TD
@@ -52,7 +52,7 @@ flowchart TD
 
 ## 계약이 연결하는 인터페이스
 
-조합된 패턴 사이를 연결하는 4가지 런타임 계약입니다. 아래 다이어그램은 Phase 간 계약 3가지를 보여주고, Host-공급자 경계 계약(Provider Contract)은 별도로 다룹니다.
+조합된 패턴 사이를 연결하는 4가지 런타임 계약임. 아래 다이어그램은 Phase 간 계약 3가지를 보여주고, Host-공급자 경계 계약(Provider Contract)은 별도로 다룸.
 
 ```mermaid
 graph TB
@@ -86,7 +86,7 @@ graph TB
 
 ## 실패 유형 분포
 
-단일 시스템 감사에서 발견한 26건(중복 제거)의 실패를 12개 유형으로 분류한 결과입니다.
+단일 시스템 감사에서 발견한 26건(중복 제거)의 실패를 12개 유형으로 분류한 결과임.
 
 | 유형 | 건수 | 비율 |
 |------|------|------|
@@ -103,7 +103,7 @@ graph TB
 | Resource Leak | 1 | 4% |
 | Vague Error | 1 | 4% |
 
-상위 3개 유형(Stale State Reuse, Silent Data Loss, Ghost Decision)이 전체의 62%를 차지합니다.
+상위 3개 유형(Stale State Reuse, Silent Data Loss, Ghost Decision)이 전체의 62%를 차지함.
 
 ---
 

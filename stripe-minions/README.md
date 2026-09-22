@@ -1,6 +1,6 @@
 # Agent Examples
 
-실제 프로덕션 환경에서 운영되는 AI 코딩 에이전트 시스템의 설계와 구현 사례를 분석한 문서입니다.
+실제 프로덕션 환경에서 운영되는 AI 코딩 에이전트 시스템의 설계와 구현 사례를 분석한 문서임.
 
 ---
 
@@ -15,7 +15,7 @@
 
 ## Stripe Minions 개요
 
-Stripe의 Minions는 대규모 모노레포 환경에서 코딩 작업을 **원샷(One-Shot)으로 엔드투엔드(End-to-End) 완료**하는 AI 코딩 에이전트 시스템입니다.
+Stripe의 Minions는 대규모 모노레포 환경에서 코딩 작업을 **원샷(One-Shot)으로 엔드투엔드(End-to-End) 완료**하는 AI 코딩 에이전트 시스템임.
 
 ```mermaid
 flowchart LR

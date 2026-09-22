@@ -1,8 +1,8 @@
 # Polysona 분석
 
-`LilMGenius/polysona`의 에이전트 하네스, 코드 구조, 실행 플로우를 공개 저장소 기준으로 정리한 문서입니다.
+`LilMGenius/polysona`의 에이전트 하네스, 코드 구조, 실행 플로우를 공개 저장소 기준으로 정리한 문서임.
 
-Polysona는 단일 에이전트 페르소나 템플릿이 아니라, **다중 페르소나 데이터(PLOON) + 5개 역할 에이전트 + CLI 호스트별 하네스(Codex/Claude)**를 결합해 인터뷰부터 콘텐츠 발행까지 반복 루프를 구성합니다.
+Polysona는 단일 에이전트 페르소나 템플릿이 아니라, **다중 페르소나 데이터(PLOON) + 5개 역할 에이전트 + CLI 호스트별 하네스(Codex/Claude)**를 결합해 인터뷰부터 콘텐츠 발행까지 반복 루프를 구성함.
 
 ---
 
@@ -33,11 +33,11 @@ Dashboard (Hono API + React/Vite UI)
 
 ### 핵심 설계 포인트
 
-- **이중 하네스 지원**: Codex(`AGENTS.md`, `agents/openai.yaml`, `.agents/skills`)와 Claude(`.claude-plugin`, `hooks/hooks.json`)를 동시에 지원합니다.
-- **역할 고정형 멀티에이전트**: 5개 에이전트가 파이프라인 단계별 책임을 명확히 분리합니다.
-- **파일 시스템 기반 상태관리**: Git 친화적 Markdown(PLOON) 저장소를 단일 진실 공급원(SSOT)으로 사용합니다.
-- **저장 강제 프로토콜**: trend/content/qa/publish 스킬이 결과 파일 Write→Read 검증을 강제해 허위 성공 응답을 줄입니다.
-- **로컬 퍼스트 대시보드**: Hono API가 persona/콘텐츠 상태를 집계하고 React 대시보드가 시각화합니다.
+- **이중 하네스 지원**: Codex(`AGENTS.md`, `agents/openai.yaml`, `.agents/skills`)와 Claude(`.claude-plugin`, `hooks/hooks.json`)를 동시에 지원함.
+- **역할 고정형 멀티에이전트**: 5개 에이전트가 파이프라인 단계별 책임을 명확히 분리함.
+- **파일 시스템 기반 상태관리**: Git 친화적 Markdown(PLOON) 저장소를 단일 진실 공급원(SSOT)으로 사용함.
+- **저장 강제 프로토콜**: trend/content/qa/publish 스킬이 결과 파일 Write→Read 검증을 강제해 허위 성공 응답을 줄임.
+- **로컬 퍼스트 대시보드**: Hono API가 persona/콘텐츠 상태를 집계하고 React 대시보드가 시각화함.
 
 ---
 

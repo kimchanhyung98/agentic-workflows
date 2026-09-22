@@ -1,12 +1,12 @@
 # HyperAgents 분석
 
-`facebookresearch/HyperAgents`의 공개 코드와 논문을 기준으로, 자기개선 루프의 구조와 실행 플로우를 정리한 문서입니다.
+`facebookresearch/HyperAgents`의 공개 코드와 논문을 기준으로, 자기개선 루프의 구조와 실행 플로우를 정리한 문서임.
 
-HyperAgents는 **task agent와 meta agent를 하나의 편집 가능한 프로그램**으로 통합해, 에이전트가 자신의 개선 절차 자체를 수정하도록 만드는 self-referential 진화 루프입니다.
-구체 시스템은 **DGM-H (DGM-Hyperagents)** 로, Darwin Gödel Machine의 self-referential 확장입니다.
+HyperAgents는 **task agent와 meta agent를 하나의 편집 가능한 프로그램**으로 통합해, 에이전트가 자신의 개선 절차 자체를 수정하도록 만드는 self-referential 진화 루프임.
+구체 시스템은 **DGM-H (DGM-Hyperagents)**로, Darwin Gödel Machine의 self-referential 확장임.
 
 > **논문**: Zhang et al., "Hyperagents", [arXiv 2603.19461](https://arxiv.org/abs/2603.19461) (2026-03-19). 라이선스는 **CC
-BY-NC-SA 4.0**으로 상업 사용이 제한됩니다.
+BY-NC-SA 4.0**으로 상업 사용이 제한됨.
 
 ---
 

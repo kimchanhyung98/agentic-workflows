@@ -1,6 +1,6 @@
 # Oh My OpenAgent 분석
 
-`oh-my-openagent`(패키지명 `oh-my-opencode`)의 설계와 실행 플로우를 정리한 문서입니다.
+`oh-my-openagent`(패키지명 `oh-my-opencode`)의 설계와 실행 플로우를 정리한 문서임.
 
 ---
 
@@ -15,8 +15,8 @@
 
 ## 요약
 
-Oh My OpenAgent는 OpenCode 플러그인 형태로 동작하며, 단일 모델 중심 실행 대신 **카테고리 기반 멀티 모델 오케스트레이션**을 제공합니다.
-핵심 아이디어는 다음과 같습니다.
+Oh My OpenAgent는 OpenCode 플러그인 형태로 동작하며, 단일 모델 중심 실행 대신 **카테고리 기반 멀티 모델 오케스트레이션**을 제공함.
+핵심 아이디어는 다음과 같음.
 
 - **초기화 분리**: `config → managers → tools → hooks → plugin-interface`
 - **실행 분리**: 계획(Prometheus)과 실행(Atlas/Task Worker)의 역할 분리

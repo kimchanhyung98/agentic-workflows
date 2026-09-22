@@ -1,10 +1,10 @@
 # Coinbase Cloudbot
 
-Coinbase 내부 코딩/백그라운드 에이전트로 알려진 `Cloudbot`을 공개 자료 기준으로 재구성한 문서입니다.
+Coinbase 내부 코딩/백그라운드 에이전트로 알려진 `Cloudbot`을 공개 자료 기준으로 재구성한 문서임.
 
-> **출처 안내**: Coinbase 공식 블로그는 `Cloudbot`라는 이름과 세부 모드를 직접 설명하지 않는다.
-> 공식 문서가 강하게 확인해 주는 것은 `background agents`, GitHub/Linear MCP, OpenAI-compatible router, 접근 제어와 auditability 같은 기반 인프라다.
-> Cloudbot의 상세 워크플로우는 인터뷰 쇼노트, 공개 발언, 2차 분석 자료에 더 많이 의존한다.
+> **출처 안내**: Coinbase 공식 블로그는 `Cloudbot`이라는 이름과 세부 모드를 직접 설명하지 않음.
+> 공식 문서가 강하게 확인해 주는 것은 `background agents`, GitHub/Linear MCP, OpenAI-compatible router, 접근 제어와 auditability 같은 기반 인프라임.
+> Cloudbot의 상세 워크플로우는 인터뷰 쇼노트, 공개 발언, 2차 분석 자료에 더 많이 의존함.
 
 ---
 
@@ -20,8 +20,8 @@ Coinbase 내부 코딩/백그라운드 에이전트로 알려진 `Cloudbot`을 �
 
 ## Cloudbot 개요
 
-공개 자료를 종합하면, Cloudbot은 Slack과 Linear를 중심으로 PR 작성과 이슈 분석을 자동화하는 Coinbase 내부 코딩/백그라운드 에이전트로 보인다.
-다만 아래 흐름은 공식 제품 문서가 아니라, 공식 블로그의 기반 인프라 설명과 공개 발언을 조합한 재구성이다.
+공개 자료를 종합하면, Cloudbot은 Slack과 Linear를 중심으로 PR 작성과 이슈 분석을 자동화하는 Coinbase 내부 코딩/백그라운드 에이전트로 보임.
+다만 아래 흐름은 공식 제품 문서가 아니라, 공식 블로그의 기반 인프라 설명과 공개 발언을 조합한 재구성임.
 
 ```mermaid
 flowchart LR

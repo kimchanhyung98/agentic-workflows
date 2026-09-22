@@ -1,12 +1,12 @@
 # Archon 분석
 
-`coleam00/Archon`의 AI 코딩 하네스 구조와 실행 플로우를 정리한 문서입니다.
+`coleam00/Archon`의 AI 코딩 하네스 구조와 실행 플로우를 정리한 문서임.
 
-Archon은 모델 자체를 바꾸는 도구라기보다, **YAML 워크플로우로 코딩 프로세스를 고정**해 계획→구현→검증→리뷰→PR 단계를 재현 가능하게 만드는 오케스트레이션 엔진입니다.
+Archon은 모델 자체를 바꾸는 도구라기보다, **YAML 워크플로우로 코딩 프로세스를 고정**해 계획→구현→검증→리뷰→PR 단계를 재현 가능하게 만드는 오케스트레이션 엔진임.
 
 > **대상 버전**: 2026-04-07 공지된 **v2 재작성판** (Bun + TypeScript). v1(Python 기반 task management + RAG)은 [
 `archive/v1-task-management-rag`](https://github.com/coleam00/Archon/tree/archive/v1-task-management-rag) 브랜치에 보존되어 있으며
-> 본 문서의 분석 대상이 아닙니다.
+> 본 문서의 분석 대상이 아님.
 
 ---
 

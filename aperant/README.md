@@ -1,9 +1,9 @@
 # Aperant 분석
 
-`AndyMik90/Aperant`의 설계와 실행 플로우를 공개 코드 기준으로 정리한 문서입니다.
+`AndyMik90/Aperant`의 설계와 실행 플로우를 공개 코드 기준으로 정리한 문서임.
 
 Aperant는 Electron 40 기반 데스크톱 애플리케이션 위에 Vercel AI SDK v6, XState task state machine, git worktree를 결합해 스펙 생성부터 구현, QA,
-human review까지 이어지는 자율 코딩 런타임을 구성합니다.
+human review까지 이어지는 자율 코딩 런타임을 구성함.
 
 ---
 
@@ -42,16 +42,16 @@ Git 작업공간
 
 ### 핵심 설계 포인트
 
-- **모듈형 IPC + 상태기계**: 도메인별 IPC 모듈과 `taskStateManager`가 UI 상태, worker 이벤트, plan 파일을 함께 동기화합니다.
+- **모듈형 IPC + 상태기계**: 도메인별 IPC 모듈과 `taskStateManager`가 UI 상태, worker 이벤트, plan 파일을 함께 동기화함.
 - **complexity-adaptive spec pipeline**: `SpecOrchestrator`가 `complexity_assessment` 이후 simple/standard/complex 경로로
-  분기합니다.
+  분기함.
 - **worktree 격리 + handler-driven merge/cleanup**: 구현과 QA는 기본적으로 worktree에서 실행되고, merge/discard/cleanup은 별도 IPC 핸들러가
-  통제합니다.
-- **멀티 프로바이더 추상화**: 현재 코드 기준 11개 프로바이더를 단일 레지스트리로 관리하고, 계정 우선순위 큐와 레거시 profile fallback을 지원합니다.
-- **복원력 중심 운영**: rate limit/auth failure 감지, auto-swap restart, stale exit 방지, startup recovery, pause/resume이 결합돼 있습니다.
-- **다층 도구 안전장치**: bash denylist, 명령어별 validator, write-path containment, path traversal 방지, human review gate가 함께 적용됩니다.
-- **Intent-aware semantic merge**: 35+ 변경 타입 분류, deterministic AutoMerger, AI 기반 충돌 해결, 충돌 심각도 평가를 결합한 병합 시스템입니다.
-- **libSQL 기반 메모리 그래프**: 16종 메모리 타입, BM25 + 임베딩 검색, 관계 그래프, trust gate/decay 기반의 세션 간 지식 유지 시스템입니다.
+  통제함.
+- **멀티 프로바이더 추상화**: 현재 코드 기준 11개 프로바이더를 단일 레지스트리로 관리하고, 계정 우선순위 큐와 레거시 profile fallback을 지원함.
+- **복원력 중심 운영**: rate limit/auth failure 감지, auto-swap restart, stale exit 방지, startup recovery, pause/resume이 결합돼 있음.
+- **다층 도구 안전장치**: bash denylist, 명령어별 validator, write-path containment, path traversal 방지, human review gate가 함께 적용됨.
+- **Intent-aware semantic merge**: 35+ 변경 타입 분류, deterministic AutoMerger, AI 기반 충돌 해결, 충돌 심각도 평가를 결합한 병합 시스템임.
+- **libSQL 기반 메모리 그래프**: 16종 메모리 타입, BM25 + 임베딩 검색, 관계 그래프, trust gate/decay 기반의 세션 간 지식 유지 시스템임.
 
 ---
 
@@ -67,7 +67,7 @@ Git 작업공간
 - [Task 상태기계](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/shared/state-machines/task-machine.ts)
 - [AgentManager](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/agent/agent-manager.ts)
 - [AgentQueueManager](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/agent/agent-queue.ts)
-- [AI 세션 런너](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/ai/session/runner.ts)
+- [AI 세션 러너](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/ai/session/runner.ts)
 - [Worker 진입점](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/ai/agent/worker.ts)
 - [BuildOrchestrator](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/ai/orchestration/build-orchestrator.ts)
 - [SpecOrchestrator](https://github.com/AndyMik90/Aperant/blob/main/apps/desktop/src/main/ai/orchestration/spec-orchestrator.ts)

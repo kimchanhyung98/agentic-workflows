@@ -2,16 +2,16 @@
 
 ## 개요
 
-LangChain Skills는 **코딩 에이전트의 성능을 특정 도메인에서 향상시키는 큐레이션된 지침 모음**이다.
-SKILL.md 파일과 선택적 헬퍼 스크립트로 구성되며, 에이전트가 필요할 때 동적으로 로드하는 **점진적 공개(Progressive Disclosure)** 방식으로 동작한다.
+LangChain Skills는 **코딩 에이전트의 성능을 특정 도메인에서 향상시키는 큐레이션된 지침 모음**임.
+SKILL.md 파일과 선택적 헬퍼 스크립트로 구성되며, 에이전트가 필요할 때 동적으로 로드하는 **점진적 공개(Progressive Disclosure)** 방식으로 동작함.
 
-> **핵심 아이디어**: 에이전트에게 모든 것을 한 번에 주는 대신, 특정 도메인의 전문 지침을 필요할 때만 제공하여 성능을 극대화한다.
+> **핵심 아이디어**: 에이전트에게 모든 것을 한 번에 주는 대신, 특정 도메인의 전문 지침을 필요할 때만 제공하여 성능을 극대화함.
 
 ---
 
 ## Skill의 구성 요소
 
-하나의 Skill은 다음 요소로 구성된다:
+하나의 Skill은 다음 요소로 구성됨:
 
 | 구성 요소            | 역할                                    |
 |------------------|---------------------------------------|
@@ -33,7 +33,7 @@ flowchart TD
 
 ### SKILL.md 구조
 
-Skill의 핵심 파일인 SKILL.md는 YAML frontmatter와 마크다운 본문으로 구성된다:
+Skill의 핵심 파일인 SKILL.md는 YAML frontmatter와 마크다운 본문으로 구성됨:
 
 ```markdown
 ---
@@ -58,7 +58,7 @@ Use this skill when working with LangChain agents, tools, or chains.
 
 ## 점진적 공개 (Progressive Disclosure)
 
-Skills는 **점진적 공개** 방식으로 동작한다. 에이전트는 기본적으로 YAML frontmatter만 로드하며, 해당 Skill이 현재 작업에 필요하다고 판단할 때만 전체 SKILL.md를 읽는다.
+Skills는 **점진적 공개** 방식으로 동작함. 에이전트는 기본적으로 YAML frontmatter만 로드하며, 해당 Skill이 현재 작업에 필요하다고 판단할 때만 전체 SKILL.md를 읽음.
 
 ```mermaid
 sequenceDiagram
@@ -86,7 +86,7 @@ sequenceDiagram
 
 ## 사용 가능한 Skills
 
-LangChain Skills 저장소에는 11개의 Skill이 4개 카테고리로 구성되어 있다.
+LangChain Skills 저장소에는 11개의 Skill이 4개 카테고리로 구성되어 있음.
 
 ### Getting Started
 
@@ -151,7 +151,7 @@ cd langchain-skills
 
 ### 지원하는 코딩 에이전트
 
-Skills는 다음 코딩 에이전트에서 사용할 수 있다:
+Skills는 다음 코딩 에이전트에서 사용할 수 있음:
 
 - Claude Code
 - Deep Agents CLI
@@ -163,7 +163,7 @@ Skills는 다음 코딩 에이전트에서 사용할 수 있다:
 
 ## 성능 효과
 
-LangChain 블로그에 따르면, Skills 적용 전후 코딩 에이전트의 성능 차이가 크다:
+LangChain 블로그에 따르면, Skills 적용 전후 코딩 에이전트의 성능 차이가 큼:
 
 | 조건                      | 태스크 통과율 |
 |-------------------------|---------|
@@ -175,7 +175,7 @@ LangChain 블로그에 따르면, Skills 적용 전후 코딩 에이전트의 �
 ## LangGraph와의 관계
 
 LangChain Skills에는 LangGraph 관련 Skill이 포함되어 있어, 에이전트가 [LangGraph](https://langchain-ai.github.io/langgraph/) 기반 애플리케이션을
-구축할 때 도움을 받을 수 있다.
+구축할 때 도움을 받을 수 있음.
 
 - **LangGraph**: 상태 기반 그래프로 에이전트 워크플로를 정의하는 프레임워크
 - **LangGraph Skills**: LangGraph의 StateGraph, Checkpointer, Human-in-the-loop 패턴 등에 대한 전문 지침

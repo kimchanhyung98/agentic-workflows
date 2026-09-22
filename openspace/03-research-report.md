@@ -27,9 +27,9 @@
 
 ### 1.1 핵심 정체성
 
-OpenSpace는 홍콩대학교 Data Intelligence Lab(HKUDS)이 개발한 **자기 진화형 스킬 엔진**이다. 기존 AI 코딩 에이전트(Claude Code, OpenAI Codex,
+OpenSpace는 홍콩대학교 Data Intelligence Lab(HKUDS)이 개발한 **자기 진화형 스킬 엔진**임. 기존 AI 코딩 에이전트(Claude Code, OpenAI Codex,
 OpenClaw, nanobot, Cursor 등)에 MCP(Model Context Protocol) 서버 형태로 부착하여, 에이전트의 실행 경험을 재사용 가능한 스킬로 축적하고 자동 진화시키는 것이 핵심
-목표이다.
+목표임.
 
 **슬로건**: "Make Your Agents: Smarter, Low-Cost, Self-Evolving"
 
@@ -57,12 +57,12 @@ OpenClaw, nanobot, Cursor 등)에 MCP(Model Context Protocol) 서버 형태로 �
 
 ### 2.1 OpenSpace 직접 관련 논문
 
-2026년 4월 현재, OpenSpace 자체에 대한 독립 학술 논문(arXiv 등)은 아직 공개되지 않았다. 프로젝트는 GitHub 저장소와 GDPVal 벤치마크 결과를 통해 기술적 기여를 공개하고 있으며, 동료
-검증(peer review) 단계 이전이다.
+2026년 4월 현재, OpenSpace 자체에 대한 독립 학술 논문(arXiv 등)은 아직 공개되지 않았음. 프로젝트는 GitHub 저장소와 GDPVal 벤치마크 결과를 통해 기술적 기여를 공개하고 있으며, 동료
+검증(peer review) 단계 이전임.
 
 ### 2.2 HKUDS 그룹의 관련 논문
 
-HKUDS 연구 그룹은 OpenSpace의 기반이 되는 다수의 선행 연구를 발표했다:
+HKUDS 연구 그룹은 OpenSpace의 기반이 되는 다수의 선행 연구를 발표했음:
 
 | 논문/프로젝트          | 발표               | 핵심 내용                                                       |
 |------------------|------------------|-------------------------------------------------------------|
@@ -161,7 +161,7 @@ Cloud Skill Community (선택적)
 
 ### 4.2 자기 진화 메커니즘
 
-OpenSpace는 스킬을 **정적 파일이 아닌 "살아있는 엔티티"**로 취급한다. 각 스킬은 고유 ID, Version DAG, 품질 메트릭, 진화 이력을 갖는다.
+OpenSpace는 스킬을 **정적 파일이 아닌 "살아있는 엔티티"**로 취급함. 각 스킬은 고유 ID, Version DAG, 품질 메트릭, 진화 이력을 가짐.
 
 #### 진화 3모드
 
@@ -177,8 +177,8 @@ OpenSpace는 스킬을 **정적 파일이 아닌 "살아있는 엔티티"**로 �
 2. **Tool Degradation Monitor**: 외부 도구/API 성공률 하락 감지 → 해당 도구를 참조하는 모든 스킬 배치 진화 (Cascade Evolution)
 3. **Metric Monitor**: 스킬 적용률/완료율/fallback률 악화 감시 → 선제적 진화
 
-이 **다중 트리거 설계**는 기존 프레임워크(Voyager, EvoAgentX 포함)에서 발견되지 않는 OpenSpace 고유 패턴이다. 마이크로서비스의 Circuit Breaker 패턴을 스킬 관리에 응용한
-것으로 평가된다.
+이 **다중 트리거 설계**는 기존 프레임워크(Voyager, EvoAgentX 포함)에서 발견되지 않는 OpenSpace 고유 패턴임. 마이크로서비스의 Circuit Breaker 패턴을 스킬 관리에 응용한
+것으로 평가됨.
 
 #### 안전장치
 
@@ -190,7 +190,7 @@ OpenSpace는 스킬을 **정적 파일이 아닌 "살아있는 엔티티"**로 �
 
 ### 4.3 스킬 검색 시스템
 
-스킬 검색은 **BM25 + 임베딩 기반 하이브리드 랭킹**으로 구현되어, 태스크 설명과 관련성 높은 스킬을 자동 매칭한다. 태스크당 최대 2개 스킬이 주입된다 (`max_select=2`).
+스킬 검색은 **BM25 + 임베딩 기반 하이브리드 랭킹**으로 구현되어, 태스크 설명과 관련성 높은 스킬을 자동 매칭함. 태스크당 최대 2개 스킬이 주입됨 (`max_select=2`).
 
 ### 4.4 MCP 노출 도구 (4개)
 
@@ -203,8 +203,8 @@ OpenSpace는 스킬을 **정적 파일이 아닌 "살아있는 엔티티"**로 �
 
 ### 4.5 호스트 에이전트 통합 방식
 
-OpenSpace는 기존 에이전트를 **교체하지 않고** MCP 서버로 "옆에 붙는" 비파괴적 래핑 구조를 채택했다. 핵심은 2개의 host_skill(`delegate-task`, `skill-discovery`)
-이 에이전트에게 "언제, 어떻게 OpenSpace를 사용할지"를 가르치는 **교육 기반 위임 패턴**이다.
+OpenSpace는 기존 에이전트를 **교체하지 않고** MCP 서버로 "옆에 붙는" 비파괴적 래핑 구조를 채택했음. 핵심은 2개의 host_skill(`delegate-task`, `skill-discovery`)
+이 에이전트에게 "언제, 어떻게 OpenSpace를 사용할지"를 가르치는 **교육 기반 위임 패턴**임.
 
 ```json
 {
@@ -227,8 +227,8 @@ OpenSpace는 기존 에이전트를 **교체하지 않고** MCP 서버로 "옆�
 
 ### 5.1 GDPVal 벤치마크란
 
-GDPVal은 OpenAI가 개발한 경제적 가치 기반 AI 평가 벤치마크로, 미국 GDP 상위 9개 부문의 44개 직업에서 추출한 220개(골드 서브셋) 실무 태스크로 구성된다. 각 태스크는 법률 브리핑, 엔지니어링
-설계, 의료 계획 등 실제 업무 산출물을 기반으로 하며, 평균 14년 경력 전문가가 설계했다.
+GDPVal은 OpenAI가 개발한 경제적 가치 기반 AI 평가 벤치마크로, 미국 GDP 상위 9개 부문의 44개 직업에서 추출한 220개(골드 서브셋) 실무 태스크로 구성됨. 각 태스크는 법률 브리핑, 엔지니어링
+설계, 의료 계획 등 실제 업무 산출물을 기반으로 하며, 평균 14년 경력 전문가가 설계했음.
 
 ### 5.2 OpenSpace 평가 결과
 
@@ -266,12 +266,12 @@ GDPVal은 OpenAI가 개발한 경제적 가치 기반 AI 평가 벤치마크로,
 | 웹 및 리서치     | 11   | 6.7%  |
 | 기타            | 2    | 1.2%  |
 
-**핵심 발견**: 진화된 스킬의 대다수는 도메인 특화 지식이 아니라 **실행 회복력과 오류 복구**에 집중했다. 이는 실무 환경에서 에이전트의 가장 큰 병목이 "문제 해결 능력"이 아니라 "안정적 실행"임을
-시사한다.
+**핵심 발견**: 진화된 스킬의 대다수는 도메인 특화 지식이 아니라 **실행 회복력과 오류 복구**에 집중했음. 이는 실무 환경에서 에이전트의 가장 큰 병목이 "문제 해결 능력"이 아니라 "안정적 실행"임을
+시사함.
 
 ### 5.3 벤치마크 해석 시 유의점
 
-- GDPVal 결과는 **프로젝트 자체 보고**로, 독립적 제3자 검증이 아직 이루어지지 않았다
+- GDPVal 결과는 **프로젝트 자체 보고**로, 독립적 제3자 검증이 아직 이루어지지 않았음
 - 백본 LLM으로 Qwen 3.5-Plus를 사용했으며, 다른 모델에서의 재현성은 미검증
 - 2단계(Cold→Warm) 비교는 누적 학습 효과 관찰에 적합하나, 조직 도입 전 내부 태스크셋으로 재현 검증이 필요
 
@@ -285,7 +285,7 @@ GDPVal은 OpenAI가 개발한 경제적 가치 기반 AI 평가 벤치마크로,
 > "Introducing OpenSpace: The self-evolving engine that makes your AI agents smarter, more cost-efficient, and
 > continuously improving. 46% fewer tokens through self-evolving skills and shared agent experiences."
 
-OpenSpace 오픈소스 공개와 함께 46% 토큰 절감, 4.2배 수입 향상 등 핵심 수치를 강조했다.
+OpenSpace 오픈소스 공개와 함께 46% 토큰 절감, 4.2배 수입 향상 등 핵심 수치를 강조했음.
 
 ### 6.2 Threads
 
@@ -293,12 +293,12 @@ OpenSpace 오픈소스 공개와 함께 46% 토큰 절감, 4.2배 수입 향상 
 > "agents burn tokens solving the same problems over time because they never remember what worked. openspace gives them
 > shared memory and self-healing skills, so the whole network gets smarter every time any single agent completes a task."
 
-에이전트의 "학습 없는 반복" 문제를 OpenSpace가 공유 메모리와 자기 치유 스킬로 해결한다는 점에 주목했다.
+에이전트의 "학습 없는 반복" 문제를 OpenSpace가 공유 메모리와 자기 치유 스킬로 해결한다는 점에 주목했음.
 
 ### 6.3 Reddit
 
-2026년 4월 현재, Reddit(r/MachineLearning, r/LocalLLaMA 등)에서 OpenSpace를 직접 다룬 전용 스레드는 확인되지 않았다. 다만, 자기 진화 에이전트에 대한 일반적 논의가
-활발하다:
+2026년 4월 현재, Reddit(r/MachineLearning, r/LocalLLaMA 등)에서 OpenSpace를 직접 다룬 전용 스레드는 확인되지 않았음. 다만, 자기 진화 에이전트에 대한 일반적 논의가
+활발함:
 
 - **r/LocalLLaMA**: "Agent Manifest" 개념 제안 — API 스펙처럼 에이전트의 능력, 토큰 한계, I/O 계약, 신뢰성 신호를 정의하자는 논의
 - **r/AI_Agents**: 자기 조직화를 "동적이지만 노이즈가 많다"고 특성화하며, 예측 가능성과 디버깅을 주요 과제로 지적
@@ -307,7 +307,7 @@ OpenSpace 오픈소스 공개와 함께 46% 토큰 절감, 4.2배 수입 향상 
 
 #### PyTorch KR (파이토치 한국 사용자 모임)
 
-[discuss.pytorch.kr에 소개 글](https://discuss.pytorch.kr/t/openspace-ai-feat-hkuds/9476)이 게시되었다:
+[discuss.pytorch.kr에 소개 글](https://discuss.pytorch.kr/t/openspace-ai-feat-hkuds/9476)이 게시되었음:
 
 - **제목**: "OpenSpace: AI 에이전트가 스스로 학습하고 진화하는 자율 스킬 진화 프레임워크 (feat. HKUDS)"
 - **작성자**: 9bow (박정환)
@@ -316,16 +316,16 @@ OpenSpace 오픈소스 공개와 함께 46% 토큰 절감, 4.2배 수입 향상 
 - **태그**: ai-agent, openspace, skill, autonomous-agent, hkuds, self-evolving
 - **내용**: AUTO-FIX/AUTO-IMPROVE/AUTO-LEARN 메커니즘, GDPVal 벤치마크 결과, 설치 방법, "My Daily Monitor" 사례 등을 소개
 
-커뮤니티 멤버들의 긍정적 반응이 확인되었으며, AI 에이전트 프레임워크 관련 추가 논의가 이어졌다.
+커뮤니티 멤버들의 긍정적 반응이 확인되었으며, AI 에이전트 프레임워크 관련 추가 논의가 이어졌음.
 
 #### OpenClaw KR (한국 오픈클로 에이전트 커뮤니티)
 
 X(구 Twitter)에 [한국어 OpenClaw 커뮤니티](https://x.com/i/communities/2017879415318007887)가 활동 중이며, OpenClaw 생태계의 일부인 OpenSpace에
-대한 관심이 간접적으로 확인된다.
+대한 관심이 간접적으로 확인됨.
 
 ### 6.5 Hacker News
 
-2026년 4월 현재, Hacker News에서 OpenSpace 전용 토론 스레드는 확인되지 않았다.
+2026년 4월 현재, Hacker News에서 OpenSpace 전용 토론 스레드는 확인되지 않았음.
 
 ---
 
@@ -333,7 +333,7 @@ X(구 Twitter)에 [한국어 OpenClaw 커뮤니티](https://x.com/i/communities/
 
 ### 7.1 HKUDS 프로젝트 계보
 
-HKUDS는 일관된 에이전트 생태계를 구축하고 있으며, OpenSpace는 이 생태계의 **진화 계층**으로 위치한다:
+HKUDS는 일관된 에이전트 생태계를 구축하고 있으며, OpenSpace는 이 생태계의 **진화 계층**으로 위치함:
 
 ```text
 LightRAG (경량 RAG 시스템, EMNLP 2025)
@@ -361,8 +361,8 @@ CLI-Anything (GUI→CLI 자동 변환)
 
 ### 7.3 생태계 전략적 의미
 
-OpenSpace는 HKUDS 생태계의 어떤 특정 에이전트에 종속되지 않고, **Claude Code, Codex, Cursor 등 외부 에이전트에도 부착 가능**한 범용 진화 계층으로 설계되었다. 이는 단일
-에이전트 의존을 피하고 최대한 넓은 사용자 기반을 확보하려는 전략이다.
+OpenSpace는 HKUDS 생태계의 어떤 특정 에이전트에 종속되지 않고, **Claude Code, Codex, Cursor 등 외부 에이전트에도 부착 가능**한 범용 진화 계층으로 설계되었음. 이는 단일
+에이전트 의존을 피하고 최대한 넓은 사용자 기반을 확보하려는 전략임.
 
 ---
 
@@ -382,7 +382,7 @@ OpenSpace는 HKUDS 생태계의 어떤 특정 에이전트에 종속되지 않�
 
 ### 8.2 OpenSpace vs Claude Code Memory/Skill 시스템
 
-Claude Code는 2026년 현재 4가지 메모리 레이어를 갖추고 있으나, OpenSpace와는 근본적으로 다른 설계 철학을 따른다:
+Claude Code는 2026년 현재 4가지 메모리 레이어를 갖추고 있으나, OpenSpace와는 근본적으로 다른 설계 철학을 따름:
 
 | 비교 항목         | Claude Code Memory | OpenSpace Skill Engine                |
 |---------------|--------------------|---------------------------------------|
@@ -395,12 +395,12 @@ Claude Code는 2026년 현재 4가지 메모리 레이어를 갖추고 있으나
 | **에이전트 간 공유** | 불가                 | 클라우드 레지스트리로 즉시 전파                     |
 | **검색 방식**     | grep (200줄 인덱스 캡)  | BM25 + 임베딩 하이브리드                      |
 
-**핵심 평가**: Claude Code의 메모리 시스템은 "개인 노트"에 가깝고, OpenSpace의 Skill Engine은 "버전 관리되는 운영 절차서"에 가깝다. 두 시스템은 **경쟁이 아니라 보완 관계**
-로, OpenSpace를 Claude Code의 MCP 서버로 부착하면 양쪽 강점을 결합할 수 있다.
+**핵심 평가**: Claude Code의 메모리 시스템은 "개인 노트"에 가깝고, OpenSpace의 Skill Engine은 "버전 관리되는 운영 절차서"에 가까움. 두 시스템은 **경쟁이 아니라 보완 관계**
+로, OpenSpace를 Claude Code의 MCP 서버로 부착하면 양쪽 강점을 결합할 수 있음.
 
 ### 8.3 OpenSpace vs Voyager
 
-Voyager는 학술적으로 OpenSpace의 가장 직접적인 선행 연구이다:
+Voyager는 학술적으로 OpenSpace의 가장 직접적인 선행 연구임:
 
 | 비교 항목        | Voyager              | OpenSpace                    |
 |--------------|----------------------|------------------------------|
@@ -410,7 +410,7 @@ Voyager는 학술적으로 OpenSpace의 가장 직접적인 선행 연구이다:
 | **공유/커뮤니티**  | 없음                   | 클라우드 skill 커뮤니티              |
 | **경제적 평가**   | 없음                   | GDPVal (실제 경제적 가치 측정)        |
 
-Voyager가 "폐쇄 환경에서의 자율 탐색"을 증명했다면, OpenSpace는 이를 "개방 환경의 실무 태스크"로 확장한 것이다.
+Voyager가 "폐쇄 환경에서의 자율 탐색"을 증명했다면, OpenSpace는 이를 "개방 환경의 실무 태스크"로 확장한 것임.
 
 ### 8.4 OpenSpace vs EvoAgentX
 
@@ -420,7 +420,7 @@ Voyager가 "폐쇄 환경에서의 자율 탐색"을 증명했다면, OpenSpace�
 | **진화 알고리즘**  | TextGrad, MIPRO, AFlow, EvoPrompt | LLM 에이전트 루프 + diff 기반 패치 |
 | **워크플로우 생성** | 자연어 → 멀티에이전트 자동 구성                | 수동 구성 (기존 에이전트에 부착)      |
 
-두 프레임워크는 다른 추상화 계층에서 동작하며, 이론적으로 결합 가능하다. EvoAgentX는 "워크플로우 그래프 전체의 진화"에, OpenSpace는 "개별 skill의 진화와 재사용"에 초점을 맞춘다.
+두 프레임워크는 다른 추상화 계층에서 동작하며, 이론적으로 결합 가능함. EvoAgentX는 "워크플로우 그래프 전체의 진화"에, OpenSpace는 "개별 skill의 진화와 재사용"에 초점을 맞춤.
 
 ### 8.5 코딩 에이전트 시장 포지셔닝 (2026)
 
@@ -432,7 +432,7 @@ Voyager가 "폐쇄 환경에서의 자율 탐색"을 증명했다면, OpenSpace�
 | **OpenClaw**     | 565+ 커뮤니티 스킬, 메시징 통합, 프로액티브 자동화 | HKUDS 생태계 내 네이티브 지원 |
 
 많은 전문가가 **Cursor(일상 IDE 코딩) + Codex(자율 백그라운드 태스크) + Claude Code(복잡한 리팩토링)** 조합을 사용하고 있으며, OpenSpace는 이 모든 에이전트에 **공통 진화
-계층**으로 부착 가능하다.
+계층**으로 부착 가능함.
 
 ---
 
@@ -453,17 +453,17 @@ Voyager가 "폐쇄 환경에서의 자율 탐색"을 증명했다면, OpenSpace�
 
 ### 9.2 Botmonster Tech의 OpenSpace 상세 평가
 
-Botmonster의 "5 Open Source Repos That Make Claude Code Unstoppable" 기사에서 OpenSpace를 다음과 같이 분석했다:
+Botmonster의 "5 Open Source Repos That Make Claude Code Unstoppable" 기사에서 OpenSpace를 다음과 같이 분석했음:
 
 > "HKUDS tested OpenSpace across 220 real-world professional tasks across 44 occupations and reported significant
 > improvements: average quality jumped from a 40.8% baseline to 70.8%, and agents using improved skills consumed 46% fewer
 > tokens."
 
-OpenSpace의 3가지 스킬 관리 버킷(AUTO-FIX, AUTO-IMPROVE, AUTO-LEARN)과 함께, Claude Code에 직접 통합하는 방법을 상세히 소개했다.
+OpenSpace의 3가지 스킬 관리 버킷(AUTO-FIX, AUTO-IMPROVE, AUTO-LEARN)과 함께, Claude Code에 직접 통합하는 방법을 상세히 소개했음.
 
 ### 9.3 Showcase: My Daily Monitor
 
-OpenSpace의 대표 사례로, **에이전트가 수동 코딩 없이 처음부터 끝까지 구축한** 실시간 모니터링 대시보드이다:
+OpenSpace의 대표 사례로, **에이전트가 수동 코딩 없이 처음부터 끝까지 구축한** 실시간 모니터링 대시보드임:
 
 - 20+ 라이브 대시보드 패널
 - 60+ 스킬이 6단계 진화를 거쳐 자율 생성
@@ -483,7 +483,7 @@ OpenSpace의 대표 사례로, **에이전트가 수동 코딩 없이 처음부�
 
 ### 10.2 학술 연구 동향
 
-자기 진화 에이전트 분야는 2025-2026년에 급격히 성장했다:
+자기 진화 에이전트 분야는 2025-2026년에 급격히 성장했음:
 
 #### 핵심 연구 흐름
 
@@ -539,11 +539,11 @@ OpenSpace의 대표 사례로, **에이전트가 수동 코딩 없이 처음부�
 
 ### 11.3 시장 포지셔닝
 
-OpenSpace는 현재 **"자기 진화형 에이전트 스킬 관리"라는 니치 영역의 선도 프로젝트**이다. 3,500 스타는 EvoAgentX(2,500)보다 앞서지만, 프로덕션급 프레임워크(CrewAI 45.9k,
-LangGraph 등)에 비해 초기 단계이다.
+OpenSpace는 현재 **"자기 진화형 에이전트 스킬 관리"라는 니치 영역의 선도 프로젝트**임. 3,500 스타는 EvoAgentX(2,500)보다 앞서지만, 프로덕션급 프레임워크(CrewAI 45.9k,
+LangGraph 등)에 비해 초기 단계임.
 
-가장 큰 전략적 위협은 Anthropic(Claude Code), OpenAI(Codex) 등 **퍼스트파티 에이전트가 자체 진화 기능을 내장**할 경우이다. 다만 Claude Code의 현재 메모리 시스템은
-OpenSpace와 보완 관계이며, 단기적으로는 공존이 유력하다.
+가장 큰 전략적 위협은 Anthropic(Claude Code), OpenAI(Codex) 등 **퍼스트파티 에이전트가 자체 진화 기능을 내장**할 경우임. 다만 Claude Code의 현재 메모리 시스템은
+OpenSpace와 보완 관계이며, 단기적으로는 공존이 유력함.
 
 ### 11.4 향후 전망
 

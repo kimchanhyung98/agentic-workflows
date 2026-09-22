@@ -1,6 +1,6 @@
 # A2A 구현 가이드
 
-> Google Cloud Agent Engine과 Codelab 예제를 기반으로, A2A Protocol v1.0 서버/클라이언트 구현 패턴을 정리한 문서입니다.
+> Google Cloud Agent Engine과 Codelab 예제를 기반으로, A2A Protocol v1.0 서버/클라이언트 구현 패턴을 정리한 문서임.
 
 ---
 
@@ -63,7 +63,7 @@ agent_card = AgentCard(
 
 ### 2.2 Agent Executor 구현
 
-Agent Executor는 실제 비즈니스 로직을 담당합니다.
+Agent Executor는 실제 비즈니스 로직을 담당함.
 
 ```python
 from a2a.server.agent_execution import AgentExecutor
@@ -493,7 +493,7 @@ gcloud services enable \
 
 ### 6.1 API 게이트웨이 통합
 
-A2A는 HTTP 기반이므로 기존 API 게이트웨이 인프라를 재활용할 수 있습니다.
+A2A는 HTTP 기반이므로 기존 API 게이트웨이 인프라를 재활용할 수 있음.
 
 ```text
 ┌──────────┐     ┌──────────────┐     ┌──────────────┐

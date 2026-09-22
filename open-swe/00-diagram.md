@@ -339,7 +339,7 @@ flowchart TD
 
 **의존 방향:**
 
-- `webapp.py` → LangGraph SDK / utils (직접 `server.py` 호출 안함)
+- `webapp.py` → LangGraph SDK / utils (직접 `server.py` 호출 안 함)
 - LangGraph Runtime → `server.py:get_agent`
 - `server.py` → prompt / middleware / tools / sandbox/auth utils
 - tools / middleware → utils → 외부 API

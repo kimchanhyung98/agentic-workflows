@@ -1,17 +1,17 @@
 # 조합 계약 (Composition Contracts)
 
-패턴을 조합할 때, base 패턴 문서에 명시되지 않은 인터페이스가 필요합니다.
-이 문서의 계약은 단일 시스템 구현에서 도출한 것입니다. 다른 구현에서는 다른 형태의 계약이 필요할 수 있습니다.
+패턴을 조합할 때, base 패턴 문서에 명시되지 않은 인터페이스가 필요함.
+이 문서의 계약은 단일 시스템 구현에서 도출한 것임. 다른 구현에서는 다른 형태의 계약이 필요할 수 있음.
 
 ---
 
 ## Agent Card — Phase 간 런타임 계약
 
-> **용어 주의**: 이 문서의 "Agent Card"는 Phase별 런타임 계약(입출력/Gate/재시도)을 의미하며, [A2A Protocol](https://a2a-protocol.org/latest/specification/)의 Agent Card(에이전트 발견용 메타데이터)와는 다른 개념입니다. 업계에서는 이 개념을 CrewAI의 "Task contract", LangGraph의 "Node schema(input_schema/output_schema)", 또는 일반적으로 "Step definition"으로 부릅니다.
+> **용어 주의**: 이 문서의 "Agent Card"는 Phase별 런타임 계약(입출력/Gate/재시도)을 의미하며, [A2A Protocol](https://a2a-protocol.org/latest/specification/)의 Agent Card(에이전트 발견용 메타데이터)와는 다른 개념임. 업계에서는 이 개념을 CrewAI의 "Task contract", LangGraph의 "Node schema(input_schema/output_schema)", 또는 일반적으로 "Step definition"으로 부름.
 
 ### 문제
 
-[순차 패턴](/design-pattern/02-sequential.md)은 "에이전트 출력이 다음 에이전트의 입력"이라고 설명합니다. 그러나 실제 조합에서는 다음 질문에 답해야 합니다.
+[순차 패턴](/design-pattern/02-sequential.md)은 "에이전트 출력이 다음 에이전트의 입력"이라고 설명함. 그러나 실제 조합에서는 다음 질문에 답해야 함.
 
 - 이 Phase에 어떤 파일이 필요한가?
 - Gate 통과 조건은 무엇인가?
@@ -57,7 +57,7 @@
 
 ### 설계 근거
 
-Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체하면 Gate 조건, 재시도 정책, 라우팅이 함께 바뀝니다. Phase 구현 코드를 수정할 필요가 없습니다.
+Phase를 독립적으로 교체할 수 있게 만듦. Agent Card만 교체하면 Gate 조건, 재시도 정책, 라우팅이 함께 바뀜. Phase 구현 코드를 수정할 필요가 없음.
 
 ### 이 계약이 없으면 발생하는 실패
 
@@ -70,7 +70,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 문제
 
-[검토-비평 패턴](/design-pattern/05-review-critique.md)은 "비평 에이전트가 검증"한다고 설명합니다. 그러나 Worker가 정상 완료하지 못한 경우를 다루지 않습니다.
+[검토-비평 패턴](/design-pattern/05-review-critique.md)은 "비평 에이전트가 검증"한다고 설명함. 그러나 Worker가 정상 완료하지 못한 경우를 다루지 않음.
 
 - 의존성이 없어서 작업을 완료할 수 없다면?
 - 요구사항이 모호해서 범위를 벗어났다면?
@@ -110,7 +110,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 설계 근거
 
-정상 경로(`completed`)와 비정상 경로(`escaped`, `failed`)를 하나의 스키마로 통합합니다. `escape` 필드의 `severity`와 `reason` 조합으로 자동 판정(continue/replan/abort/escalate/user_decision)이 가능해집니다.
+정상 경로(`completed`)와 비정상 경로(`escaped`, `failed`)를 하나의 스키마로 통합함. `escape` 필드의 `severity`와 `reason` 조합으로 자동 판정(continue/replan/abort/escalate/user_decision)이 가능해짐.
 
 ### 이 계약이 없으면 발생하는 실패
 
@@ -123,11 +123,11 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 문제
 
-[반복 개선 패턴](/design-pattern/06-iterative-refinement.md)은 "다중 사이클에 걸친 개선"을 설명합니다. 그러나 상태를 어디에 저장하는지 정의하지 않습니다.
+[반복 개선 패턴](/design-pattern/06-iterative-refinement.md)은 "다중 사이클에 걸친 개선"을 설명함. 그러나 상태를 어디에 저장하는지 정의하지 않음.
 
-- LLM 컨텍스트에 저장하면 Provider 교체 시 상태를 잃습니다.
-- 세션이 끊기면 어디서부터 재개해야 하는지 알 수 없습니다.
-- 두 프로세스가 동시에 같은 워크플로우를 실행하면 상태가 손상됩니다.
+- LLM 컨텍스트에 저장하면 Provider 교체 시 상태를 잃음.
+- 세션이 끊기면 어디서부터 재개해야 하는지 알 수 없음.
+- 두 프로세스가 동시에 같은 워크플로우를 실행하면 상태가 손상됨.
 
 ### 최소 스키마
 
@@ -155,7 +155,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ### 설계 근거
 
-모든 상태를 파일 시스템에 JSON으로 외부화합니다. LLM 컨텍스트에 의존하지 않으므로 Provider 교체, 세션 재개, 감사 추적이 가능합니다. 원자적 쓰기(tmp → rename)는 부분 쓰기/찢어진 파일을 방지하는 수준이며, writer 간 직렬화가 필요하면 별도 파일락(`fcntl.flock`, `filelock` 등)을 병행해야 합니다.
+모든 상태를 파일 시스템에 JSON으로 외부화함. LLM 컨텍스트에 의존하지 않으므로 Provider 교체, 세션 재개, 감사 추적이 가능함. 원자적 쓰기(tmp → rename)는 부분 쓰기/찢어진 파일을 방지하는 수준이며, writer 간 직렬화가 필요하면 별도 파일락(`fcntl.flock`, `filelock` 등)을 병행해야 함.
 
 ### 이 계약이 없으면 발생하는 실패
 
@@ -166,7 +166,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ## 계약 간 관계
 
-3가지 계약은 독립적이 아니라 상호 참조합니다.
+3가지 계약은 독립적이 아니라 상호 참조함.
 
 | 관계 | 설명 |
 |------|------|
@@ -179,7 +179,7 @@ Phase를 독립적으로 교체할 수 있게 만듭니다. Agent Card만 교체
 
 ## 관련 계약
 
-이 문서가 다루는 3가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약입니다. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록합니다.
+이 문서가 다루는 3가지 계약 외에, host와 LLM 공급자 사이의 경계를 정의하는 [Provider Contract](/.draft/pattern-composition/04-provider-contract.md)도 조합의 핵심 계약임. Agent Card의 `provider` 필드가 Provider Contract의 capability 요구를 선언하고, Result Envelope의 `provider` 필드가 실행한 공급자를 기록함.
 
 ---
 

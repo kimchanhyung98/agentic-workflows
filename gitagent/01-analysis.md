@@ -7,8 +7,8 @@
 - 성격: git-native 에이전트 표준 + CLI 구현체
 - 핵심 목표: **에이전트 정체성/규칙/도구를 코드 리포지토리처럼 선언, 버전관리, 이식**
 
-GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니라, **에이전트 정의 레이어를 표준화**해 Claude Code/OpenAI/CrewAI 등으로의 이동 비용을 줄이는 방향을 취합니다. "하나의
-정의, 다수의 런타임" 전략입니다.
+GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니라, **에이전트 정의 레이어를 표준화**해 Claude Code/OpenAI/CrewAI 등으로의 이동 비용을 줄이는 방향을 취함. "하나의
+정의, 다수의 런타임" 전략임.
 
 ---
 
@@ -16,7 +16,7 @@ GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니
 
 ### 2.1 Git-native 표준화
 
-`agent.yaml` + `SOUL.md`를 최소 단위로 두고, 나머지 구조를 선택적으로 확장합니다.
+`agent.yaml` + `SOUL.md`를 최소 단위로 두고, 나머지 구조를 선택적으로 확장함.
 
 - 장점: 최소 진입장벽(2개 파일) + 점진적 확장
 - 효과: 버전 히스토리, 브랜치 기반 실험, PR 리뷰, 롤백을 에이전트 운영에 직접 적용
@@ -24,7 +24,7 @@ GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니
 
 ### 2.2 Framework-agnostic + Adapter
 
-동일 원본 정의를 여러 포맷으로 변환하는 `export/import` 구조를 채택합니다.
+동일 원본 정의를 여러 포맷으로 변환하는 `export/import` 구조를 채택함.
 
 - 설계 의도: 실행 엔진(lock-in)보다 정의 자산의 재사용성 극대화
 - 결과: 조직별 도구 스택이 달라도 동일 에이전트 자산 공유 가능
@@ -32,7 +32,7 @@ GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니
 
 ### 2.3 Compliance-first 확장
 
-`agent.yaml`에 `compliance`와 `segregation_of_duties`를 1급 필드로 포함합니다.
+`agent.yaml`에 `compliance`와 `segregation_of_duties`를 1급 필드로 포함함.
 
 - 일반 AI 에이전트 도구가 후순위로 다루는 규제/감사 요구를 사전 구조화
 - FINRA, Federal Reserve, SEC, CFPB, EU AI Act, UK FCA 등 금융/규제 프레임워크 지원
@@ -40,7 +40,7 @@ GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니
 
 ### 2.4 Progressive Disclosure
 
-스킬 로딩을 3단계로 나누어 컨텍스트 효율을 극대화합니다.
+스킬 로딩을 3단계로 나누어 컨텍스트 효율을 극대화함.
 
 - Tier 1: 메타데이터만 (~100 토큰) — 라우팅/리스팅용
 - Tier 2: 전체 지침 (<5000 토큰) — 활성 사용
@@ -57,7 +57,7 @@ GitAgent는 런타임 프레임워크 자체를 통일하려는 접근이 아니
 | `agent.yaml` | Machine-readable manifest | JSON Schema로 엄격 검증, 유일한 강제 스키마 |
 | `SOUL.md`    | 에이전트 정체성, 성격, 커뮤니케이션 스타일  | Human-readable, 비어있으면 검증 실패    |
 
-`agent.yaml`은 스펙에서 유일하게 스키마 검증이 강제되는 파일입니다. 핵심 필드:
+`agent.yaml`은 스펙에서 유일하게 스키마 검증이 강제되는 파일임. 핵심 필드:
 
 ```yaml
 # Required
@@ -135,7 +135,7 @@ compliance: { ... }          # 가장 복잡한 섹션
 
 ### 4.1 진입점 (`src/index.ts`)
 
-Commander.js 기반으로 11개 커맨드를 등록합니다:
+Commander.js 기반으로 11개 커맨드를 등록함:
 
 ```text
 init, validate, info, export, import,
@@ -176,8 +176,8 @@ interface AgentManifest {
 }
 ```
 
-`ComplianceConfig`은 supervision, recordkeeping, model_risk, data_governance, communications, vendor_management,
-segregation_of_duties 7개 하위 섹션으로 구성됩니다.
+`ComplianceConfig`는 supervision, recordkeeping, model_risk, data_governance, communications, vendor_management,
+segregation_of_duties 7개 하위 섹션으로 구성됨.
 
 ---
 
@@ -185,7 +185,7 @@ segregation_of_duties 7개 하위 섹션으로 구성됩니다.
 
 ### 5.1 `init` — 스캐폴딩
 
-`src/commands/init.ts`에서 `minimal/standard/full` 템플릿을 생성합니다.
+`src/commands/init.ts`에서 `minimal/standard/full` 템플릿을 생성함.
 
 | 템플릿      | 생성 파일                                                 | 대상            |
 |----------|-------------------------------------------------------|---------------|
@@ -193,11 +193,11 @@ segregation_of_duties 7개 하위 섹션으로 구성됩니다.
 | standard | + RULES.md, AGENTS.md, skills/, knowledge/, memory/   | 일반 개발팀        |
 | full     | + DUTIES.md, compliance/, hooks/, config/, workflows/ | 규제 환경, 엔터프라이즈 |
 
-템플릿이 곧 조직 성숙도 선택지 역할을 합니다.
+템플릿이 곧 조직 성숙도 선택지 역할을 함.
 
 ### 5.2 `validate` — 정적 품질 게이트
 
-`src/commands/validate.ts`는 6단계 다층 검증을 수행합니다:
+`src/commands/validate.ts`는 6단계 다층 검증을 수행함:
 
 1. **agent.yaml 스키마 검증**: AJV로 JSON Schema 대조
 2. **SOUL.md 검증**: 파일 존재, 비어있지 않음, 제목만 있지 않음
@@ -206,7 +206,7 @@ segregation_of_duties 7개 하위 섹션으로 구성됩니다.
 5. **hooks/tools YAML 스키마**: hooks.yaml, tools/*.yaml 각각 검증, script 파일 존재 확인
 6. **컴플라이언스 검증** (`--compliance`): risk tier 요구사항, 프레임워크별 규칙, SOD 충돌 탐지
 
-SOD 검증이 특히 정교합니다:
+SOD 검증이 특히 정교함:
 
 - 최소 2개 역할 정의 필수
 - 충돌 쌍이 유효한 role ID 참조
@@ -214,11 +214,11 @@ SOD 검증이 특히 정교합니다:
 - 핸드오프에 최소 2개 distinct 역할 필요
 - strict 모드에서는 충돌 시 에러, advisory 모드에서는 경고
 
-CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지는 구성"을 대부분 사전에 차단할 수 있습니다.
+CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지는 구성"을 대부분 사전에 차단할 수 있음.
 
 ### 5.3 `export` — 포맷 변환
 
-`src/commands/export.ts` + `src/adapters/`에서 13개 포맷으로 변환합니다.
+`src/commands/export.ts` + `src/adapters/`에서 13개 포맷으로 변환함.
 
 **공통 빌드 과정** (system-prompt adapter 기준):
 
@@ -236,7 +236,7 @@ CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지�
 
 **Claude Code 어댑터** (`claude-code.ts`)의 차이점:
 
-- Skills를 메타데이터만 포함 (progressive disclosure — 전체 지침은 파일 참조로 안내)
+- Skills의 메타데이터만 포함 (progressive disclosure — 전체 지침은 파일 참조로 안내)
 - Compliance를 structured markdown 섹션으로 변환
 - knowledge의 always_load 문서를 `## Reference:` 섹션으로 삽입
 - Model 선호를 HTML 코멘트로 포함
@@ -249,7 +249,7 @@ CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지�
 
 ### 5.4 `run` — 실행 환경 연결
 
-`src/commands/run.ts`는 레포 해석 → 매니페스트 로딩 → 어댑터 선택 → 실행의 흐름을 거칩니다.
+`src/commands/run.ts`는 레포 해석 → 매니페스트 로딩 → 어댑터 선택 → 실행의 흐름을 거침.
 
 **Claude Code runner** (`src/runners/claude.ts`)의 상세 흐름:
 
@@ -282,7 +282,7 @@ CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지�
 
 ### 5.5 `import` — 외부 포맷 변환
 
-다음 외부 포맷에서 GitAgent 형식으로 변환합니다.
+다음 외부 포맷에서 GitAgent 형식으로 변환함.
 
 - claude: Claude Code 설정에서 시스템 프롬프트 추출 → SOUL.md, 규칙 → RULES.md
 - cursor: .cursor/rules/*.mdc 파싱
@@ -293,7 +293,7 @@ CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지�
 
 ### 5.6 `audit` — 컴플라이언스 점검
 
-`src/commands/audit.ts`에서 규제 준수 체크리스트를 생성합니다.
+`src/commands/audit.ts`에서 규제 준수 체크리스트를 생성함.
 
 - FINRA 3110/4511 점검
 - SR 11-7 모델 리스크 요소 확인
@@ -307,7 +307,7 @@ CI에서 `gitagent validate --compliance`를 강제하면 "실행 전에 깨지�
 
 ### 6.1 Agent Skills Open Standard
 
-GitAgent는 agentskills.io 표준을 채택하여 스킬을 정의합니다.
+GitAgent는 agentskills.io 표준을 채택하여 스킬을 정의함.
 
 **SKILL.md 구조**:
 
@@ -350,13 +350,13 @@ skills/<name>/
 
 ### 6.3 마켓플레이스 연동
 
-`gitagent skills search/install/list/info` 명령으로 외부 레지스트리(skillsmp, github, local)에서 스킬을 검색하고 설치합니다.
+`gitagent skills search/install/list/info` 명령으로 외부 레지스트리(skillsmp, github, local)에서 스킬을 검색하고 설치함.
 
 ---
 
 ## 7. Tool 시스템
 
-MCP 호환 도구를 YAML로 정의합니다.
+MCP 호환 도구를 YAML로 정의함.
 
 ```yaml
 name: search-regulations
@@ -391,7 +391,7 @@ annotations:
 
 ## 8. Workflow 시스템
 
-결정론적 다단계 절차를 YAML로 정의합니다. LLM이 아닌 명시적 의존성 그래프가 실행 순서를 제어합니다.
+결정론적 다단계 절차를 YAML로 정의함. LLM이 아닌 명시적 의존성 그래프가 실행 순서를 제어함.
 
 핵심 기능:
 
@@ -408,7 +408,7 @@ annotations:
 
 ### 9.1 이벤트 타입
 
-7가지 라이프사이클 이벤트를 지원합니다:
+7가지 라이프사이클 이벤트를 지원함:
 
 | 이벤트                | 시점      | 주 용도                   |
 |--------------------|---------|------------------------|
@@ -422,7 +422,7 @@ annotations:
 
 ### 9.2 I/O 프로토콜
 
-hook 스크립트는 JSON over stdin/stdout 프로토콜을 사용합니다:
+hook 스크립트는 JSON over stdin/stdout 프로토콜을 사용함:
 
 **입력**: `{ event, timestamp, data: { tool_name, arguments }, session: { id, agent, model_version } }`
 
@@ -430,7 +430,7 @@ hook 스크립트는 JSON over stdin/stdout 프로토콜을 사용합니다:
 
 ### 9.3 fail_open / fail_closed
 
-각 hook에 `fail_open` 플래그로 hook 실패 시 동작을 제어합니다:
+각 hook의 `fail_open` 플래그로 hook 실패 시 동작을 제어함:
 
 - `fail_open: false` (기본): hook 실패 시 실행 중단 — 컴플라이언스 필수 hook에 적합
 - `fail_open: true`: hook 실패 시 계속 진행 — 비필수 로깅 hook에 적합
@@ -439,7 +439,7 @@ hook 스크립트는 JSON over stdin/stdout 프로토콜을 사용합니다:
 
 ## 10. Memory 시스템
 
-계층적 메모리 구조로 세션 간 상태를 유지합니다.
+계층적 메모리 구조로 세션 간 상태를 유지함.
 
 ```yaml
 # memory/memory.yaml
@@ -458,7 +458,7 @@ update_triggers:
   - on_explicit_save
 ```
 
-패턴: 에이전트는 시작 시 MEMORY.md를 읽어 이전 컨텍스트를 복원하고, 세션 종료 시 상태를 업데이트합니다.
+패턴: 에이전트는 시작 시 MEMORY.md를 읽어 이전 컨텍스트를 복원하고, 세션 종료 시 상태를 업데이트함.
 
 ---
 
@@ -487,7 +487,7 @@ update_triggers:
 
 ### 11.3 Segregation of Duties (SOD)
 
-멀티에이전트 시스템에서 역할 분리를 강제합니다:
+멀티에이전트 시스템에서 역할 분리를 강제함:
 
 - **roles**: 최소 2개, 고유 ID, permissions 목록
 - **conflicts**: 동일 에이전트가 동시에 보유할 수 없는 역할 쌍
@@ -621,7 +621,7 @@ update_triggers:
 
 ## 17. 이 프로젝트에 주는 시사점
 
-이 저장소(agentic-workflows) 관점에서 GitAgent는 다음 참고 가치를 제공합니다:
+이 저장소(agentic-workflows) 관점에서 GitAgent는 다음 참고 가치를 제공함:
 
 1. **"에이전트 정의 레이어"와 "실행 레이어" 분리 패턴** — 메타 표준 전략
 2. **규제/감사 요구를 스키마로 승격하는 방법** — compliance-first 설계
@@ -629,7 +629,7 @@ update_triggers:
 4. **Git 기반 에이전트 운영(versioning, branching, CI/CD)의 구체적 구현**
 5. **다중 프레임워크 어댑터의 실용적 변환 전략과 한계 문서화**
 
-단일 에이전트 구현체 분석을 넘어, 여러 에이전트 런타임을 아우르는 **메타 표준 전략** 사례로 볼 수 있습니다.
+단일 에이전트 구현체 분석을 넘어, 여러 에이전트 런타임을 아우르는 **메타 표준 전략** 사례로 볼 수 있음.
 
 ---
 

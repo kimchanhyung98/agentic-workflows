@@ -1,8 +1,8 @@
 # GitAgent 분석
 
-`open-gitagent/gitagent`의 설계 및 실행 플로우를 공개 문서와 소스 기준으로 정리한 문서입니다.
+`open-gitagent/gitagent`의 설계 및 실행 플로우를 공개 문서와 소스 기준으로 정리한 문서임.
 
-GitAgent는 "리포지토리 자체를 에이전트 정의"로 취급하는 **git-native, framework-agnostic 에이전트 표준 + CLI**를 제공합니다.
+GitAgent는 "리포지토리 자체를 에이전트 정의"로 취급하는 **git-native, framework-agnostic 에이전트 표준 + CLI**를 제공함.
 
 ---
 

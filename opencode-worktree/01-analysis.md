@@ -14,17 +14,17 @@
 
 ### 핵심 아이디어
 
-이 플러그인은 AI 에이전트에게 **단 2개의 도구**만 노출합니다.
+이 플러그인은 AI 에이전트에게 **단 2개의 도구**만 노출함.
 
 | 도구                | 인자                      | 역할                                  |
 |-------------------|-------------------------|-------------------------------------|
 | `worktree_create` | `branch`, `baseBranch?` | 격리된 환경 생성 → 파일 동기화 → 세션 포크 → 터미널 스폰 |
 | `worktree_delete` | `reason`                | 삭제 예약 → 세션 종료 후 자동 커밋 → 정리          |
 
-내부적으로 6단계 생성 파이프라인과 5단계 정리 프로세스를 캡슐화하여, AI 에이전트가 격리 환경의 복잡한 세부사항을 알 필요 없이 사용할 수 있습니다.
+내부적으로 6단계 생성 파이프라인과 5단계 정리 프로세스를 캡슐화하여, AI 에이전트가 격리 환경의 복잡한 세부사항을 알 필요 없이 사용할 수 있음.
 
-> **참고**: [git worktree](https://git-scm.com/docs/git-worktree)는 하나의 리포지토리에서 여러 작업 트리를 동시에 체크아웃할 수 있게 해주는 git 기본 기능입니다.
-> 이 플러그인은 그 위에 자동화 계층을 추가합니다.
+> **참고**: [git worktree](https://git-scm.com/docs/git-worktree)는 하나의 리포지토리에서 여러 작업 트리를 동시에 체크아웃할 수 있게 해주는 git 기본 기능임.
+> 이 플러그인은 그 위에 자동화 계층을 추가함.
 
 ---
 
@@ -63,18 +63,18 @@ src/plugin/
 
 ### 초기화 흐름
 
-플러그인이 로드되면 다음 순서로 초기화됩니다.
+플러그인이 로드되면 다음 순서로 초기화됨.
 
 1. **Plugin Context 수신**: OpenCode가 `directory`(프로젝트 루트)와 `client`(API 클라이언트)를 전달
 2. **SQLite 초기화**: `initStateDb`가 DB 파일 생성, WAL 모드 설정, 스키마 마이그레이션 수행
 3. **프로세스 정리 핸들러 등록**: `SIGTERM`, `SIGINT`, `beforeExit` 시그널에 WAL 체크포인트 + DB 닫기 핸들러 등록
 4. **도구 및 이벤트 핸들러 등록**: `worktree_create`, `worktree_delete` 도구와 `session.idle` 이벤트 리스너 반환
 
-DB 초기화에는 최대 3회 재시도(100ms 간격)가 포함되어, 일시적 파일시스템 오류에 대한 복원력을 확보합니다.
+DB 초기화에는 최대 3회 재시도(100ms 간격)가 포함되어, 일시적 파일시스템 오류에 대한 복원력을 확보함.
 
 ### 공유 라이브러리 재사용
 
-`kdco-primitives/`는 이 플러그인에만 국한되지 않고, 동일 레지스트리의 다른 플러그인들과 공유됩니다.
+`kdco-primitives/`는 이 플러그인에만 국한되지 않고, 동일 레지스트리의 다른 플러그인들과 공유됨.
 
 - [opencode-workspace](https://github.com/kdcokenny/opencode-workspace) — 구조화된 계획 + 규칙 주입
 - [opencode-background-agents](https://github.com/kdcokenny/opencode-background-agents) — 비동기 위임 + 영속 출력
@@ -86,29 +86,29 @@ DB 초기화에는 최대 3회 재시도(100ms 간격)가 포함되어, 일시�
 
 > 다이어그램: [00-diagram.md § 2](/opencode-worktree/00-diagram.md#2-worktree-생성-파이프라인)
 
-`worktree_create`는 6단계 파이프라인으로 실행됩니다.
+`worktree_create`는 6단계 파이프라인으로 실행됨.
 
 ### 1단계: 경계 검증
 
-[Zod](https://zod.dev/) 스키마 `branchNameSchema`로 브랜치명을 검증합니다. 검증 실패 시 즉시 오류를 반환하며, 다음 단계로 진행하지 않습니다. 상세한 검증
-항목은 [§ 8. 보안 검증 체인](#8-보안-검증-체인)을 참조하세요.
+[Zod](https://zod.dev/) 스키마 `branchNameSchema`로 브랜치명을 검증함. 검증 실패 시 즉시 오류를 반환하며, 다음 단계로 진행하지 않음. 상세한 검증
+항목은 [§ 8. 보안 검증 체인](#8-보안-검증-체인)을 참조.
 
 ### 2단계: Git Worktree 생성
 
-`git rev-parse --verify`로 브랜치 존재 여부를 확인한 뒤, 분기합니다.
+`git rev-parse --verify`로 브랜치 존재 여부를 확인한 뒤, 분기함.
 
 - **브랜치 존재**: `git worktree add <path> <branch>` — 기존 브랜치 체크아웃
 - **브랜치 미존재**: `git worktree add -b <branch> <path> <base>` — baseBranch(기본값: HEAD)에서 새 브랜치 생성
 
-Worktree 경로는 리포지토리 외부(`~/.local/share/opencode/worktree/<project-id>/<branch>/`)에 생성되어 프로젝트 디렉토리를 오염시키지 않습니다.
+Worktree 경로는 리포지토리 외부(`~/.local/share/opencode/worktree/<project-id>/<branch>/`)에 생성되어 프로젝트 디렉토리를 오염시키지 않음.
 
 ### 3단계: 파일 동기화
 
-`.opencode/worktree.jsonc` 설정에 따라 파일을 동기화합니다. 자세한 내용은 [§ 7. 파일 동기화 전략](#7-파일-동기화-전략)을 참조하세요.
+`.opencode/worktree.jsonc` 설정에 따라 파일을 동기화함. 자세한 내용은 [§ 7. 파일 동기화 전략](#7-파일-동기화-전략)을 참조.
 
 ### 4단계: 세션 포크 + 컨텍스트 전파
 
-단순 복제가 아닌 **세션 포크**를 수행합니다.
+단순 복제가 아닌 **세션 포크**를 수행함.
 
 ```typescript
 async function forkWithContext(client, sessionId, projectId, getRootSessionIdFn) {
@@ -126,19 +126,19 @@ async function forkWithContext(client, sessionId, projectId, getRootSessionIdFn)
 
 핵심 설계 결정:
 
-- **루트 세션 탐색**: `parentID` 체인을 최대 10단계까지 순회하여 최상위 세션을 찾고, 그 세션의 plan과 delegation을 복사합니다. 이를 통해 서브에이전트에서 생성한 worktree도 원본
-  세션의 맥락을 유지합니다.
-- **원자적 롤백**: 복사 중 실패 시, 이미 생성된 포크 세션과 디렉토리를 모두 정리합니다. 부분적으로 생성된 상태가 남지 않습니다.
+- **루트 세션 탐색**: `parentID` 체인을 최대 10단계까지 순회하여 최상위 세션을 찾고, 그 세션의 plan과 delegation을 복사함. 이를 통해 서브에이전트에서 생성한 worktree도 원본
+  세션의 맥락을 유지함.
+- **원자적 롤백**: 복사 중 실패 시, 이미 생성된 포크 세션과 디렉토리를 모두 정리함. 부분적으로 생성된 상태가 남지 않음.
 
 ### 5단계: 터미널 스폰
 
-`openTerminal`이 플랫폼을 자동 감지하여 적절한 터미널을 스폰합니다. 새 터미널에서 `opencode --session <forked-id>` 명령이 실행됩니다. 자세한
-내용은 [§ 5. 크로스 플랫폼 터미널 감지](#5-크로스-플랫폼-터미널-감지)를 참조하세요.
+`openTerminal`이 플랫폼을 자동 감지하여 적절한 터미널을 스폰함. 새 터미널에서 `opencode --session <forked-id>` 명령이 실행됨. 자세한
+내용은 [§ 5. 크로스 플랫폼 터미널 감지](#5-크로스-플랫폼-터미널-감지)를 참조.
 
 ### 6단계: DB 기록
 
-`addSession`으로 세션 정보(id, branch, path, createdAt)를 SQLite에 기록합니다. 이 정보는 이후 `worktree_delete`에서 현재 세션의 worktree를 찾는 데
-사용됩니다.
+`addSession`으로 세션 정보(id, branch, path, createdAt)를 SQLite에 기록함. 이 정보는 이후 `worktree_delete`에서 현재 세션의 worktree를 찾는 데
+사용됨.
 
 ---
 
@@ -148,8 +148,8 @@ async function forkWithContext(client, sessionId, projectId, getRootSessionIdFn)
 
 ### 지연 삭제 패턴 (Deferred Delete)
 
-`worktree_delete`는 즉시 삭제하지 않고 **삭제를 예약**합니다. 이 패턴은 [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)의
-지연 실행 개념과 유사합니다.
+`worktree_delete`는 즉시 삭제하지 않고 **삭제를 예약**함. 이 패턴은 [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)의
+지연 실행 개념과 유사함.
 
 1. `worktree_delete` 호출 → `setPendingDelete` (DB에 삭제 의도 기록)
 2. 응답 즉시 반환: "세션 종료 시 정리됩니다"
@@ -163,7 +163,7 @@ async function forkWithContext(client, sessionId, projectId, getRootSessionIdFn)
 
 ### 정리 프로세스
 
-`session.idle` 이벤트 핸들러에서 5단계로 실행됩니다.
+`session.idle` 이벤트 핸들러에서 5단계로 실행됨.
 
 | 단계 | 명령                            | 목적                                     |
 |----|-------------------------------|----------------------------------------|
@@ -175,7 +175,7 @@ async function forkWithContext(client, sessionId, projectId, getRootSessionIdFn)
 
 ### 싱글턴 Pending 연산
 
-`pending_operations` 테이블은 `CHECK(id = 1)` 제약으로 **항상 최대 1개의 보류 작업**만 유지합니다.
+`pending_operations` 테이블은 `CHECK(id = 1)` 제약으로 **항상 최대 1개의 보류 작업**만 유지함.
 
 ```sql
 CREATE TABLE IF NOT EXISTS pending_operations (
@@ -187,13 +187,13 @@ CREATE TABLE IF NOT EXISTS pending_operations (
 );
 ```
 
-- **Last-Write-Wins**: 새 요청이 기존 보류 작업을 대체하며, 대체 시 경고 로그를 기록합니다.
-- `spawn`과 `delete`가 동일 슬롯을 공유하므로 충돌 없이 상태 전이가 보장됩니다.
-- `INSERT OR REPLACE`로 원자적 업데이트를 수행합니다.
+- **Last-Write-Wins**: 새 요청이 기존 보류 작업을 대체하며, 대체 시 경고 로그를 기록함.
+- `spawn`과 `delete`가 동일 슬롯을 공유하므로 충돌 없이 상태 전이가 보장됨.
+- `INSERT OR REPLACE`로 원자적 업데이트를 수행함.
 
 ### Result 타입 패턴
 
-git 명령 실행에는 예외 대신 `Result<T, E>` 유니온 타입을 사용합니다.
+git 명령 실행에는 예외 대신 `Result<T, E>` 유니온 타입을 사용함.
 
 ```typescript
 type Result<T, E> = OkResult<T> | ErrResult<E>
@@ -205,8 +205,8 @@ async function git(args: string[], cwd: string): Promise<Result<string, string>>
 }
 ```
 
-git 명령은 실패가 빈번하므로(브랜치 미존재, 권한 부족 등) 예외보다 Result가 적합합니다. 호출부에서 `if (!result.ok)` 패턴으로 분기하여 명시적 에러 핸들링을 강제합니다.
-Rust의 [`Result<T, E>`](https://doc.rust-lang.org/std/result/)에서 영감을 받은 패턴입니다.
+git 명령은 실패가 빈번하므로(브랜치 미존재, 권한 부족 등) 예외보다 Result가 적합함. 호출부에서 `if (!result.ok)` 패턴으로 분기하여 명시적 에러 핸들링을 강제함.
+Rust의 [`Result<T, E>`](https://doc.rust-lang.org/std/result/)에서 영감을 받은 패턴임.
 
 ---
 
@@ -216,7 +216,7 @@ Rust의 [`Result<T, E>`](https://doc.rust-lang.org/std/result/)에서 영감을 
 
 ### 감지 우선순위
 
-`detectTerminalType`은 다음 순서로 환경을 감지합니다.
+`detectTerminalType`은 다음 순서로 환경을 감지함.
 
 | 우선순위 | 감지 대상 | 방법                                 | 비고                                               |
 |------|-------|------------------------------------|--------------------------------------------------|
@@ -225,11 +225,11 @@ Rust의 [`Result<T, E>`](https://doc.rust-lang.org/std/result/)에서 영감을 
 | 3    | WSL   | `WSL_DISTRO_NAME` / `os.release()` | Windows Terminal 인터롭                             |
 | 4    | 플랫폼별  | `process.platform`                 | macOS / Linux / Windows                          |
 
-tmux가 최우선인 이유는, 사용자가 어떤 플랫폼이든 tmux 안에서 작업 중이라면 새 tmux 윈도우를 여는 것이 가장 자연스러운 경험이기 때문입니다.
+tmux가 최우선인 이유는, 사용자가 어떤 플랫폼이든 tmux 안에서 작업 중이라면 새 tmux 윈도우를 여는 것이 가장 자연스러운 경험이기 때문임.
 
 ### macOS 터미널별 스폰 전략
 
-각 터미널의 고유 특성에 맞춘 개별 구현을 제공합니다.
+각 터미널의 고유 특성에 맞춘 개별 구현을 제공함.
 
 | 터미널          | 감지 환경변수                 | 스폰 방식                             | 특이사항                                                                 |
 |--------------|-------------------------|-----------------------------------|----------------------------------------------------------------------|
@@ -242,7 +242,7 @@ tmux가 최우선인 이유는, 사용자가 어떤 플랫폼이든 tmux 안에�
 
 ### Linux 터미널 감지 (6단계 폴백 체인)
 
-Linux는 DE(Desktop Environment)에 따라 기본 터미널이 다르므로, 6단계 폴백 체인을 사용합니다.
+Linux는 DE(Desktop Environment)에 따라 기본 터미널이 다르므로, 6단계 폴백 체인을 사용함.
 
 | 단계 | 대상                  | 감지 방법                                                                               |
 |----|---------------------|-------------------------------------------------------------------------------------|
@@ -255,7 +255,7 @@ Linux는 DE(Desktop Environment)에 따라 기본 터미널이 다르므로, 6�
 
 ### tmux 뮤텍스 보호
 
-tmux 서버는 단일 스레드이므로 동시 명령이 소켓 레이스를 일으킬 수 있습니다. `Mutex` 클래스로 이를 방지합니다.
+tmux 서버는 단일 스레드이므로 동시 명령이 소켓 레이스를 일으킬 수 있음. `Mutex` 클래스로 이를 방지함.
 
 ```typescript
 const tmuxMutex = new Mutex()  // 프로세스당 싱글턴
@@ -278,7 +278,7 @@ async function openTmuxWindow(options) {
 
 > 다이어그램: [00-diagram.md § 6](/opencode-worktree/00-diagram.md#6-임시-스크립트-생명주기)
 
-터미널 스폰 시 임시 bash/batch 스크립트를 생성하는데, 터미널이 **동기**인지 **비동기(detached)**인지에 따라 정리 전략이 달라집니다. 이 구분은 레이스 컨디션을 방지하기 위한 핵심 설계입니다.
+터미널 스폰 시 임시 bash/batch 스크립트를 생성하는데, 터미널이 **동기**인지 **비동기(detached)**인지에 따라 정리 전략이 달라짐. 이 구분은 레이스 컨디션을 방지하기 위한 핵심 설계임.
 
 ### 동기 터미널 (Terminal.app)
 
@@ -295,7 +295,7 @@ async function withTempScript<T>(scriptContent, fn, extension) {
 }
 ```
 
-`try-finally` 패턴으로 스크립트 파일이 반드시 정리됩니다. 프로세스가 완료될 때까지 대기하므로 `finally` 블록이 안전하게 실행됩니다.
+`try-finally` 패턴으로 스크립트 파일이 반드시 정리됨. 프로세스가 완료될 때까지 대기하므로 `finally` 블록이 안전하게 실행됨.
 
 ### 비동기 터미널 (대부분)
 
@@ -306,8 +306,8 @@ cd "/path/to/worktree" && opencode --session abc123
 exec bash
 ```
 
-detached 프로세스에서는 `withTempScript`를 **사용하면 안 됩니다**. `finally` 블록이 detached 프로세스가 스크립트를 읽기 전에 실행되어, 아직 필요한 파일이 삭제되는 레이스
-컨디션이 발생합니다. 대신 스크립트 자체에 `trap` 기반 자기 삭제를 삽입합니다.
+detached 프로세스에서는 `withTempScript`를 **사용하면 안 됨**. `finally` 블록이 detached 프로세스가 스크립트를 읽기 전에 실행되어, 아직 필요한 파일이 삭제되는 레이스
+컨디션이 발생함. 대신 스크립트 자체에 `trap` 기반 자기 삭제를 삽입함.
 
 ### Windows (.bat)
 
@@ -319,11 +319,11 @@ cmd /k
 (goto) 2>nul & del "%~f0"
 ```
 
-batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행합니다.
+batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행함.
 
 ### 실패 시 정리
 
-스폰이 실패한 경우, orphaned 스크립트가 남을 수 있습니다. 각 터미널 구현의 `catch` 블록에서 `detachedScriptPath`를 추적하고 수동으로 삭제합니다.
+스폰이 실패한 경우, orphaned 스크립트가 남을 수 있음. 각 터미널 구현의 `catch` 블록에서 `detachedScriptPath`를 추적하고 수동으로 삭제함.
 
 ---
 
@@ -350,7 +350,7 @@ batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행
 }
 ```
 
-첫 사용 시 설정 파일이 자동 생성됩니다. `jsonc-parser`로 주석 포함 JSONC를 파싱하고, Zod 스키마로 런타임 검증을 수행합니다. 누락 필드는 기본값이 적용됩니다.
+첫 사용 시 설정 파일이 자동 생성됨. `jsonc-parser`로 주석 포함 JSONC를 파싱하고, Zod 스키마로 런타임 검증을 수행함. 누락 필드는 기본값이 적용됨.
 
 ### 동기화 방식 비교
 
@@ -362,7 +362,7 @@ batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행
 
 ### 경로 안전성 검증
 
-모든 동기화 경로는 `isPathSafe`로 검증됩니다. 자세한 내용은 [§ 8. 보안 검증 체인](#8-보안-검증-체인)의 Layer 2를 참조하세요.
+모든 동기화 경로는 `isPathSafe`로 검증됨. 자세한 내용은 [§ 8. 보안 검증 체인](#8-보안-검증-체인)의 Layer 2를 참조.
 
 ### 훅 시스템
 
@@ -371,7 +371,7 @@ batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행
 | `postCreate` | worktree 생성 + 파일 동기화 직후 | 의존성 설치, 컨테이너 시작, DB 마이그레이션 등 |
 | `preDelete`  | worktree 삭제 직전          | 컨테이너 중지, 리소스 해제, 상태 백업 등     |
 
-훅 명령은 `bash -c`로 실행되며, worktree 디렉토리를 `cwd`로 사용합니다. 실패 시 경고 로그를 남기지만 전체 프로세스를 중단하지는 않습니다.
+훅 명령은 `bash -c`로 실행되며, worktree 디렉토리를 `cwd`로 사용함. 실패 시 경고 로그를 남기지만 전체 프로세스를 중단하지는 않음.
 
 ---
 
@@ -379,11 +379,11 @@ batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행
 
 > 다이어그램: [00-diagram.md § 8](/opencode-worktree/00-diagram.md#8-보안-검증-체인)
 
-3개 레이어의 다층 방어 체계를 구성합니다.
+3개 레이어의 다층 방어 체계를 구성함.
 
 ### Layer 1: 브랜치명 검증 (Zod Schema)
 
-[Zod](https://zod.dev/) 스키마 `branchNameSchema`로 API 경계에서 입력을 검증합니다.
+[Zod](https://zod.dev/) 스키마 `branchNameSchema`로 API 경계에서 입력을 검증함.
 
 | 검증 항목          | 차단 대상               | 보안 목적                                                          |
 |----------------|---------------------|----------------------------------------------------------------|
@@ -400,7 +400,7 @@ batch 파일의 `(goto) 2>nul & del "%~f0"` 관용구로 자기 삭제를 수행
 
 ### Layer 2: 경로 안전성 검증
 
-파일 동기화 시 경로 순회 공격을 방지합니다.
+파일 동기화 시 경로 순회 공격을 방지함.
 
 ```typescript
 function isPathSafe(filePath: string, baseDir: string): boolean {
@@ -411,7 +411,7 @@ function isPathSafe(filePath: string, baseDir: string): boolean {
 }
 ```
 
-3단계 검증(절대경로 → `..` 포함 → resolve 후 이탈 확인)으로 symlink를 통한 우회까지 방지합니다.
+3단계 검증(절대경로 → `..` 포함 → resolve 후 이탈 확인)으로 symlink를 통한 우회까지 방지함.
 
 ### Layer 3: 실행 보안
 
@@ -422,8 +422,8 @@ function isPathSafe(filePath: string, baseDir: string): boolean {
 | 플랫폼별 이스케이프  | `escapeBash` / `escapeBatch` / `escapeAppleScript` | 각 셸의 메타문자 이스케이프                                                 |
 | 훅 명령        | `bash -c command`                                  | 사용자 정의 명령 (설정 파일 신뢰 기반)                                         |
 
-> **주의**: 훅 명령은 `.opencode/worktree.jsonc`에서 직접 읽어 `bash -c`로 실행합니다. 악성 설정 파일에 의한 명령 인젝션이 이론적으로 가능하지만, 이는 사용자가 직접 작성하는
-> 설정이므로 신뢰 기반으로 처리합니다.
+> **주의**: 훅 명령은 `.opencode/worktree.jsonc`에서 직접 읽어 `bash -c`로 실행함. 악성 설정 파일에 의한 명령 인젝션이 이론적으로 가능하지만, 이는 사용자가 직접 작성하는
+> 설정이므로 신뢰 기반으로 처리함.
 
 ---
 
@@ -433,7 +433,7 @@ function isPathSafe(filePath: string, baseDir: string): boolean {
 
 ### 생성 전략
 
-프로젝트 ID는 모든 worktree가 **동일한 프로젝트 데이터를 공유**하기 위한 안정적 식별자입니다.
+프로젝트 ID는 모든 worktree가 **동일한 프로젝트 데이터를 공유**하기 위한 안정적 식별자임.
 
 | 전략            | 조건                         | 결과                | 안정성                |
 |---------------|----------------------------|-------------------|--------------------|
@@ -442,14 +442,14 @@ function isPathSafe(filePath: string, baseDir: string): boolean {
 
 ### git worktree 지원
 
-`.git`이 파일인 경우(worktree 내부에서 실행 시), `gitdir:` 참조를 해석하여 공유 `.git` 디렉토리를 찾습니다. `commondir` 파일이 있으면 그 경로를, 없으면 `../..`를
-사용합니다. 이를 통해 모든 worktree에서 동일한 프로젝트 ID가 생성됩니다.
+`.git`이 파일인 경우(worktree 내부에서 실행 시), `gitdir:` 참조를 해석하여 공유 `.git` 디렉토리를 찾음. `commondir` 파일이 있으면 그 경로를, 없으면 `../..`를
+사용함. 이를 통해 모든 worktree에서 동일한 프로젝트 ID가 생성됨.
 
 ### 캐싱
 
-생성된 프로젝트 ID는 `.git/opencode` 파일에 캐싱됩니다. 다음 호출 시 캐시를 먼저 확인하고, 유효한 형식(40자 또는 16자 hex)이면 즉시 반환합니다.
+생성된 프로젝트 ID는 `.git/opencode` 파일에 캐싱됨. 다음 호출 시 캐시를 먼저 확인하고, 유효한 형식(40자 또는 16자 hex)이면 즉시 반환함.
 
-`git rev-list` 명령에는 5초 타임아웃(`withTimeout`)이 적용되어, 네트워크 파일시스템 등에서의 행(hang)을 방지합니다.
+`git rev-list` 명령에는 5초 타임아웃(`withTimeout`)이 적용되어, 네트워크 파일시스템 등에서의 행(hang)을 방지함.
 
 ---
 
@@ -484,17 +484,17 @@ function isPathSafe(filePath: string, baseDir: string): boolean {
 
 ### 강점
 
-**최소 인터페이스 원칙** — 도구가 2개(`worktree_create`, `worktree_delete`)뿐이므로 AI 에이전트의 도구 선택 부담이 최소화됩니다. 6단계 생성 파이프라인과 5단계 정리 프로세스가
-내부로 캡슐화되어, AI가 "브랜치를 만들어 실험해봐"라는 단순한 의도만으로 격리 환경을 활용할 수 있습니다.
+**최소 인터페이스 원칙** — 도구가 2개(`worktree_create`, `worktree_delete`)뿐이므로 AI 에이전트의 도구 선택 부담이 최소화됨. 6단계 생성 파이프라인과 5단계 정리 프로세스가
+내부로 캡슐화되어, AI가 "브랜치를 만들어 실험해봐"라는 단순한 의도만으로 격리 환경을 활용할 수 있음.
 
-**크로스 플랫폼 완성도** — macOS 6종, Linux 10종, Windows/WSL/tmux를 지원합니다. 각 터미널의 고유 특성(Ghostty의 인라인 명령, Kitty의 원격 제어, iTerm의
-AppleScript, tmux의 뮤텍스 보호)에 맞춘 개별 구현을 제공하며, 6단계 Linux 폴백 체인으로 거의 모든 DE를 커버합니다.
+**크로스 플랫폼 완성도** — macOS 6종, Linux 10종, Windows/WSL/tmux를 지원함. 각 터미널의 고유 특성(Ghostty의 인라인 명령, Kitty의 원격 제어, iTerm의
+AppleScript, tmux의 뮤텍스 보호)에 맞춘 개별 구현을 제공하며, 6단계 Linux 폴백 체인으로 거의 모든 DE를 커버함.
 
 **안전한 생명주기** — 지연 삭제로 작업 중 데이터 손실 방지, 자동 `git commit`으로 미커밋 변경 보존, 프로세스 종료 시 WAL 체크포인트와 DB 닫기, 세션 포크 실패 시 원자적 롤백까지 —
-생명주기 전반에 걸쳐 데이터 안전을 보장합니다.
+생명주기 전반에 걸쳐 데이터 안전을 보장함.
 
-**공유 유틸리티 추출** — `kdco-primitives/`로 프로젝트 ID 생성, 셸 이스케이프, 뮤텍스 등을 분리하여 OCX 레지스트리의 다른 플러그인들과 재사용합니다. 코드 중복 없이 일관된 보안과 동시성
-제어를 제공합니다.
+**공유 유틸리티 추출** — `kdco-primitives/`로 프로젝트 ID 생성, 셸 이스케이프, 뮤텍스 등을 분리하여 OCX 레지스트리의 다른 플러그인들과 재사용함. 코드 중복 없이 일관된 보안과 동시성
+제어를 제공함.
 
 ### 트레이드오프 및 제한사항
 

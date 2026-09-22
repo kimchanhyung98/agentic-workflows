@@ -1,9 +1,9 @@
 # Open SWE 분석
 
-`langchain-ai/open-swe` — LangGraph 기반의 자율 소프트웨어 엔지니어링 에이전트 프레임워크를 분석한 문서입니다.
+`langchain-ai/open-swe` — LangGraph 기반의 자율 소프트웨어 엔지니어링 에이전트 프레임워크를 분석한 문서임.
 
-Slack/Linear/GitHub에서 `@openswe`로 호출하면, 격리된 샌드박스에서 코드를 분석·수정하고 자동으로 Draft PR을 생성합니다. Deep Agents의 범용 코딩 루프를 재사용하면서, 조직별
-외부 시스템 연동과 결정적 안전장치를 추가한 구조입니다.
+Slack/Linear/GitHub에서 `@openswe`로 호출하면, 격리된 샌드박스에서 코드를 분석·수정하고 자동으로 Draft PR을 생성함. Deep Agents의 범용 코딩 루프를 재사용하면서, 조직별
+외부 시스템 연동과 결정적 안전장치를 추가한 구조임.
 
 ## 문서 구성
 

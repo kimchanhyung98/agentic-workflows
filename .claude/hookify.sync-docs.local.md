@@ -11,7 +11,7 @@ conditions:
 
 📝 **Documentation sync required**
 
-코드가 변경되었습니다. `app/Domains/{domain}/docs/`의 관련 문서를 **추가하거나 갱신**해야 하는지 확인하세요:
+코드가 변경되었음. `app/Domains/{domain}/docs/`의 관련 문서를 **추가하거나 갱신**해야 하는지 확인:
 
 - 새 기능 추가 시 → 문서 **생성** 필요
 - 기존 기능 수정/삭제 시 → 문서 **갱신** 필요

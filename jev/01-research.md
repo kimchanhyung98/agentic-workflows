@@ -4,9 +4,9 @@
 
 ## 1. 출발점: 보조와 자동화의 목표 차이
 
-TypeSafe의 공식 문서는 사람이 읽는 응답과 소프트웨어가 소비하는 판단값을 구분합니다. Jev는 상태와 질문을 받아 코드에서 분기·정렬·라우팅에 사용할 구조화된 값을 반환하는 모델입니다. [공식 소개](https://docs.typesafe.ai/introduction)
+TypeSafe의 공식 문서는 사람이 읽는 응답과 소프트웨어가 소비하는 판단값을 구분함. Jev는 상태와 질문을 받아 코드에서 분기·정렬·라우팅에 사용할 구조화된 값을 반환하는 모델임. [공식 소개](https://docs.typesafe.ai/introduction)
 
-본 리서치에서는 다음 성과를 구분합니다. 사용자 선호가 높다고 실행 결과도 정확하다고 가정하지 않습니다.
+본 리서치에서는 다음 성과를 구분함. 사용자 선호가 높다고 실행 결과도 정확하다고 가정하지 않음.
 
 | 평가 대상 | 핵심 질문 | 관측할 결과 |
 | --- | --- | --- |
@@ -17,11 +17,11 @@ TypeSafe의 공식 문서는 사람이 읽는 응답과 소프트웨어가 소�
 
 ## 2. Jev가 맡는 일과 맡지 않는 일
 
-공식 설명에서 Jev는 `state`와 타입이 지정된 질문을 받아 판단값을 반환합니다. 문장·코드·추론 설명을 생성하지 않습니다. ‘System One’은 빠른 판단을 설명하는 제품 개념이며, 그 이름만으로 내부 신경망 구조를 알 수는 없습니다. [Introduction](https://docs.typesafe.ai/introduction), [System One](https://docs.typesafe.ai/concepts/system-one)
+공식 설명에서 Jev는 `state`와 타입이 지정된 질문을 받아 판단값을 반환함. 문장·코드·추론 설명을 생성하지 않음. ‘System One’은 빠른 판단을 설명하는 제품 개념이며, 그 이름만으로 내부 신경망 구조를 알 수는 없음. [Introduction](https://docs.typesafe.ai/introduction), [System One](https://docs.typesafe.ai/concepts/system-one)
 
-공식 문서는 판단과 보정된 확률을 학습 목표로 설명하지만, 이를 구체적인 텐서 구조·학습 데이터·손실함수·재현 절차로 해석하지 않습니다. 일반 LLM에 분류 헤드만 붙인 구조라고 단정하는 것도 근거가 부족합니다. [AI primer](https://docs.typesafe.ai/introduction/machine-learning-primer)
+공식 문서는 판단과 보정된 확률을 학습 목표로 설명하지만, 이를 구체적인 텐서 구조·학습 데이터·손실함수·재현 절차로 해석하지 않음. 일반 LLM에 분류 헤드만 붙인 구조라고 단정하는 것도 근거가 부족함. [AI primer](https://docs.typesafe.ai/introduction/machine-learning-primer)
 
-애플리케이션 관점의 역할 분리는 다음과 같습니다. 아래는 API 계약을 활용한 설계 해석이며 Jev가 전체 단계를 실행한다는 뜻이 아닙니다.
+애플리케이션 관점의 역할 분리는 다음과 같음. 아래는 API 계약을 활용한 설계 해석이며 Jev가 전체 단계를 실행한다는 뜻이 아님.
 
 | 단계 | 주체와 책임 | 실패 시 확인할 것 |
 | --- | --- | --- |
@@ -39,21 +39,21 @@ TypeSafe의 공식 문서는 사람이 읽는 응답과 소프트웨어가 소�
 | 검증 가능한 보상 | 수학처럼 결과를 검증할 수 있는 과제의 보상으로 학습 | 검증기를 만들기 어려운 의미 판단은 별도 문제 |
 | RLCD | TypeSafe가 설명하는 판단과 보정된 확률 중심 학습 | Jev의 구체적 학습 절차·효과 분리 실험은 이번 자료로 재현 불가 |
 
-RLCD는 Reinforcement learning for calibrated decisions의 약자입니다. 위 구분은 공급자가 설명하는 학습 목표의 요약이며, 세 접근의 일반적인 우열이나 Jev의 상세 학습 절차를 검증한 결과가 아닙니다. [AI primer](https://docs.typesafe.ai/introduction/machine-learning-primer)
+RLCD는 Reinforcement learning for calibrated decisions의 약자임. 위 구분은 공급자가 설명하는 학습 목표의 요약이며, 세 접근의 일반적인 우열이나 Jev의 상세 학습 절차를 검증한 결과가 아님. [AI primer](https://docs.typesafe.ai/introduction/machine-learning-primer)
 
-제품 비교에서 Jev가 더 잘 작동하더라도 그것만으로 RLCD의 인과적 우위를 입증할 수는 없습니다. 데이터·구조·출력 제약·질문 분해·계산량을 통제한 실험이 필요합니다.
+제품 비교에서 Jev가 더 잘 작동하더라도 그것만으로 RLCD의 인과적 우위를 입증할 수는 없음. 데이터·구조·출력 제약·질문 분해·계산량을 통제한 실험이 필요함.
 
 ## 4. 확률 보정과 confidence를 분리하기
 
-확률 보정은 많은 예측에서 부여한 확률과 실제 사건 빈도가 맞는지의 문제입니다. 0.8이라는 값이 개별 답의 정답을 보증하지는 않습니다. 이는 TypeSafe가 내세우는 목표이지, 이 프로젝트에서 검증한 성능이 아닙니다. [AI primer](https://docs.typesafe.ai/introduction/machine-learning-primer)
+확률 보정은 많은 예측에서 부여한 확률과 실제 사건 빈도가 맞는지의 문제임. 0.8이라는 값이 개별 답의 정답을 보증하지는 않음. 이는 TypeSafe가 내세우는 목표이지, 이 프로젝트에서 검증한 성능이 아님. [AI primer](https://docs.typesafe.ai/introduction/machine-learning-primer)
 
-본 문서의 설명용 예로, 양성이 80%인 집단의 모든 사례에 0.8을 반환하면 집단 빈도는 맞출 수 있지만 개별 사례를 구분하는 능력은 없습니다. 따라서 정확도·보정·자동 처리 비율·자동 처리한 사례의 오류율을 함께 봐야 합니다.
+본 문서의 설명용 예로, 양성이 80%인 집단의 모든 사례에 0.8을 반환하면 집단 빈도는 맞출 수 있지만 개별 사례를 구분하는 능력은 없음. 따라서 정확도·보정·자동 처리 비율·자동 처리한 사례의 오류율을 함께 봐야 함.
 
-Jev의 `confidence`는 Choice·Score 결과 분포의 형태를 요약한 값이며, 그 자체를 정답 확률로 읽으면 안 됩니다. 공개 Confidence 페이지에 계산식이 제시되지 않아 특정 엔트로피 공식이라고 추정하지 않습니다. Noul에는 같은 필드가 없습니다. [Confidence](https://docs.typesafe.ai/confidence)
+Jev의 `confidence`는 Choice·Score 결과 분포의 형태를 요약한 값이며, 그 자체를 정답 확률로 읽으면 안 됨. 공개 Confidence 페이지에 계산식이 제시되지 않아 특정 엔트로피 공식이라고 추정하지 않음. Noul에는 같은 필드가 없음. [Confidence](https://docs.typesafe.ai/confidence)
 
 ## 5. 제품 범위와 알려진 한계
 
-확인 시점의 모델은 `jev-1.13.0`이며 `jev-latest`와 `jev-preview`도 같은 버전을 가리킵니다. 텍스트 입력만 지원하고 고객별 fine-tuning·LoRA는 제공하지 않는다고 안내합니다. 질문과 상태를 바꾸는 것은 고객별 모델 학습과 다릅니다. [Models](https://docs.typesafe.ai/models)
+확인 시점의 모델은 `jev-1.13.0`이며 `jev-latest`와 `jev-preview`도 같은 버전을 가리킴. 텍스트 입력만 지원하고 고객별 fine-tuning·LoRA는 제공하지 않는다고 안내함. 질문과 상태를 바꾸는 것은 고객별 모델 학습과 다름. [Models](https://docs.typesafe.ai/models)
 
 | 알려진 취약점 | 적용 시 검토할 대응 |
 | --- | --- |
@@ -63,13 +63,13 @@ Jev의 `confidence`는 Choice·Score 결과 분포의 형태를 요약한 값이
 | 모순된 기준·구조적 일관성 요구 | 애플리케이션에서 충돌·불변조건 검사 |
 | 적대적 입력 | 업무 데이터 속 지시문에 대한 별도 공격 사례 평가 |
 
-위 한계는 공급자의 모델별 설명을 요약했습니다. 독립 질문을 묶을 수 있다는 계약은 답들이 서로 논리적으로 일관된다거나 오류가 통계적으로 독립이라는 보장이 아닙니다. [Jev 1.13 jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13)
+위 한계는 공급자의 모델별 설명을 요약했음. 독립 질문을 묶을 수 있다는 계약은 답들이 서로 논리적으로 일관된다거나 오류가 통계적으로 독립이라는 보장이 아님. [Jev 1.13 jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13)
 
-State 문서는 영어 중심 학습이며 비영어, 특히 CJK에서 정확도가 낮아질 수 있다고 안내합니다. 한국어 한 사례의 높은 확률을 한국어 정확도 전체로 확대하면 안 됩니다. [State](https://docs.typesafe.ai/concepts/state)
+State 문서는 영어 중심 학습이며 비영어, 특히 CJK에서 정확도가 낮아질 수 있다고 안내함. 한국어 한 사례의 높은 확률을 한국어 정확도 전체로 확대하면 안 됨. [State](https://docs.typesafe.ai/concepts/state)
 
 ## 6. 업무 흐름에서의 역할 분리
 
-다음은 API 계약을 업무 흐름에 적용한 본 문서의 설계 해석입니다. Jev 자체가 오케스트레이터나 자율 에이전트라는 뜻은 아닙니다.
+다음은 API 계약을 업무 흐름에 적용한 본 문서의 설계 해석임. Jev 자체가 오케스트레이터나 자율 에이전트라는 뜻은 아님.
 
 | 작업 | Jev가 맡을 수 있는 부분 | 별도로 남는 책임 |
 | --- | --- | --- |
@@ -80,9 +80,9 @@ State 문서는 영어 중심 학습이며 비영어, 특히 CJK에서 정확도
 
 ## 7. 현재 판단과 남은 질문
 
-자료에서 확인할 수 있는 장점은 좁은 판단의 출력 계약과 이를 코드에서 조합하는 사용 방식입니다. 정해진 타입으로 반환된다는 사실은 의미상 오답이 없다는 뜻이 아닙니다. 도입 여부는 [API 활용 경계](02-api-and-integration.md), [업무별 평가](03-evaluation.md), [다른 접근과의 비교](04-comparison.md)를 함께 검토해야 합니다.
+자료에서 확인할 수 있는 장점은 좁은 판단의 출력 계약과 이를 코드에서 조합하는 사용 방식임. 정해진 타입으로 반환된다는 사실은 의미상 오답이 없다는 뜻이 아님. 도입 여부는 [API 활용 경계](02-api-and-integration.md), [업무별 평가](03-evaluation.md), [다른 접근과의 비교](04-comparison.md)를 함께 검토해야 함.
 
-남은 질문은 세 가지입니다.
+남은 질문은 세 가지임.
 
 1. 한국어·업무별 데이터에서도 확률 보정과 낮은 오류율을 유지하는가?
 2. 입력 준비·재시도·상위 모델·사람 검토를 포함해도 비용과 지연 이점이 남는가?

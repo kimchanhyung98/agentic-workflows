@@ -55,4 +55,4 @@ dependabot/npm_and_yarn/tailwindcss/postcss-4.1.18
 2. **Require status checks to pass before merging** 활성화
 3. **validate-branch-name** 체크 필수로 지정
 
-이렇게 설정하면 브랜치명 규칙을 위반한 PR은 병합할 수 없습니다.
+이렇게 설정하면 브랜치명 규칙을 위반한 PR은 병합 불가

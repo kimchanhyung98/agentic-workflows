@@ -1,15 +1,15 @@
 # 에이전틱 AI 시스템 설계 패턴
 
-에이전틱 AI 시스템의 주요 설계 패턴을 분석하고 정리한 문서입니다.
-[Anthropic - Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) 를 기반으로 작성되었습니다.
+에이전틱 AI 시스템의 주요 설계 패턴을 분석하고 정리한 문서임.
+[Anthropic - Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)를 기반으로 작성되었음.
 
-> **Augmented LLM**: 에이전틱 시스템의 기본 구성 요소는 검색(retrieval), 도구(tools), 메모리(memory)로 강화된 LLM입니다. 모든 패턴은 이 Augmented LLM을 빌딩
-> 블록으로 사용합니다.
+> **Augmented LLM**: 에이전틱 시스템의 기본 구성 요소는 검색(retrieval), 도구(tools), 메모리(memory)로 강화된 LLM임. 모든 패턴은 이 Augmented LLM을 빌딩
+> 블록으로 사용함.
 >
 > **Workflows vs Agents**: 패턴 1~5는 사전 정의된 코드 경로로 LLM과 도구를 오케스트레이션하는 **워크플로(Workflows)**이며, 패턴 6만이 LLM이 동적으로 자신의 프로세스와 도구
-> 사용을 결정하는 **에이전트(Agents)**입니다.
+> 사용을 결정하는 **에이전트(Agents)**임.
 >
-> 복잡성은 필요할 때만 추가하세요. 단순한 접근 방식으로 충분하다면 에이전틱 시스템을 구축할 필요가 없습니다.
+> 복잡성은 필요할 때만 추가할 것. 단순한 접근 방식으로 충분하다면 에이전틱 시스템을 구축할 필요가 없음.
 
 ---
 

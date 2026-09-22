@@ -8,7 +8,7 @@
 - 핵심 도메인: 인터뷰 기반 페르소나 추출 → 트렌드 탐색 → 플랫폼별 콘텐츠 생성 → QA 시뮬레이션 → 게시/추적
 - 핵심 제약: 심리 프레임워크 **10개**, 인터뷰 원칙 **10개**, 에고 레이어 **5개**, MVP 플랫폼 **5개**
 
-Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정체성(페르소나)을 실행 가능한 데이터 계층으로 분리**했다는 점입니다. 10개 심리학 프레임워크로 무의식 패턴까지 추출하고, 5개 에고 레이어 간 모순(GAP)을 보존하며, 그 위에서 콘텐츠를 생성합니다.
+Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정체성(페르소나)을 실행 가능한 데이터 계층으로 분리**했다는 점임. 10개 심리학 프레임워크로 무의식 패턴까지 추출하고, 5개 에고 레이어 간 모순(GAP)을 보존하며, 그 위에서 콘텐츠를 생성함.
 
 ---
 
@@ -21,7 +21,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 - `skills/*/SKILL.md`: 명령 단위 실행 규약 + 인라인 bash 프리로드
 - `scripts/sync-codex-skills.mjs`: `skills/`를 `.agents/skills`로 미러링해 Codex discovery 호환
 
-핵심은 **명령(Skill)과 역할(Agent) 분리**입니다. 사용자는 `/trend` 같은 동작 단위로 호출하고, 내부적으로는 trendsetter가 책임집니다.
+핵심은 **명령(Skill)과 역할(Agent) 분리**임. 사용자는 `/trend` 같은 동작 단위로 호출하고, 내부적으로는 trendsetter가 책임짐.
 
 ### 2.2 Claude 하네스
 
@@ -32,7 +32,7 @@ Polysona의 차별점은 "모델 자체 최적화"가 아니라 **사용자 정�
 - `hooks/pre-tool-use.sh`: `personas/` 파일 Write 전 PLOON 덮어쓰기 경고 ("Append to interview-log only. Never overwrite compressed core.")
 - `hooks/post-tool-use.sh`: AI 슬롭 패턴 탐지 ("certainly", "absolutely", "as an AI" 등)
 
-Claude 경로는 plugin + hooks 조합으로 런타임 가드레일을 구현합니다.
+Claude 경로는 plugin + hooks 조합으로 런타임 가드레일을 구현함.
 
 ### 2.3 공통 하네스 패턴
 
@@ -71,7 +71,7 @@ Claude 경로는 plugin + hooks 조합으로 런타임 가드레일을 구현합
 | Layer 4: rolemodel | 벤치마크 인물 | 구체적 계정/인물 | accounts.md rolemodel |
 | Layer 5: unconscious-self | 무의식적 자아 | McAdams, Laddering, IFS, Zen Koan | persona.md core |
 
-**GAP 발견**: 모든 레이어 쌍 간 모순을 감지하여 즉시 기록합니다. 모순은 해소하지 않고 보존합니다 — 인간은 모순적이며, 그 모순이 콘텐츠의 심리적 진정성의 원천입니다.
+**GAP 발견**: 모든 레이어 쌍 간 모순을 감지하여 즉시 기록함. 모순은 해소하지 않고 보존함 — 인간은 모순적이며, 그 모순이 콘텐츠의 심리적 진정성의 원천임.
 
 ```text
 ~2026-03-29: GAP: conscious-ideal(minimalism) ↔ unconscious-self(over-engineering under stress)
@@ -105,15 +105,15 @@ Claude 경로는 plugin + hooks 조합으로 런타임 가드레일을 구현합
 | virtual-follower | 최신 draft + accounts | 팔로워 시뮬레이션 TOP 5 | `content/qa/` | **context: fork** 격리 |
 | admin | 최종 draft | 게시용 최종본 + 추적 메타데이터 | `content/published/` | 피드백 루프 → nuance.md |
 
-각 에이전트는 **Write → Read 검증**을 필수로 적용하며, 실제 파일 저장 없는 성공 응답을 금지합니다.
+각 에이전트는 **Write → Read 검증**을 필수로 적용하며, 실제 파일 저장 없는 성공 응답을 금지함.
 
 ### context: fork 격리 설계
 
-Virtual-follower는 `context: fork`로 실행됩니다. 이는 생성 컨텍스트로부터 QA 판단을 완전히 격리하는 아키텍처 결정입니다. 창작자와 비평자는 동일한 인지 공간에 공존하기 어려우며, fork 컨텍스트는 이 역할 분리를 시스템 수준에서 강제합니다.
+Virtual-follower는 `context: fork`로 실행됨. 이는 생성 컨텍스트로부터 QA 판단을 완전히 격리하는 아키텍처 결정임. 창작자와 비평자는 동일한 인지 공간에 공존하기 어려우며, fork 컨텍스트는 이 역할 분리를 시스템 수준에서 강제함.
 
 ### Voice Mix 개념
 
-콘텐츠 생성 시 세 파일이 동시에 로드되어 교차점에서 콘텐츠가 생성됩니다:
+콘텐츠 생성 시 세 파일이 동시에 로드되어 교차점에서 콘텐츠가 생성됨:
 - **persona.md** → 무엇을 말할 것인가 (동기, 가치)
 - **nuance.md** → 어떻게 말할 것인가 (어조, 금기어)
 - **accounts.md** → 어떤 수준으로 말할 것인가 (롤모델 기준)
@@ -148,7 +148,7 @@ Virtual-follower는 `context: fork`로 실행됩니다. 이는 생성 컨텍스�
 
 ### 5.4 롤모델 GAP 분석
 
-accounts.md 롤모델의 `why`(왜 그 사람인가)와 `signal`(스타일 신호)을 기준으로 초안을 평가합니다:
+accounts.md 롤모델의 `why`(왜 그 사람인가)와 `signal`(스타일 신호)을 기준으로 초안을 평가함:
 - **유사성**: 롤모델 신호와 얼마나 일치하는가
 - **결핍**: 롤모델 신호에서 무엇이 누락되어 있는가
 - **차별화**: 롤모델과 너무 유사해서 독자성을 잃지는 않는가
@@ -166,7 +166,7 @@ accounts.md 롤모델의 `why`(왜 그 사람인가)와 `signal`(스타일 신�
 
 ### 6.2 PLOON 파서(`server/lib/ploon.ts`)
 
-`parsePloon()`은 Markdown 기반 PLOON 포맷을 JSON 유사 객체로 변환합니다.
+`parsePloon()`은 Markdown 기반 PLOON 포맷을 JSON 유사 객체로 변환함.
 
 ```text
 ## 섹션명           → 새 scope 전환
@@ -179,7 +179,7 @@ key: value         → scope[key] = value 직접 할당
 
 ### 6.3 QA 시뮬레이션 점수
 
-`deterministicScore()`: DJB2 변형 해시 알고리즘으로 `personaId + followerId + dimension + contentName` → 범위 [40, 95] 결정론적 점수. AI 추론 없이 일관된 프레젠테이션 데모용 UX를 제공합니다.
+`deterministicScore()`: DJB2 변형 해시 알고리즘으로 `personaId + followerId + dimension + contentName` → 범위 [40, 95] 결정론적 점수. AI 추론 없이 일관된 프레젠테이션 데모용 UX를 제공함.
 
 ### 6.4 주요 대시보드 컴포넌트
 
@@ -196,7 +196,7 @@ key: value         → scope[key] = value 직접 할당
 
 ## 7. Export — 페르소나 이식성
 
-`/export [target]` 명령은 Polysona 안에서 구조화된 페르소나를 외부 AI 에이전트 환경에 이식 가능한 형식으로 변환합니다.
+`/export [target]` 명령은 Polysona 안에서 구조화된 페르소나를 외부 AI 에이전트 환경에 이식 가능한 형식으로 변환함.
 
 | target | 출력 파일 | 내용 |
 |--------|-----------|------|
@@ -204,7 +204,7 @@ key: value         → scope[key] = value 직접 할당
 | `agents` | `AGENTS.generated.md` | 에이전트 정의, 역할 분할, 호출 방법 |
 | `both` | 두 파일 모두 | 양쪽 환경 동시 지원 |
 
-이것이 "Build and run multiple personas across **any** AI agent" 미션의 기술적 핵심입니다. 페르소나가 특정 도구에 종속되지 않고, Codex/Claude/OpenCode 어디서나 동작합니다.
+이것이 "Build and run multiple personas across **any** AI agent" 미션의 기술적 핵심임. 페르소나가 특정 도구에 종속되지 않고, Codex/Claude/OpenCode 어디서나 동작함.
 
 ---
 
@@ -255,15 +255,15 @@ key: value         → scope[key] = value 직접 할당
 
 ## 10. 결론
 
-Polysona는 "잘 대답하는 단일 에이전트"보다, **사용자 정체성 데이터를 중심으로 멀티에이전트 워크플로우를 운영하는 하네스**에 가깝습니다.
+Polysona는 "잘 대답하는 단일 에이전트"보다, **사용자 정체성 데이터를 중심으로 멀티에이전트 워크플로우를 운영하는 하네스**에 가까움.
 
-핵심 가치는 세 가지로 압축됩니다:
+핵심 가치는 세 가지로 압축됨:
 
 1. **심리학적 깊이**: 10개 프레임워크 × 5개 에고 레이어 × GAP 보존으로 표면이 아닌 심층 페르소나 추출
 2. **이식성**: Codex/Claude를 넘나드는 persona 실행. `/export`로 어떤 AI 에이전트에도 적용
 3. **검증 가능성**: Write-then-Read, context: fork, PLOON으로 결과물과 상태를 파일로 남기는 운영 모델
 
-프로덕션 관점에서는 향후 `content/*`와 `personas/*`의 스키마 진화/마이그레이션 전략, 동시성 제어, SaaS 연동(MCP, v1.6 예정) 단계가 핵심 확장 지점입니다.
+프로덕션 관점에서는 향후 `content/*`와 `personas/*`의 스키마 진화/마이그레이션 전략, 동시성 제어, SaaS 연동(MCP, v1.6 예정) 단계가 핵심 확장 지점임.
 
 ---
 

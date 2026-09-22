@@ -1,13 +1,13 @@
 # Effective Agents Diagram
 
-Anthropic의 Building Effective Agents 프레임워크에 기반한 6가지 패턴을 종합한 다이어그램입니다.
+Anthropic의 Building Effective Agents 프레임워크에 기반한 6가지 패턴을 종합한 다이어그램임.
 
 ---
 
 ## 전체 구조
 
-Anthropic 프레임워크는 패턴을 **Workflows**(1~5번, 사전 정의된 코드 경로)와 **Agents**(6번, LLM의 동적 의사결정)로 구분합니다. 단순한 Prompt Chaining에서 완전 자율
-에이전트까지, 복잡도와 자율성이 점진적으로 증가하는 스펙트럼을 이룹니다.
+Anthropic 프레임워크는 패턴을 **Workflows**(1~5번, 사전 정의된 코드 경로)와 **Agents**(6번, LLM의 동적 의사결정)로 구분함. 단순한 Prompt Chaining에서 완전 자율
+에이전트까지, 복잡도와 자율성이 점진적으로 증가하는 스펙트럼을 이룸.
 
 ```mermaid
 graph LR
@@ -36,7 +36,7 @@ graph LR
 
 ## 패턴 선택 흐름
 
-작업의 예측 가능성, 독립성, 품질 기준 유무에 따라 적합한 패턴을 선택합니다.
+작업의 예측 가능성, 독립성, 품질 기준 유무에 따라 적합한 패턴을 선택함.
 
 ```mermaid
 flowchart TD
@@ -65,7 +65,7 @@ flowchart TD
 
 ## 패턴별 핵심 메커니즘
 
-각 패턴의 내부 동작 원리를 요약한 다이어그램입니다.
+각 패턴의 내부 동작 원리를 요약한 다이어그램임.
 
 ```mermaid
 graph TB

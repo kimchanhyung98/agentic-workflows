@@ -1,13 +1,13 @@
 # The AI Scientist 분석
 
-Sakana AI의 **The AI Scientist** 시스템의 작동 방식 및 워크플로우를 공개 문서, 논문, 독립 평가 기준으로 정리한 문서입니다.
-[Nature - Towards end-to-end automation of AI research](https://www.nature.com/articles/s41586-026-10265-5) 를 기반으로
-작성되었습니다.
+Sakana AI의 **The AI Scientist** 시스템의 작동 방식 및 워크플로우를 공개 문서, 논문, 독립 평가 기준으로 정리한 문서임.
+[Nature - Towards end-to-end automation of AI research](https://www.nature.com/articles/s41586-026-10265-5)를 기반으로
+작성되었음.
 
-> The AI Scientist는 Foundation Model 기반 에이전트가 **AI 연구의 전체 라이프사이클을 자율적으로 수행**하는 시스템입니다.
-> 아이디어 생성 → 문헌 조사 → 실험 설계/실행 → 논문 작성 → 자동 피어 리뷰까지 end-to-end로 자동화합니다.
+> The AI Scientist는 Foundation Model 기반 에이전트가 **AI 연구의 전체 라이프사이클을 자율적으로 수행**하는 시스템임.
+> 아이디어 생성 → 문헌 조사 → 실험 설계/실행 → 논문 작성 → 자동 피어 리뷰까지 end-to-end로 자동화함.
 >
-> v2에서 생성된 논문이 ICLR 2025 워크숍 피어 리뷰를 통과(6.33/10, 상위 55%)한 최초 사례를 달성했습니다.
+> v2에서 생성된 논문이 ICLR 2025 워크숍 피어 리뷰를 통과(6.33/10, 상위 55%)한 최초 사례를 달성했음.
 
 ---
 

@@ -1,12 +1,12 @@
 # Coinbase AI 에이전트 생태계
 
-Cloudbot과 직접 연결되거나, Coinbase가 공개적으로 설명한 인접 AI 에이전트 사례를 정리한다.
+Cloudbot과 직접 연결되거나, Coinbase가 공개적으로 설명한 인접 AI 에이전트 사례를 정리함.
 
 ## 1. 피드백-to-PR 파이프라인
 
-사용자 피드백을 수집하고 자동으로 PR까지 생성하는 end-to-end 파이프라인이다.
-ChatPRD 인터뷰(Chintan Turakhia)에서 공개되었다.
-다만 이 흐름이 `Cloudbot` 자체와 동일한 시스템인지, 혹은 별도의 workflow automation인지까지는 공개 자료만으로 분리되지 않는다.
+사용자 피드백을 수집하고 자동으로 PR까지 생성하는 end-to-end 파이프라인임.
+ChatPRD 인터뷰(Chintan Turakhia)에서 공개되었음.
+다만 이 흐름이 `Cloudbot` 자체와 동일한 시스템인지, 혹은 별도의 workflow automation인지까지는 공개 자료만으로 분리되지 않음.
 
 ### 워크플로우
 
@@ -34,8 +34,8 @@ flowchart LR
 
 ## 2. QA AI Agent (qa-ai-agent)
 
-제품 품질 테스트를 위한 AI 에이전트. Coinbase 공식 블로그에서 상세히 공개했다.
-이 섹션의 아키텍처와 성과 수치는 Coinbase 공식 블로그 기준으로 정리했다.
+제품 품질 테스트를 위한 AI 에이전트. Coinbase 공식 블로그에서 상세히 공개했음.
+이 섹션의 아키텍처와 성과 수치는 Coinbase 공식 블로그 기준으로 정리했음.
 
 ### 아키텍처
 
@@ -115,9 +115,9 @@ flowchart LR
 
 ## 4. Claude 기반 고객 지원
 
-개발자용 코딩 에이전트와는 별개의 고객 지원 AI 활용 사례지만, Coinbase의 전사 AI 운영 방식을 보여주는 인접 사례라서 함께 정리한다.
+개발자용 코딩 에이전트와는 별개의 고객 지원 AI 활용 사례지만, Coinbase의 전사 AI 운영 방식을 보여주는 인접 사례라서 함께 정리함.
 
-Coinbase는 Claude를 활용한 고객 지원 시스템을 운영한다.
+Coinbase는 Claude를 활용한 고객 지원 시스템을 운영함.
 
 | 채널             | 역할              | 출처                        |
 |----------------|-----------------|---------------------------|
@@ -127,7 +127,7 @@ Coinbase는 Claude를 활용한 고객 지원 시스템을 운영한다.
 
 ### 주요 지표
 
-- 고객 상호작용의 **64% 자동화**라는 수치는 Bank Automation News 보도에 등장하며, 이번 문서에서는 공식 확정 수치로 간주하지 않는다.
+- 고객 상호작용의 **64% 자동화**라는 수치는 Bank Automation News 보도에 등장하며, 이번 문서에서는 공식 확정 수치로 간주하지 않음.
 - 시간당 수천 건 메시지 처리, **100개 이상 지역**, 수백만 사용자 지원
 - 멀티 클라우드 배포 (AWS Bedrock + Google Vertex AI)로 **99.9999% 가용성 목표**
 - 금융 컴플라이언스 가드레일 적용
@@ -136,8 +136,8 @@ Coinbase는 Claude를 활용한 고객 지원 시스템을 운영한다.
 
 ## 5. Open SWE와의 관계
 
-LangChain이 공개한 **Open SWE** 프레임워크는 Coinbase, Stripe, Ramp가 독립적으로 발견한 패턴을 오픈소스로 구현한 것이다.
-즉, Open SWE는 Coinbase 내부 구현 그 자체가 아니라, 외부에서 공통 패턴을 일반화한 프레임워크다.
+LangChain이 공개한 **Open SWE** 프레임워크는 Coinbase, Stripe, Ramp가 독립적으로 발견한 패턴을 오픈소스로 구현한 것임.
+즉, Open SWE는 Coinbase 내부 구현 그 자체가 아니라, 외부에서 공통 패턴을 일반화한 프레임워크임.
 
 > "핵심 패턴은 동일하다. 차이점은 조직별 통합(org-specific integrations)뿐이다."
 

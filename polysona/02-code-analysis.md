@@ -1,6 +1,6 @@
 # Polysona 코드 심층 분석
 
-> 5개 전문 에이전트(아키텍트, 풀스택 엔지니어, 리서처, 심리학 전문가, 콘텐츠 전략 분석가)의 병렬 분석을 종합한 문서입니다.
+> 5개 전문 에이전트(아키텍트, 풀스택 엔지니어, 리서처, 심리학 전문가, 콘텐츠 전략 분석가)의 병렬 분석을 종합한 문서임.
 
 ---
 
@@ -32,7 +32,7 @@
 | 파일 수 | 115개 |
 | 발표 | Ralphthon Seoul (2026-03-29), 카카오벤처스·OpenAI·네이버D2SF 후원 |
 
-**핵심 명제**: "에이전트는 일을 하지만, '나'를 모른다" — Polysona는 10개 심리학 프레임워크로 인간의 심층 심리를 구조화하고, 5개 전문 에이전트로 콘텐츠 파이프라인을 운영하며, 추출된 페르소나를 어떤 AI 에이전트에도 이식 가능하게 만드는 시스템입니다.
+**핵심 명제**: "에이전트는 일을 하지만, '나'를 모른다" — Polysona는 10개 심리학 프레임워크로 인간의 심층 심리를 구조화하고, 5개 전문 에이전트로 콘텐츠 파이프라인을 운영하며, 추출된 페르소나를 어떤 AI 에이전트에도 이식 가능하게 만드는 시스템임.
 
 ### 핵심 숫자 (CLAUDE.md Key Facts — 절대 변경 불가)
 
@@ -150,7 +150,7 @@ LOOP (콘텐츠 사이클마다 반복)
 
 **안전 원칙 (GUARD)**:
 9. **Non-leading**: 추출할 것. 선호 결론을 유도하지 말 것
-10. **Accumulation**: 프로파일링은 반복 인터뷰 걸친 누적적 축적
+10. **Accumulation**: 프로파일링은 반복 인터뷰에 걸친 누적적 축적
 
 ### 3.4 방어 우회 기법
 
@@ -183,7 +183,7 @@ Layer 5: unconscious-self    ← 무의식적 자아 (McAdams/IFS/Koan) → pers
 ~2026-03-29: GAP: rolemodel(high-risk operator) ↔ unconscious-self(risk-avoidant execution pattern)
 ```
 
-GAP은 모순을 해소하지 않고 보존합니다. 인간은 모순적이며, 그 모순이 콘텐츠의 심리적 진정성의 원천입니다.
+GAP은 모순을 해소하지 않고 보존함. 인간은 모순적이며, 그 모순이 콘텐츠의 심리적 진정성의 원천임.
 
 ---
 
@@ -235,7 +235,7 @@ Polysona 전용 구조화 마크다운 형식:
 
 ### 4.3 Voice Mix 개념
 
-콘텐츠 생성 시 세 파일이 동시에 로드되어 교차점에서 콘텐츠가 생성됩니다:
+콘텐츠 생성 시 세 파일이 동시에 로드되어 교차점에서 콘텐츠가 생성됨:
 - persona.md → **무엇을** 말할 것인가 (동기, 가치)
 - nuance.md → **어떻게** 말할 것인가 (어조, 금기어)
 - accounts.md → **어떤 수준으로** 말할 것인가 (롤모델 기준)
@@ -269,7 +269,7 @@ Write 도구 → 파일 저장 → Read 도구 → 존재 확인 → 확인된 �
 쓰기 실패 시: "실패했다고 보고. 성공 주장 금지."
 ```
 
-이 패턴은 AI 환각(hallucination)을 구조적으로 방지합니다.
+이 패턴은 AI 환각(hallucination)을 구조적으로 방지함.
 
 ### 5.3 Export — 페르소나 이식성
 
@@ -281,7 +281,7 @@ Write 도구 → 파일 저장 → Read 도구 → 존재 확인 → 확인된 �
 | `agents` | `personas/{active}/generated/AGENTS.generated.md` |
 | `both` | 두 파일 모두 |
 
-이것이 "Build and run multiple personas across **any** AI agent" 미션의 기술적 핵심입니다.
+이것이 "Build and run multiple personas across **any** AI agent" 미션의 기술적 핵심임.
 
 ---
 
@@ -379,7 +379,7 @@ Codex 동기화: `node ./scripts/sync-codex-skills.mjs` — `skills/`를 `.agent
 cat "personas/$ACTIVE/persona.md" 2>/dev/null || echo "No persona found. Run /interview first."`
 ```
 
-스킬 호출 시 활성 페르소나를 즉시 자동 로드. 각 스킬이 필요한 파일만 선택적으로 로드합니다.
+스킬 호출 시 활성 페르소나를 즉시 자동 로드. 각 스킬이 필요한 파일만 선택적으로 로드함.
 
 ---
 
@@ -406,7 +406,7 @@ Slide 5 (Progress) → Ralphthon Seoul 운영 스택 + LIVE 상태
 
 > "gstack gives you Garry Tan's brain. **polysona gives you yours.**"
 
-gstack(Garry Tan 브레인 복제, GitHub Stars 10,000+)이 "유명인의 시선"을 제공하는 반면, Polysona는 "나 자신의 심리적 지문"을 추출하고 운영하는 시스템입니다.
+gstack(Garry Tan 브레인 복제, GitHub Stars 10,000+)이 "유명인의 시선"을 제공하는 반면, Polysona는 "나 자신의 심리적 지문"을 추출하고 운영하는 시스템임.
 
 ---
 
@@ -435,29 +435,29 @@ gstack(Garry Tan 브레인 복제, GitHub Stars 10,000+)이 "유명인의 시선
 
 ### 강점
 
-**심리학적 다층성**: 10개 프레임워크의 통합으로 단일 이론의 맹점을 상호 보완. McAdams는 서사를, Laddering은 가치 위계를, Clean Language는 은유를, IFS는 내적 파트를, Zen Koan은 전개념적 층위를, 五倫+陰陽은 관계적 자아를 탐사합니다.
+**심리학적 다층성**: 10개 프레임워크의 통합으로 단일 이론의 맹점을 상호 보완. McAdams는 서사를, Laddering은 가치 위계를, Clean Language는 은유를, IFS는 내적 파트를, Zen Koan은 전개념적 층위를, 五倫+陰陽은 관계적 자아를 탐사함.
 
-**GAP 보존 원칙**: 모순을 해소하지 않고 보존하는 것은 심리학적으로 매우 성숙한 설계. "미니멀리즘을 추구하지만 압박 시 과잉 설계"라는 GAP 자체가 콘텐츠의 진정성 원천입니다.
+**GAP 보존 원칙**: 모순을 해소하지 않고 보존하는 것은 심리학적으로 매우 성숙한 설계. "미니멀리즘을 추구하지만 압박 시 과잉 설계"라는 GAP 자체가 콘텐츠의 진정성 원천임.
 
-**context: fork 격리**: QA 에이전트가 생성 컨텍스트에서 완전히 독립된 평가 환경에서 실행. 자기 생성 콘텐츠에 대한 자기 평가 편향을 시스템 수준에서 차단합니다.
+**context: fork 격리**: QA 에이전트가 생성 컨텍스트에서 완전히 독립된 평가 환경에서 실행. 자기 생성 콘텐츠에 대한 자기 평가 편향을 시스템 수준에서 차단함.
 
-**Write-then-Read 강제 검증**: AI 환각(hallucination) 방지의 구조적 해법. 파일 저장 없이 성공을 주장하는 것을 원천 차단합니다.
+**Write-then-Read 강제 검증**: AI 환각(hallucination) 방지의 구조적 해법. 파일 저장 없이 성공을 주장하는 것을 원천 차단함.
 
-**Append-only 불변성**: interview-log는 절대 덮어쓰지 않고 축적만 합니다. Git이 유일한 이력 원장이며 데이터 무결성의 근간입니다.
+**Append-only 불변성**: interview-log는 절대 덮어쓰지 않고 축적만 함. Git이 유일한 이력 원장이며 데이터 무결성의 근간임.
 
-**이식성**: `/export`로 페르소나를 CLAUDE.md/AGENTS.md 형식으로 변환. 특정 AI 도구 종속을 탈피하는 실질적 차별점입니다.
+**이식성**: `/export`로 페르소나를 CLAUDE.md/AGENTS.md 형식으로 변환. 특정 AI 도구 종속을 탈피하는 실질적 차별점임.
 
 ### 주의 사항
 
-**실제 파이프라인 산출물 부재**: `content/` 4개 디렉토리 모두 `.gitkeep`만 존재. MVP "동작 중" 클레임과 저장소 상태 사이에 간극이 있습니다.
+**실제 파이프라인 산출물 부재**: `content/` 4개 디렉토리 모두 `.gitkeep`만 존재. MVP "동작 중" 클레임과 저장소 상태 사이에 간극이 있음.
 
-**결정론적 QA 점수**: 대시보드의 QA 시뮬레이션 점수는 해시 기반 결정론적 값이며 실제 AI 추론 결과가 아닙니다. 프레젠테이션 데모용입니다.
+**결정론적 QA 점수**: 대시보드의 QA 시뮬레이션 점수는 해시 기반 결정론적 값이며 실제 AI 추론 결과가 아님. 프레젠테이션 데모용임.
 
-**자기 보고 편향**: 아무리 정교한 질문 기법을 사용해도 인터뷰는 자기 보고 기반. 실제 행동 데이터와의 통합이 있으면 GAP 탐지 정확도가 높아질 것입니다.
+**자기 보고 편향**: 아무리 정교한 질문 기법을 사용해도 인터뷰는 자기 보고 기반. 실제 행동 데이터와의 통합이 있으면 GAP 탐지 정확도가 높아질 것임.
 
-**훅 환경 변수 의존**: pre/post-tool-use 훅이 `TOOL_NAME`, `FILE_PATH`, `TOOL_OUTPUT` 환경 변수에 의존. 호스트 런타임이 이를 올바르게 설정하지 않으면 보호 메커니즘이 무력화됩니다.
+**훅 환경 변수 의존**: pre/post-tool-use 훅이 `TOOL_NAME`, `FILE_PATH`, `TOOL_OUTPUT` 환경 변수에 의존. 호스트 런타임이 이를 올바르게 설정하지 않으면 보호 메커니즘이 무력화됨.
 
-**Codex 동기화 수동**: `skills/`와 `.agents/skills/` 간 수동 동기화 (`bun run codex:skills:sync`) 요구. 드리프트 위험이 있습니다.
+**Codex 동기화 수동**: `skills/`와 `.agents/skills/` 간 수동 동기화 (`bun run codex:skills:sync`) 요구. 드리프트 위험이 있음.
 
 ### 설계 패턴 요약
 

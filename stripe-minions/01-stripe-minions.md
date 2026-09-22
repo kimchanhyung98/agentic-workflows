@@ -2,15 +2,15 @@
 
 ## 개요
 
-Stripe의 Minions는 코딩 작업을 **원샷(One-Shot)으로 엔드투엔드(End-to-End) 완료**하는 내부 AI 코딩 에이전트 시스템이다.
-개발자가 작업을 할당하면, 에이전트가 코드베이스를 분석하고 변경 사항을 구현하여 Pull Request를 생성한다.
+Stripe의 Minions는 코딩 작업을 **원샷(One-Shot)으로 엔드투엔드(End-to-End) 완료**하는 내부 AI 코딩 에이전트 시스템임.
+개발자가 작업을 할당하면, 에이전트가 코드베이스를 분석하고 변경 사항을 구현하여 Pull Request를 생성함.
 
-> **One-Shot**: 실행 중 인간의 추가 입력 없이, 한 번의 실행으로 작업을 완료하는 방식을 의미한다.
-> **End-to-End**: 작업 이해부터 PR 생성까지 전체 개발 사이클을 에이전트가 자율적으로 수행한다.
+> **One-Shot**: 실행 중 인간의 추가 입력 없이, 한 번의 실행으로 작업을 완료하는 방식을 의미함.
+> **End-to-End**: 작업 이해부터 PR 생성까지 전체 개발 사이클을 에이전트가 자율적으로 수행함.
 
 ### 핵심 공식
 
-Minions는 특별한 기술이 아니라, 기존 인프라와 AI 에이전트의 결합이다:
+Minions는 특별한 기술이 아니라, 기존 인프라와 AI 에이전트의 결합임:
 
 ```text
 Developer Workflow (기존 인프라, 실전 검증 완료) + AI Agent (오픈소스 도구 포크) = Minions (주당 1,000+ PR)
@@ -22,7 +22,7 @@ Developer Workflow (기존 인프라, 실전 검증 완료) + AI Agent (오픈�
 
 ## Stripe 환경의 세 기둥
 
-Minions가 동작하는 Stripe 환경은 세 가지 축으로 구성된다:
+Minions가 동작하는 Stripe 환경은 세 가지 축으로 구성됨:
 
 | 기둥                    | 구성 요소                                               | 역할                             |
 |-----------------------|-----------------------------------------------------|--------------------------------|
@@ -30,13 +30,13 @@ Minions가 동작하는 Stripe 환경은 세 가지 축으로 구성된다:
 | **Stripe Tools**      | Custom linters, CI pipelines, dev environments      | 에이전트가 사용하는 개발 도구 체인            |
 | **Stripe Guardrails** | Payment safety, regulatory compliance, audit trails | 에이전트의 행동을 제한하는 안전장치            |
 
-에이전트는 인간 엔지니어와 **동일한 도구와 환경**을 사용한다. 에이전트 전용 특수 도구를 만드는 대신, 기존 개발 인프라를 그대로 활용하는 것이 Minions의 설계 철학이다.
+에이전트는 인간 엔지니어와 **동일한 도구와 환경**을 사용함. 에이전트 전용 특수 도구를 만드는 대신, 기존 개발 인프라를 그대로 활용하는 것이 Minions의 설계 철학임.
 
 ---
 
 ## 6개 레이어 아키텍처
 
-Minions의 전체 시스템은 6개 레이어로 구성된다:
+Minions의 전체 시스템은 6개 레이어로 구성됨:
 
 ```mermaid
 flowchart LR
@@ -61,7 +61,7 @@ flowchart LR
 
 ## Layer 1: Entry Point
 
-작업은 4가지 경로로 진입한다:
+작업은 4가지 경로로 진입함:
 
 ```mermaid
 flowchart TD
@@ -91,7 +91,7 @@ flowchart TD
 @minion Fix the flaky test in checkout_flow_test.rb
 ```
 
-요청 시 자동으로 다음 정보가 첨부된다:
+요청 시 자동으로 다음 정보가 첨부됨:
 
 - **Stack traces**: 관련 에러 스택 추적
 - **Linked docs**: 연결된 문서
@@ -103,7 +103,7 @@ flowchart TD
 
 ## Layer 2: Context Hydration via MCP
 
-Orchestrator가 작업에 필요한 컨텍스트를 **결정론적으로** 수집하는 단계이다.
+Orchestrator가 작업에 필요한 컨텍스트를 **결정론적으로** 수집하는 단계임.
 
 ```mermaid
 flowchart LR
@@ -132,7 +132,7 @@ flowchart LR
 
 ### Toolshed MCP Server
 
-Toolshed는 **400개 이상의 도구**를 제공하는 MCP 서버다. 실행당 **15개를 큐레이션**하여 사용한다.
+Toolshed는 **400개 이상의 도구**를 제공하는 MCP 서버임. 실행당 **15개를 큐레이션**하여 사용함.
 
 | 도구 카테고리        | 기능              |
 |----------------|-----------------|
@@ -143,7 +143,7 @@ Toolshed는 **400개 이상의 도구**를 제공하는 MCP 서버다. 실행당
 | Code Search    | 코드베이스 전체 검색     |
 | SaaS Platforms | 연동된 외부 서비스 정보   |
 
-> **핵심**: Pre-fetching은 **결정론적(deterministic)**이다 — LLM의 판단에 의존하지 않는다.
+> **핵심**: Pre-fetching은 **결정론적(deterministic)**임 — LLM의 판단에 의존하지 않음.
 
 ---
 

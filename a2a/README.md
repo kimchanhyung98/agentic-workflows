@@ -1,10 +1,10 @@
 # A2A 분석
 
-Google의 Agent2Agent(A2A) 프로토콜 문서를 기준으로, 에이전트 간 상호운용(interop) 구조와 실행 패턴을 정리한 문서입니다.
+Google의 Agent2Agent(A2A) 프로토콜 문서를 기준으로, 에이전트 간 상호운용(interop) 구조와 실행 패턴을 정리한 문서임.
 
-A2A는 **Agent Card 기반 발견(discovery)**, **Task 중심 상호작용**, **동기/스트리밍/비동기 완료 패턴**을 표준화해 서로 다른 에이전트 시스템 간 협업을 목표로 합니다.
-v1.0 정식 릴리즈이며, Linux Foundation에서 관리하고, 150개 이상의 조직이 참여하고 있습니다. TSC에는 AWS, Cisco, Google, IBM, Microsoft, Salesforce,
-SAP, ServiceNow가 포함됩니다.
+A2A는 **Agent Card 기반 발견(discovery)**, **Task 중심 상호작용**, **동기/스트리밍/비동기 완료 패턴**을 표준화해 서로 다른 에이전트 시스템 간 협업을 목표로 함.
+v1.0 정식 릴리즈이며, Linux Foundation에서 관리하고, 150개 이상의 조직이 참여하고 있음. TSC에는 AWS, Cisco, Google, IBM, Microsoft, Salesforce,
+SAP, ServiceNow가 포함됨.
 
 ---
 
@@ -46,14 +46,14 @@ Remote Agent
 
 ### 핵심 설계 포인트
 
-- **발견 가능성(Discoverability)**: Agent Card를 통해 호출 전 기능/제약/인증을 파악합니다.
-- **Task 중심 상호작용**: 단발 요청이 아니라 상태를 가진 작업 단위로 협업합니다.
-- **멀티모달 메시지 모델**: Message는 멤버 기반 판별(text, url, raw, data)로 구성된 Part들로 이루어집니다.
-- **비동기 우선 설계**: 긴 작업은 streaming(SSE)과 push notification으로 분리 처리합니다.
-- **멀티 전송 지원**: JSON-RPC, gRPC, HTTP+JSON을 `supportedInterfaces`로 동등하게 지원합니다.
+- **발견 가능성(Discoverability)**: Agent Card를 통해 호출 전 기능/제약/인증을 파악함.
+- **Task 중심 상호작용**: 단발 요청이 아니라 상태를 가진 작업 단위로 협업함.
+- **멀티모달 메시지 모델**: Message는 멤버 기반 판별(text, url, raw, data)로 구성된 Part들로 이루어짐.
+- **비동기 우선 설계**: 긴 작업은 streaming(SSE)과 push notification으로 분리 처리함.
+- **멀티 전송 지원**: JSON-RPC, gRPC, HTTP+JSON을 `supportedInterfaces`로 동등하게 지원함.
 - **보안 내장 설계**: OAuth2(PKCE, Device Code), mTLS, API Key, OpenID Connect + Agent Card 서명(JWS + RFC 8785).
-- **멀티테넌시**: `tenant` 필드로 단일 엔드포인트에서 다중 에이전트를 격리 운영할 수 있습니다.
-- **상호보완적 표준 전략**: A2A(Agent 간 협업)와 MCP(도구/컨텍스트 연결)를 함께 사용할 수 있습니다.
+- **멀티테넌시**: `tenant` 필드로 단일 엔드포인트에서 다중 에이전트를 격리 운영할 수 있음.
+- **상호보완적 표준 전략**: A2A(Agent 간 협업)와 MCP(도구/컨텍스트 연결)를 함께 사용할 수 있음.
 
 ---
 

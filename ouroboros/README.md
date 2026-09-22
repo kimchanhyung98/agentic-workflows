@@ -1,8 +1,8 @@
 # Ouroboros 분석
 
-`Q00/ouroboros`의 AI 에이전트 하네스와 실행 플로우를 공개 코드/문서 기준으로 정리한 문서입니다.
+`Q00/ouroboros`의 AI 에이전트 하네스와 실행 플로우를 공개 코드/문서 기준으로 정리한 문서임.
 
-Ouroboros는 Claude Code, Codex CLI 같은 런타임 위에서 동작하는 **specification-first 워크플로우 엔진**으로, 인터뷰(명확화) → Seed(명세 고정) → 실행 → 평가 → 진화 루프를 제공합니다.
+Ouroboros는 Claude Code, Codex CLI 같은 런타임 위에서 동작하는 **specification-first 워크플로우 엔진**으로, 인터뷰(명확화) → Seed(명세 고정) → 실행 → 평가 → 진화 루프를 제공함.
 
 ---
 
@@ -35,11 +35,11 @@ Persistence / Observability (EventStore, Checkpoint, Drift, Retrospective)
 
 ### 핵심 설계 포인트
 
-- **명세 우선 하네스**: 인터뷰로 모호성을 낮추고(`ambiguity <= 0.2`) Seed를 고정한 뒤 실행합니다.
-- **런타임 분리**: 동일한 워크플로우를 Claude Code/Codex CLI 어댑터로 실행할 수 있습니다.
-- **다단계 검증 게이트**: Mechanical → Semantic → Consensus 순으로 비용을 제어하며 품질을 검증합니다.
-- **이벤트 소싱 중심 복원력**: append-only 이벤트, 체크포인트, 세션 재개/회고를 기본 제공합니다.
-- **MCP 양방향 통합**: Ouroboros 자체를 MCP 서버로 노출하면서, 외부 MCP 도구도 클라이언트로 소비합니다.
+- **명세 우선 하네스**: 인터뷰로 모호성을 낮추고(`ambiguity <= 0.2`) Seed를 고정한 뒤 실행함.
+- **런타임 분리**: 동일한 워크플로우를 Claude Code/Codex CLI 어댑터로 실행할 수 있음.
+- **다단계 검증 게이트**: Mechanical → Semantic → Consensus 순으로 비용을 제어하며 품질을 검증함.
+- **이벤트 소싱 중심 복원력**: append-only 이벤트, 체크포인트, 세션 재개/회고를 기본 제공함.
+- **MCP 양방향 통합**: Ouroboros 자체를 MCP 서버로 노출하면서, 외부 MCP 도구도 클라이언트로 소비함.
 
 ---
 

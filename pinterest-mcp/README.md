@@ -1,8 +1,8 @@
 # Pinterest MCP 분석
 
-Pinterest Engineering의 블로그 글과 공개 자료를 바탕으로, Pinterest 내부 MCP 생태계의 설계, 운영 구조, 보안 모델을 정리한 문서입니다.
+Pinterest Engineering의 블로그 글과 공개 자료를 바탕으로, Pinterest 내부 MCP 생태계의 설계, 운영 구조, 보안 모델을 정리한 문서임.
 
-Pinterest는 "MCP가 흥미해 보인다"는 시작점에서 출발해, 다수의 도메인별 MCP 서버, 중앙 레지스트리, IDE·사내 챗·AI 에이전트에 걸친 프로덕션 통합을 운영하는 단계까지 도달했습니다.
+Pinterest는 "MCP가 흥미해 보인다"는 시작점에서 출발해, 다수의 도메인별 MCP 서버, 중앙 레지스트리, IDE·사내 챗·AI 에이전트에 걸친 프로덕션 통합을 운영하는 단계까지 도달했음.
 
 ---
 

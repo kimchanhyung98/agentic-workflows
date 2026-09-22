@@ -270,7 +270,7 @@ flowchart TD
     ENFORCE --> RESULT
 ```
 
-## 7. Hook 라이프사이클 이벤트 맵핑
+## 7. Hook 라이프사이클 이벤트 매핑
 
 ```mermaid
 flowchart LR
