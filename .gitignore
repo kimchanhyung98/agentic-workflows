@@ -1,4 +1,7 @@
 # @todo
+.demo
+.draft
+.temp
 
 # Distribution / packaging
 .Python
@@ -161,6 +164,9 @@ $RECYCLE.BIN/
 .devin/*
 .goose/*
 .kilocode/*
+.kimi-code/*
+.kiro/*
+.omp/*
 .opencode/*
 .qwen/*
 .roo/*
@@ -169,6 +175,7 @@ $RECYCLE.BIN/
 # Claude
 **/CLAUDE.md
 !/CLAUDE.md
+**/CLAUDE.local.md
 .claude/*
 !.claude/settings.json
 !.claude/hookify.*.md
@@ -177,7 +184,6 @@ $RECYCLE.BIN/
 # Codex
 .agents/*
 !.agents/skills
-.agents/skills/
 .codex/*
 !.codex/config.toml
 !.codex/hooks.json
@@ -187,7 +193,7 @@ $RECYCLE.BIN/
 .gemini/*
 !.gemini/GEMINI.md
 !.gemini/settings.json
-.gemini/settings.json
+.gemini-clipboard/
 
 # GitHub
 .github/agents/*
@@ -198,20 +204,16 @@ $RECYCLE.BIN/
 .agent-os/
 agent-os/
 
-# Spec-Kit
-.specify/
-.speckit/
-specs/
-
 # Playwright
 .agent-browser/
 .browser/
 .chrome/
 .next-browser/
-.playwright/
-.playwright-mcp/
+.playwright*
 
 # etc
 .cmux/
+.docs
 .omx/
 .remember
+.serena
